@@ -39,8 +39,8 @@ interface FormPageLayoutProps {
     description: string;
   }>;
   processSteps: string[];
-  buttonText: string;
-  onButtonClick: () => void;
+  buttonText?: string;
+  onButtonClick?: () => void;
   children: React.ReactNode;
 }
 
@@ -106,15 +106,17 @@ const FormPageLayout: React.FC<FormPageLayoutProps> = ({
                 </Description>
               </Alert>
             </CardBody>
-            <CardFooter>
-              <PrimaryButton 
-                variant="contained" 
-                onClick={onButtonClick}
-                startIcon={icon}
-              >
-                {buttonText}
-              </PrimaryButton>
-            </CardFooter>
+            {buttonText && onButtonClick && (
+              <CardFooter>
+                <PrimaryButton 
+                  variant="contained" 
+                  onClick={onButtonClick}
+                  startIcon={icon}
+                >
+                  {buttonText}
+                </PrimaryButton>
+              </CardFooter>
+            )}
           </StyledCard>
 
           {/* Key Points Card */}

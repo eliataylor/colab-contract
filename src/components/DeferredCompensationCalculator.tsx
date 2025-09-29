@@ -9,9 +9,11 @@ import {
   CardContent,
   Alert,
   Divider,
-  Stack
+  Stack,
+  Button
 } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { useFormData } from '../contexts/FormDataContext';
 
 interface CompensationData {
   contributorOwed: number;
@@ -23,9 +25,10 @@ interface CompensationData {
 }
 
 const DeferredCompensationCalculator: React.FC = () => {
-  const [contributorRate, setContributorRate] = useState(75);
+  const { founderData, contributorData, updateFounderData, updateContributorData } = useFormData();
+  const [contributorRate, setContributorRate] = useState(contributorData.deferredWageRate || 75);
   const [contributorHours, setContributorHours] = useState(66.67);
-  const [founderRate, setFounderRate] = useState(75);
+  const [founderRate, setFounderRate] = useState(founderData.deferredWageRate || 75);
   const [founderHours, setFounderHours] = useState(13.33);
   const [availableProfit, setAvailableProfit] = useState(1000);
   const [compensationData, setCompensationData] = useState<CompensationData>({
@@ -54,6 +57,18 @@ const DeferredCompensationCalculator: React.FC = () => {
       founderPayment
     });
   }, [contributorRate, contributorHours, founderRate, founderHours, availableProfit]);
+
+  const handleApplyContributorRate = () => {
+    updateContributorData({
+      deferredWageRate: contributorRate
+    });
+  };
+
+  const handleApplyFounderRate = () => {
+    updateFounderData({
+      deferredWageRate: founderRate
+    });
+  };
 
   const pieChartData = [
     { id: 0, value: compensationData.contributorPayment, label: 'Contributor Payment', color: '#1976d2' },
@@ -113,6 +128,18 @@ const DeferredCompensationCalculator: React.FC = () => {
                 </Grid>
 
                 <Grid item xs={12}>
+                  <Button 
+                    variant="outlined" 
+                    size="small"
+                    onClick={handleApplyContributorRate}
+                    disabled={contributorRate === contributorData.deferredWageRate}
+                    fullWidth
+                  >
+                    Apply to Contributor Form
+                  </Button>
+                </Grid>
+
+                <Grid item xs={12}>
                   <Typography variant="subtitle1" color="primary" gutterBottom sx={{ mt: 2 }}>
                     Founder Details
                   </Typography>
@@ -139,8 +166,20 @@ const DeferredCompensationCalculator: React.FC = () => {
                     onChange={(e) => setFounderHours(parseFloat(e.target.value) || 0)}
                     variant="outlined"
                     size="small"
-                    inputProps={{ step: 0.01 }}
+                    inputProps={{ step: 1 }}
                   />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button 
+                    variant="outlined" 
+                    size="small"
+                    onClick={handleApplyFounderRate}
+                    disabled={founderRate === founderData.deferredWageRate}
+                    fullWidth
+                  >
+                    Apply to Founder Form
+                  </Button>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -225,7 +264,7 @@ const DeferredCompensationCalculator: React.FC = () => {
               {compensationData.distributionPercentage < 1 && (
                 <Alert severity="warning" sx={{ mt: 2 }}>
                   <Typography variant="body2">
-                    <strong>Partial Payment:</strong> Only {compensationData.distributionPercentage * 100}% of accrued wages can be paid due to limited profit.
+                    <strong>Partial Payment:</strong> Only {(compensationData.distributionPercentage * 100).toFixed(2)}% of accrued wages can be paid due to limited profit.
                   </Typography>
                 </Alert>
               )}

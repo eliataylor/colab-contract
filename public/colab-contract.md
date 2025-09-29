@@ -1,6 +1,6 @@
 # **Founding Contributor Engagement Agreement**
 
-This agreement is made between **\[Founders' Names\]** (collectively, "Founders") and **\[Contributors' Names\]** (collectively, "Contributors") to define the terms for ownership, compensation, and shared commitment in building a product together.
+This agreement is made between **{{FOUNDER_NAMES}}** (collectively, "Founders") and **{{CONTRIBUTOR_NAMES}}** (collectively, "Contributors") to define the terms for ownership, compensation, and shared commitment in building a product together.
 
 All parties agree that the following terms shall apply to the entire scope of ownership, compensation, and protections within the IP Holding Company ("Company") and any subsidiary corporations or business entities.
 
@@ -25,10 +25,9 @@ This section is dedicated to protecting the shared business vision and ensuring 
 
 For the purpose of this agreement, "IP" is defined as a specific set of proprietary assets critical to the business. This includes:
 
-* Proprietary user data and customer lists.  
-* Content, created or curated uniquely to the Company.  
-* Trade secrets related to business strategies, financial information, and customer data.  
-* This definition expressly excludes the Contributors’ general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company’s core IP.
+{{CUSTOM_IP_DEFINITION}}
+
+* This definition expressly excludes the Contributors' general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company's core IP.
 
 ### **Mutual Commitment and Impact**
 
@@ -55,23 +54,23 @@ This section is dedicated to providing a clear and transparent path to earning e
 
 ### **Vesting Equity**
 
-A founding contributor ("Contributor") will be granted stock and/or membership units representing **\[\_\_\_%\]** of the fully-diluted equity in both the C-Corporation and the IP Holding Company. This equity grant is not contingent on any separate capital contribution.
+A founding contributor ("Contributor") will be granted stock and/or membership units representing **{{CONTRIBUTOR_EQUITY_PERCENTAGE}}%** of the fully-diluted equity in both the C-Corporation and the IP Holding Company. This equity grant is not contingent on any separate capital contribution.
 
-* **Vesting Schedule:** The **\[\_\_\_%\]** equity allocation shall vest over a 4-year period (48 months). The vesting rate will accelerate over time, rewarding sustained commitment.  
+* **Vesting Schedule:** The **{{CONTRIBUTOR_EQUITY_PERCENTAGE}}%** equity allocation shall vest over a **{{VESTING_PERIOD_YEARS}}**-year period (**{{VESTING_PERIOD_DAYS}}** months). The vesting rate will accelerate over time, rewarding sustained commitment.  
 * **Vesting Formula:** The amount of vested equity will be calculated using the following formula:  
   `Vested Equity = Total Equity Granted * ( (Days Worked - Cliff Days) / (Total Vesting Days - Cliff Days) )^2` This vesting formula is applicable only after the Contributor has successfully completed the initial **6-month cliff period**. If the Contributor leaves before this period, no equity will have vested.  
-* **Example Vesting Schedule:** Below is an example of a **25%** equity grant vesting over **4 years** (1460 days), showing the accelerating growth of vested equity over time.
+* **Example Vesting Schedule:** Below is an example of a **{{CONTRIBUTOR_EQUITY_PERCENTAGE}}%** equity grant vesting over **{{VESTING_PERIOD_YEARS}}** years (**{{VESTING_PERIOD_DAYS}}** days), showing the accelerating growth of vested equity over time.
 
 | Time (Months) | Days Worked | Vested Equity |
 | ----- | ----- | ----- |
 | **6** | 180 | 0.00% |
-| **12** | 365 | 0.52% |
-| **18** | 547 | 2.05% |
-| **24** | 730 | 4.61% |
-| **30** | 912 | 8.17% |
-| **36** | 1095 | 12.77% |
-| **42** | 1277 | 18.36% |
-| **48** | 1460 | 25.00% |
+| **12** | 365 | {{VESTING_12_MONTHS}}% |
+| **18** | 547 | {{VESTING_18_MONTHS}}% |
+| **24** | 730 | {{VESTING_24_MONTHS}}% |
+| **30** | 912 | {{VESTING_30_MONTHS}}% |
+| **36** | 1095 | {{VESTING_36_MONTHS}}% |
+| **42** | 1277 | {{VESTING_42_MONTHS}}% |
+| **48** | 1460 | {{VESTING_48_MONTHS}}% |
 
 *   
   **Leaving the Company:** If a Contributor’s engagement ends before the 6-month cliff, no equity will have vested, and the entire equity grant will be returned to the Company. If a Contributor leaves after the 6-month cliff, they will retain all equity vested up to that point.
@@ -82,22 +81,38 @@ The purpose of the deferred wage is to protect all parties from a sale where onl
 
 * **Accrual:** This deferred hourly wage begins accumulating upon signing and continues until the Company is able to negotiate a standard salary paid monthly. It shall be considered a debt on the balance sheet of the Company.  
 * **Rates:** Both the Founders and the Contributors shall be entitled to deferred wages at the rates below:  
-  * **Founder A:** $\[\_\_\_\] / hour  
-  * **Contributor A:** $\[\_\_\_\] / hour  
+  * **{{FOUNDER_NAME}}:** ${{FOUNDER_HOURLY_RATE}} / hour  
+  * **{{CONTRIBUTOR_NAME}}:** ${{CONTRIBUTOR_HOURLY_RATE}} / hour  
 * **Pro-Rata Payment:** Accrued deferred wages shall be paid from monthly net income (as defined by GAAP accounting standards) on a pro-rata basis. The pro-rata share for each party shall be calculated as their total accrued deferred wages divided by the total accrued deferred wages of all parties.  
 * **Conditions for Payment:** Payment shall be made at the end of any month in which the following conditions are met:  
   * All operating expenses for the current and past months have been paid.  
   * All other employee and contractor wages have been paid.  
   * The company maintains a minimum cash reserve equal to three (3) months of average monthly operating expenses.  
 * **Example Calculation:**  
-  * **Total Owed:** $5,000 (Contributor) \+ $1,000 (Founder) \= $6,000  
-  * **Available Profit:** $1,000  
-  * **Distribution Percentage:** $1,000 / $6,000 \= 16.67%  
-  * **Contributor's Payment:** $5,000 \* 16.67% \= $833.33  
-  * **Founder's Payment:** $1,000 \* 16.67% \= $166.67  
+  * **Total Owed:** ${{EXAMPLE_CONTRIBUTOR_TOTAL}} (Contributor) \+ ${{EXAMPLE_FOUNDER_TOTAL}} (Founder) \= ${{EXAMPLE_TOTAL_OWED}}  
+  * **Available Profit:** ${{EXAMPLE_AVAILABLE_PROFIT}}  
+  * **Distribution Percentage:** ${{EXAMPLE_AVAILABLE_PROFIT}} / ${{EXAMPLE_TOTAL_OWED}} \= {{EXAMPLE_DISTRIBUTION_PERCENTAGE}}%  
+  * **Contributor's Payment:** ${{EXAMPLE_CONTRIBUTOR_TOTAL}} \* {{EXAMPLE_DISTRIBUTION_PERCENTAGE}}% \= ${{EXAMPLE_CONTRIBUTOR_PAYMENT}}  
+  * **Founder's Payment:** ${{EXAMPLE_FOUNDER_TOTAL}} \* {{EXAMPLE_DISTRIBUTION_PERCENTAGE}}% \= ${{EXAMPLE_FOUNDER_PAYMENT}}  
 * **Time Tracking:** Both parties agree to maintain accurate time records in a shared digital log, as a spreadsheet with the following headings: Contributor Name, Date, Work Done, Hours, Rate ($/hr), Total.  
 * **Disputes:** Any Founder or Contribute may dispute any log entry for another within 14 days. They must provide written reasoning and offer a way to remedy the dispute in order to earn those hours.  
 * **Rate Changes:** Once the Company has cleared all debts and can afford a salary guarantee, the Founders may propose a standard salary for the Contributors. The Company’s operating body, through majority vote, may at any point decide to hire other workers rather than pay a Parties' deferred rate. If the Founders or Contributors choose not to accept a standard salary in lieu of deferred wages, their position may be re-evaluated by the Company.
 
 This agreement serves as a living document of our shared commitment.
+
+---
+
+**Founder Contact Information:**
+- Name: {{FOUNDER_NAME}}
+- Email: {{FOUNDER_EMAIL}}
+- Phone: {{FOUNDER_PHONE}}
+- Address: {{FOUNDER_ADDRESS}}
+
+**Contributor Contact Information:**
+- Name: {{CONTRIBUTOR_NAME}}
+- Email: {{CONTRIBUTOR_EMAIL}}
+- Phone: {{CONTRIBUTOR_PHONE}}
+- Address: {{CONTRIBUTOR_ADDRESS}}
+
+**Agreement Date:** {{AGREEMENT_DATE}}
 

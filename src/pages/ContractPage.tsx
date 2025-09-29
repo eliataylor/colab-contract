@@ -44,6 +44,8 @@ import {
 } from '../components/styled/StyledComponents';
 import { useFormData } from '../contexts/FormDataContext';
 import ContractModal from '../components/ContractModal';
+import FounderModal from '../components/FounderModal';
+import ContributorModal from '../components/ContributorModal';
 
 const ContractPage: React.FC = () => {
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['principles']));
@@ -112,24 +114,40 @@ const ContractPage: React.FC = () => {
               
               {founderData && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="h6" gutterBottom>Founder Information</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="h6">Founder Information</Typography>
+                    <FounderModal 
+                      layout="button" 
+                      buttonText="Edit Founder Info"
+                      buttonVariant="outlined"
+                      buttonColor="primary"
+                    />
+                  </Box>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     <Chip label={`Name: ${founderData.name}`} color="primary" variant="outlined" />
-                    <Chip label={`Company: ${founderData.companyName}`} color="primary" variant="outlined" />
-                    <Chip label={`Equity: ${founderData.totalEquity}%`} color="primary" variant="outlined" />
-                    <Chip label={`Rate: $${founderData.hourlyRate}/hr`} color="primary" variant="outlined" />
+                    <Chip label={`Email: ${founderData.email}`} color="primary" variant="outlined" />
+                    <Chip label={`Phone: ${founderData.phone}`} color="primary" variant="outlined" />
+                    <Chip label={`Rate: $${founderData.deferredWageRate}/hr`} color="primary" variant="outlined" />
                   </Box>
                 </Box>
               )}
 
               {contributorData && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="h6" gutterBottom>Contributor Information</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="h6">Contributor Information</Typography>
+                    <ContributorModal 
+                      layout="button" 
+                      buttonText="Edit Contributor Info"
+                      buttonVariant="outlined"
+                      buttonColor="secondary"
+                    />
+                  </Box>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     <Chip label={`Name: ${contributorData.name}`} color="secondary" variant="outlined" />
-                    <Chip label={`Role: ${contributorData.role}`} color="secondary" variant="outlined" />
-                    <Chip label={`Equity: ${contributorData.requestedEquity}%`} color="secondary" variant="outlined" />
-                    <Chip label={`Rate: $${contributorData.hourlyRate}/hr`} color="secondary" variant="outlined" />
+                    <Chip label={`Email: ${contributorData.email}`} color="secondary" variant="outlined" />
+                    <Chip label={`Equity: ${contributorData.totalEquityGranted}%`} color="secondary" variant="outlined" />
+                    <Chip label={`Rate: $${contributorData.deferredWageRate}/hr`} color="secondary" variant="outlined" />
                   </Box>
                 </Box>
               )}

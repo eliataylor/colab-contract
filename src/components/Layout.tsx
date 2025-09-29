@@ -33,6 +33,9 @@ import {
   ExpandMore
 } from '@mui/icons-material';
 import { useTheme as useCustomTheme } from '../contexts/ThemeContext';
+import ContractProgressStepper from './ContractProgressStepper';
+import ContractPreviewButton from './ContractPreviewButton';
+import Footer from './Footer';
 
 const drawerWidth = 240;
 
@@ -60,7 +63,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     setCalculatorsOpen(!calculatorsOpen);
   };
 
-  // Auto-open Table of Contents when on contract page
+  // Auto-open sections based on current page
   useEffect(() => {
     if (location.pathname === '/contract') {
       setContractTocOpen(true);
@@ -69,7 +72,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [location.pathname]);
 
-  // Auto-open Calculators when on calculator pages
   useEffect(() => {
     if (location.pathname === '/vesting' || location.pathname === '/compensation') {
       setCalculatorsOpen(true);
@@ -79,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       setCalculatorsOpen(false);
     }
   }, [location.pathname]);
- 
+
   
   const renderMenuItem = (item: { text: string; path: string; icon: React.ReactNode }) => {
     return  <ListItem key={item.text} disablePadding>
@@ -136,8 +138,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Typography>
       </Toolbar>
       <Divider />
+      
+      {/* Contract Preview */}
+      <ContractPreviewButton />
+              
+      <ContractProgressStepper />
+        
+      <Divider />
+      
       <List>
-
+        {/* Overview */}
         {renderMenuItem(menuItems.overview)}        
         
         {/* Calculators with nested items */}
@@ -266,86 +276,93 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+            ml: { md: `${drawerWidth}px` },
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+              Founding Contributor Agreement
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={mode === 'dark'}
+                  onChange={toggleTheme}
+                  icon={<Brightness7 />}
+                  checkedIcon={<Brightness4 />}
+                />
+              }
+              label={
+                mode === 'light' ? 'Light' : 
+                mode === 'dark' ? 'Dark' : 
+                'System'
+              }
+              sx={{ color: 'white' }}
+            />
+          </Toolbar>
+        </AppBar>
+
+        <Box
+          component="nav"
+          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+          aria-label="navigation"
+        >
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Founding Contributor Agreement
-          </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={mode === 'dark'}
-                onChange={toggleTheme}
-                icon={<Brightness7 />}
-                checkedIcon={<Brightness4 />}
-              />
-            }
-            label={
-              mode === 'light' ? 'Light' : 
-              mode === 'dark' ? 'Dark' : 
-              'System'
-            }
-            sx={{ color: 'white' }}
-          />
-        </Toolbar>
-      </AppBar>
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', md: 'block' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
 
-      <Box
-        component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-        aria-label="navigation"
-      >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
+        <Box
+          component="main"
           sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            flexGrow: 1,
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+            mt: 8, // Account for AppBar height
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          mt: 8, // Account for AppBar height
-        }}
-      >
-        {children}
+          <Box sx={{ flexGrow: 1 }}>
+            {children}
+          </Box>
+          <Footer />
+        </Box>
       </Box>
     </Box>
   );

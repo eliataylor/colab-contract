@@ -1,48 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { People } from '@mui/icons-material';
 import ContributorModal from '../components/ContributorModal';
 import FormPageLayout from '../components/shared/FormPageLayout';
 
 const ContributorPage: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
   const requirements = [
     {
-      primary: "Personal information and skills",
-      secondary: "Name, role, experience, and technical skills"
+      primary: "Contact information",
+      secondary: "Name, email, phone, and address for the contract"
     },
     {
-      primary: "Equity expectations",
-      secondary: "Requested equity percentage and vesting preferences"
+      primary: "Total equity granted",
+      secondary: "Percentage of equity you'll receive as a contributor"
     },
     {
-      primary: "Compensation terms",
-      secondary: "Expected hourly rate and time commitment"
+      primary: "Vesting period",
+      secondary: "Time period over which your equity will vest"
     },
     {
-      primary: "Availability and commitment",
-      secondary: "Time availability and any potential conflicts"
+      primary: "Deferred wage rate",
+      secondary: "Hourly rate for deferred compensation calculation"
     }
   ];
 
   const keyPoints = [
     {
-      severity: "success" as const,
-      title: "Fair Compensation",
-      description: "Deferred wages ensure you're compensated for your time, even if the company isn't profitable yet."
+      severity: "info" as const,
+      title: "Contact Details",
+      description: "Your contact information will be used in the collaboration agreement and contract."
     },
     {
-      severity: "info" as const,
-      title: "Equity Vesting",
-      description: "Your equity vests over time with an accelerating schedule that rewards sustained commitment."
+      severity: "success" as const,
+      title: "Deferred Compensation",
+      description: "Wages accrue until the company can afford regular payments, protecting all parties."
     },
     {
       severity: "warning" as const,
@@ -52,27 +42,25 @@ const ContributorPage: React.FC = () => {
   ];
 
   const processSteps = [
-    "Complete the contributor form",
-    "Submit your application",
-    "Founders review your profile",
-    "Initial discussion and negotiation",
-    "Agreement execution and onboarding"
+    "Enter your contact information",
+    "Set your equity and vesting terms",
+    "Define your deferred wage rate",
+    "Review and save your information",
+    "Use the contract preview to see the results"
   ];
 
   return (
     <FormPageLayout
-      title="Contributor Information"
-      description="Express your interest in joining as a contributor and define your contribution terms"
+      title="Contributor Contact Information"
+      description="Enter your contact details and preferences for the collaboration agreement"
       icon={<People />}
-      formTitle="Contributor Application"
-      formDescription="As a contributor, you'll define your contribution level, skills, and compensation expectations. This helps founders understand how you can contribute to the project."
+      formTitle="Contributor Setup"
+      formDescription="Complete your contributor information to personalize the collaboration agreement. This includes your contact details, equity terms, and compensation preferences."
       requirements={requirements}
       keyPoints={keyPoints}
       processSteps={processSteps}
-      buttonText="Start Contributor Form"
-      onButtonClick={handleOpenModal}
     >
-      <ContributorModal open={modalOpen} onClose={handleCloseModal} />
+      <ContributorModal layout="page" />
     </FormPageLayout>
   );
 };

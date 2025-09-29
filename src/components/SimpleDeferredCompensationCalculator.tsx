@@ -22,10 +22,10 @@ interface CompensationData {
 }
 
 const SimpleDeferredCompensationCalculator: React.FC = () => {
-  const [contributorRate, setContributorRate] = useState(75);
-  const [contributorHours, setContributorHours] = useState(66.67);
-  const [founderRate, setFounderRate] = useState(75);
-  const [founderHours, setFounderHours] = useState(13.33);
+  const [contributorRate, setContributorRate] = useState(200);
+  const [contributorHours, setContributorHours] = useState(60);
+  const [founderRate, setFounderRate] = useState(150);
+  const [founderHours, setFounderHours] = useState(40);
   const [availableProfit, setAvailableProfit] = useState(1000);
   const [compensationData, setCompensationData] = useState<CompensationData>({
     contributorOwed: 0,
@@ -129,7 +129,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                       onChange={(e) => setFounderHours(parseFloat(e.target.value) || 0)}
                       variant="outlined"
                       size="small"
-                      inputProps={{ step: 0.01 }}
+                      inputProps={{ step: 1 }}
                     />
                   </Box>
                 </Box>
@@ -213,7 +213,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
               {compensationData.distributionPercentage < 1 && (
                 <Alert severity="warning" sx={{ mt: 2 }}>
                   <Typography variant="body2">
-                    <strong>Partial Payment:</strong> Only {compensationData.distributionPercentage * 100}% of accrued wages can be paid due to limited profit.
+                    <strong>Partial Payment:</strong> Only {(compensationData.distributionPercentage * 100).toFixed(2)}% of accrued wages can be paid due to limited profit.
                   </Typography>
                 </Alert>
               )}

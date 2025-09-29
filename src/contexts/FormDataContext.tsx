@@ -1,55 +1,24 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
-// Form data interfaces
+// Simplified data interfaces matching contract template
 export interface FounderData {
-  // Personal Information
   name: string;
   email: string;
-  role: string;
-  
-  // Company Information
-  companyName: string;
-  industry: string;
-  stage: string;
-  
-  // Equity Terms
-  totalEquity: number;
-  vestingPeriod: number;
-  
-  // Compensation Terms
-  hourlyRate: number;
-  expectedHours: number;
-  
-  // Additional Terms
-  hasExistingIP: boolean;
-  requiresNonCompete: boolean;
-  specialTerms: string;
+  phone: string;
+  address: string;
+  customIPDefinition: string;
+  deferredWageRate: number;
 }
 
 export interface ContributorData {
-  // Personal Information
   name: string;
   email: string;
-  role: string;
-  
-  // Skills and Experience
-  skills: string[];
-  experience: string;
-  availability: string;
-  
-  // Equity Terms
-  requestedEquity: number;
-  vestingPeriod: number;
-  
-  // Compensation Terms
-  hourlyRate: number;
-  expectedHours: number;
-  
-  // Additional Terms
-  hasConflicts: boolean;
-  agreesToTerms: boolean;
-  specialRequests: string;
+  phone: string;
+  address: string;
+  totalEquityGranted: number;
+  vestingPeriod: number; // in years
+  deferredWageRate: number;
 }
 
 export interface TimesheetEntry {
@@ -61,15 +30,41 @@ export interface TimesheetEntry {
   total: number;
 }
 
+// Default values from contract template
+const DEFAULT_FOUNDER_DATA: FounderData = {
+  name: '',
+  email: '',
+  phone: '',
+  address: '',
+  customIPDefinition: `* Proprietary user data and customer lists.
+* Content, created or curated uniquely to the Company.
+* Trade secrets related to business strategies, financial information, and customer data.`,
+  deferredWageRate: 75
+};
+
+const DEFAULT_CONTRIBUTOR_DATA: ContributorData = {
+  name: '',
+  email: '',
+  phone: '',
+  address: '',
+  totalEquityGranted: 25,
+  vestingPeriod: 4,
+  deferredWageRate: 75
+};
+
 export interface FormDataContextType {
   // Form data
-  founderData: FounderData | null;
-  contributorData: ContributorData | null;
+  founderData: FounderData;
+  contributorData: ContributorData;
   timesheetEntries: TimesheetEntry[];
   
+  // User interaction tracking
+  founderFieldsModified: Set<keyof FounderData>;
+  contributorFieldsModified: Set<keyof ContributorData>;
+  
   // Actions
-  setFounderData: (data: FounderData | null) => void;
-  setContributorData: (data: ContributorData | null) => void;
+  updateFounderData: (updates: Partial<FounderData>) => void;
+  updateContributorData: (updates: Partial<ContributorData>) => void;
   addTimesheetEntry: (entry: TimesheetEntry) => void;
   updateTimesheetEntry: (index: number, entry: TimesheetEntry) => void;
   removeTimesheetEntry: (index: number) => void;
@@ -79,6 +74,11 @@ export interface FormDataContextType {
   totalDeferredWages: number;
   totalHoursWorked: number;
   averageHourlyRate: number;
+  
+  // Validation
+  isFounderDataComplete: boolean;
+  isContributorDataComplete: boolean;
+  isContractReady: boolean;
 }
 
 const FormDataContext = createContext<FormDataContextType | undefined>(undefined);
@@ -87,10 +87,54 @@ interface FormDataProviderProps {
   children: ReactNode;
 }
 
+// Vesting calculation utility
+const calculateVestingPercentage = (
+  totalEquity: number,
+  daysWorked: number,
+  totalVestingDays: number,
+  cliffDays: number = 180
+): number => {
+  if (daysWorked < cliffDays) return 0;
+  
+  const vestingRatio = Math.pow(
+    (daysWorked - cliffDays) / (totalVestingDays - cliffDays),
+    2
+  );
+  
+  return Math.min(totalEquity * vestingRatio, totalEquity);
+};
+
 export const FormDataProvider: React.FC<FormDataProviderProps> = ({ children }) => {
-  const [founderData, setFounderData] = useState<FounderData | null>(null);
-  const [contributorData, setContributorData] = useState<ContributorData | null>(null);
+  const [founderData, setFounderData] = useState<FounderData>(DEFAULT_FOUNDER_DATA);
+  const [contributorData, setContributorData] = useState<ContributorData>(DEFAULT_CONTRIBUTOR_DATA);
   const [timesheetEntries, setTimesheetEntries] = useState<TimesheetEntry[]>([]);
+  const [founderFieldsModified, setFounderFieldsModified] = useState<Set<keyof FounderData>>(new Set());
+  const [contributorFieldsModified, setContributorFieldsModified] = useState<Set<keyof ContributorData>>(new Set());
+
+  // Update functions
+  const updateFounderData = useCallback((updates: Partial<FounderData>) => {
+    setFounderData(prev => ({ ...prev, ...updates }));
+    // Track which fields have been modified
+    setFounderFieldsModified(prev => {
+      const newSet = new Set(prev);
+      Object.keys(updates).forEach(key => {
+        newSet.add(key as keyof FounderData);
+      });
+      return newSet;
+    });
+  }, []);
+
+  const updateContributorData = useCallback((updates: Partial<ContributorData>) => {
+    setContributorData(prev => ({ ...prev, ...updates }));
+    // Track which fields have been modified
+    setContributorFieldsModified(prev => {
+      const newSet = new Set(prev);
+      Object.keys(updates).forEach(key => {
+        newSet.add(key as keyof ContributorData);
+      });
+      return newSet;
+    });
+  }, []);
 
   const addTimesheetEntry = useCallback((entry: TimesheetEntry) => {
     setTimesheetEntries(prev => [...prev, entry]);
@@ -105,22 +149,53 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({ children }) 
   }, []);
 
   const clearAllData = useCallback(() => {
-    setFounderData(null);
-    setContributorData(null);
+    setFounderData(DEFAULT_FOUNDER_DATA);
+    setContributorData(DEFAULT_CONTRIBUTOR_DATA);
     setTimesheetEntries([]);
+    setFounderFieldsModified(new Set());
+    setContributorFieldsModified(new Set());
   }, []);
 
   // Computed values
-  const totalDeferredWages = timesheetEntries.reduce((sum, entry) => sum + entry.total, 0);
-  const totalHoursWorked = timesheetEntries.reduce((sum, entry) => sum + entry.hours, 0);
-  const averageHourlyRate = totalHoursWorked > 0 ? totalDeferredWages / totalHoursWorked : 0;
+  const totalDeferredWages = useMemo(() => 
+    timesheetEntries.reduce((sum, entry) => sum + entry.total, 0), 
+    [timesheetEntries]
+  );
+  
+  const totalHoursWorked = useMemo(() => 
+    timesheetEntries.reduce((sum, entry) => sum + entry.hours, 0), 
+    [timesheetEntries]
+  );
+  
+  const averageHourlyRate = useMemo(() => 
+    totalHoursWorked > 0 ? totalDeferredWages / totalHoursWorked : 0, 
+    [totalDeferredWages, totalHoursWorked]
+  );
+
+  // Validation
+  const isFounderDataComplete = useMemo(() => 
+    !!(founderData.name && founderData.email && founderData.phone && founderData.address),
+    [founderData]
+  );
+
+  const isContributorDataComplete = useMemo(() => 
+    !!(contributorData.name && contributorData.email && contributorData.phone && contributorData.address),
+    [contributorData]
+  );
+
+  const isContractReady = useMemo(() => 
+    isFounderDataComplete && isContributorDataComplete,
+    [isFounderDataComplete, isContributorDataComplete]
+  );
 
   const value: FormDataContextType = {
     founderData,
     contributorData,
     timesheetEntries,
-    setFounderData,
-    setContributorData,
+    founderFieldsModified,
+    contributorFieldsModified,
+    updateFounderData,
+    updateContributorData,
     addTimesheetEntry,
     updateTimesheetEntry,
     removeTimesheetEntry,
@@ -128,6 +203,9 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({ children }) 
     totalDeferredWages,
     totalHoursWorked,
     averageHourlyRate,
+    isFounderDataComplete,
+    isContributorDataComplete,
+    isContractReady
   };
 
   return (
@@ -143,4 +221,146 @@ export const useFormData = (): FormDataContextType => {
     throw new Error('useFormData must be used within a FormDataProvider');
   }
   return context;
+};
+
+// Specialized hooks with computed methods
+export const useFounderData = () => {
+  const { founderData, updateFounderData, isFounderDataComplete } = useFormData();
+  return { founderData, updateFounderData, isFounderDataComplete };
+};
+
+export const useContributorData = () => {
+  const { contributorData, updateContributorData, isContributorDataComplete } = useFormData();
+  return { contributorData, updateContributorData, isContributorDataComplete };
+};
+
+export const useTimesheetData = () => {
+  const { 
+    timesheetEntries, 
+    addTimesheetEntry, 
+    updateTimesheetEntry, 
+    removeTimesheetEntry,
+    totalDeferredWages,
+    totalHoursWorked,
+    averageHourlyRate
+  } = useFormData();
+  return { 
+    timesheetEntries, 
+    addTimesheetEntry, 
+    updateTimesheetEntry, 
+    removeTimesheetEntry,
+    totalDeferredWages,
+    totalHoursWorked,
+    averageHourlyRate
+  };
+};
+
+// Contract data hook with computed methods
+export const useContractData = () => {
+  const { founderData, contributorData, isContractReady } = useFormData();
+
+  // Vesting calculations
+  const getVestingData = useCallback(() => {
+    const vestingPeriodDays = contributorData.vestingPeriod * 365;
+    const cliffDays = 180;
+    
+    return {
+      VESTING_12_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 365, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_18_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 547, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_24_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 730, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_30_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 912, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_36_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1095, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_42_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1277, vestingPeriodDays, cliffDays).toFixed(2)),
+      VESTING_48_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1460, vestingPeriodDays, cliffDays).toFixed(2))
+    };
+  }, [contributorData.totalEquityGranted, contributorData.vestingPeriod]);
+
+  // Deferred compensation examples
+  const getDeferredCompensationExamples = useCallback(() => {
+    const exampleContributorTotal = 5000; // From contract template
+    const exampleFounderTotal = 1000; // From contract template
+    const exampleTotalOwed = exampleContributorTotal + exampleFounderTotal;
+    const exampleAvailableProfit = 1000; // From contract template
+    const exampleDistributionPercentage = (exampleAvailableProfit / exampleTotalOwed) * 100;
+    
+    return {
+      EXAMPLE_CONTRIBUTOR_TOTAL: exampleContributorTotal,
+      EXAMPLE_FOUNDER_TOTAL: exampleFounderTotal,
+      EXAMPLE_TOTAL_OWED: exampleTotalOwed,
+      EXAMPLE_AVAILABLE_PROFIT: exampleAvailableProfit,
+      EXAMPLE_DISTRIBUTION_PERCENTAGE: Number(exampleDistributionPercentage.toFixed(2)),
+      EXAMPLE_CONTRIBUTOR_PAYMENT: Number(((exampleContributorTotal * exampleDistributionPercentage) / 100).toFixed(2)),
+      EXAMPLE_FOUNDER_PAYMENT: Number(((exampleFounderTotal * exampleDistributionPercentage) / 100).toFixed(2))
+    };
+  }, []);
+
+  // Contract placeholder data
+  const getContractPlaceholders = useCallback(() => {
+    const vestingData = getVestingData();
+    const deferredExamples = getDeferredCompensationExamples();
+    
+    return {
+      // User-entered data
+      FOUNDER_NAMES: founderData.name || '[Founders\' Names]',
+      CONTRIBUTOR_NAMES: contributorData.name || '[Contributors\' Names]',
+      CUSTOM_IP_DEFINITION: founderData.customIPDefinition,
+      CONTRIBUTOR_EQUITY_PERCENTAGE: contributorData.totalEquityGranted,
+      VESTING_PERIOD_YEARS: contributorData.vestingPeriod,
+      VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 12,
+      FOUNDER_NAME: founderData.name || 'Founder A',
+      CONTRIBUTOR_NAME: contributorData.name || 'Contributor A',
+      FOUNDER_HOURLY_RATE: founderData.deferredWageRate,
+      CONTRIBUTOR_HOURLY_RATE: contributorData.deferredWageRate,
+      FOUNDER_EMAIL: founderData.email || '[Founder Email]',
+      FOUNDER_PHONE: founderData.phone || '[Founder Phone]',
+      FOUNDER_ADDRESS: founderData.address || '[Founder Address]',
+      CONTRIBUTOR_EMAIL: contributorData.email || '[Contributor Email]',
+      CONTRIBUTOR_PHONE: contributorData.phone || '[Contributor Phone]',
+      CONTRIBUTOR_ADDRESS: contributorData.address || '[Contributor Address]',
+      AGREEMENT_DATE: new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }),
+      
+      // Computed data
+      ...vestingData,
+      ...deferredExamples
+    };
+  }, [founderData, contributorData, getVestingData, getDeferredCompensationExamples]);
+
+  // Contract template replacement
+  const populateContractTemplate = useCallback((template: string) => {
+    const placeholders = getContractPlaceholders();
+    let result = template;
+    
+    // Replace all placeholders with actual values
+    Object.entries(placeholders).forEach(([key, value]) => {
+      const placeholder = `{{${key}}}`;
+      result = result.replace(new RegExp(placeholder, 'g'), String(value));
+    });
+    
+    return result;
+  }, [getContractPlaceholders]);
+
+  return {
+    isContractReady,
+    getVestingData,
+    getDeferredCompensationExamples,
+    getContractPlaceholders,
+    populateContractTemplate
+  };
+};
+
+// Contract template placeholder replacement utility
+export const replaceContractPlaceholders = (template: string, placeholders: Record<string, any>): string => {
+  let result = template;
+  
+  // Replace all placeholders with actual values
+  Object.entries(placeholders).forEach(([key, value]) => {
+    const placeholder = `{{${key}}}`;
+    result = result.replace(new RegExp(placeholder, 'g'), String(value));
+  });
+  
+  return result;
 };

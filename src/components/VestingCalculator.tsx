@@ -13,9 +13,11 @@ import {
   Card,
   CardContent,
   Alert,
-  Chip
+  Chip,
+  Button
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { useFormData } from '../contexts/FormDataContext';
 
 interface VestingData {
   months: number;
@@ -24,8 +26,9 @@ interface VestingData {
 }
 
 const VestingCalculator: React.FC = () => {
-  const [totalEquity, setTotalEquity] = useState(25);
-  const [vestingYears, setVestingYears] = useState(4);
+  const { contributorData, updateContributorData } = useFormData();
+  const [totalEquity, setTotalEquity] = useState(contributorData.totalEquityGranted || 25);
+  const [vestingYears, setVestingYears] = useState(contributorData.vestingPeriod || 4);
   const [vestingData, setVestingData] = useState<VestingData[]>([]);
   const [chartData, setChartData] = useState<{ labels: string[]; data: number[] }>({ labels: [], data: [] });
 
@@ -37,6 +40,13 @@ const VestingCalculator: React.FC = () => {
     const denominator = totalVestingDays - cliffDays;
     const ratio = numerator / denominator;
     return totalEquity * Math.pow(ratio, 2);
+  };
+
+  const handleApplyChanges = () => {
+    updateContributorData({
+      totalEquityGranted: totalEquity,
+      vestingPeriod: vestingYears
+    });
   };
 
   useEffect(() => {
@@ -132,10 +142,19 @@ const VestingCalculator: React.FC = () => {
                 </Typography>
               </Alert>
 
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 <strong>Formula:</strong><br/>
                 Vested Equity = Total Equity × ((Days Worked - Cliff Days) / (Total Vesting Days - Cliff Days))²
               </Typography>
+
+              <Button 
+                variant="contained" 
+                fullWidth
+                onClick={handleApplyChanges}
+                disabled={totalEquity === contributorData.totalEquityGranted && vestingYears === contributorData.vestingPeriod}
+              >
+                Apply to Contributor Form
+              </Button>
             </CardContent>
           </Card>
         </Grid>

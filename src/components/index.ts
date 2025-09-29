@@ -3,4 +3,7 @@ export { default as DeferredCompensationCalculator } from './DeferredCompensatio
 export { default as ContractDetails } from './ContractDetails';
 export { default as ContractModal } from './ContractModal';
 export { default as FounderForm } from './FounderForm';
-export { default as ContributorForm } from './ContributorForm';
+export { default as ContributorForm } from './ContributorForm.tsx';
+export { default as ContractProgressStepper } from './ContractProgressStepper';
+export { default as ContractPreviewButton } from './ContractPreviewButton';
+export { default as Footer } from './Footer';
