@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Contributor Agreement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a narrative, guiding the user from a high-level overview to interactive, detailed explorers. It starts with the core principles, then dives into the most complex areas—Vesting and Deferred Compensation—with interactive calculators to make abstract formulas tangible. Finally, it presents the protective legal clauses in a digestible accordion format. This structure was chosen to prioritize user understanding of the most critical financial terms first, making the contract less intimidating and more transparent. -->
+    <!-- Visualization & Content Choices: 
+        1. Vesting Schedule: Report Info -> Logarithmic vesting formula. Goal -> Allow users to visualize and understand their equity growth. Viz/Method -> Interactive line chart (Chart.js) and a dynamic data table. Interaction -> Sliders for total equity and vesting period update the chart and table in real-time. Justification -> Transforms a complex formula into an intuitive visual experience.
+        2. Deferred Compensation: Report Info -> Pro-rata payment rules. Goal -> Clarify how deferred wages are paid. Viz/Method -> Interactive calculator with input fields. Interaction -> User inputs rates, hours, and profit to see an instant calculation breakdown. Justification -> Demystifies the payment logic by allowing users to test different scenarios.
+        3. Protections Clauses: Report Info -> Legal text for IP, non-solicitation, etc. Goal -> Present dense legal text clearly. Viz/Method -> HTML/CSS accordion. Interaction -> Click-to-expand sections. Justification -> Prevents overwhelming the user with a wall of text and improves readability.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .bg-primary { background-color: #FDFBF8; }
+        .bg-secondary { background-color: #FFFFFF; }
+        .text-header { color: #333333; }
+        .text-body { color: #4A4A4A; }
+        .text-accent { color: #D97706; } /* Amber 600 */
+        .border-accent { border-color: #FBBF24; } /* Amber 400 */
+        .bg-accent { background-color: #FBBF24; }
+        .bg-accent-light { background-color: #FEF3C7; } /* Amber 100 */
+        .btn-primary {
+            background-color: #D97706;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #B45309;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+         @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <div class="text-center mb-4">
+        <a href="https://g.co/gemini/share/e4e590255935" class="text-accent hover:text-amber-700 underline" target="_blank">
+            View the Gemini conversation this was built with
+        </a>
+    </div>
+    
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-header mb-4">Founding Contributor Agreement</h1>
+            <p class="text-lg text-body max-w-3xl mx-auto">An interactive guide to our shared commitment. This tool is designed to make the terms of our partnership clear, fair, and transparent.</p>
+        </header>
+
+        <main>
+            <!-- Core Principles Section -->
+            <section id="principles" class="mb-16">
+                <h2 class="text-3xl font-bold text-header text-center mb-8">Our Twofold Principles</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-secondary p-8 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-header mb-4">1. Protections</h3>
+                        <p class="text-body mb-4">This agreement is built to protect our shared vision. It safeguards our intellectual property, defines our mutual commitment to high-impact work, and ensures we maintain the final authority on the company's direction.</p>
+                    </div>
+                    <div class="bg-secondary p-8 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-header mb-4">2. Compensations</h3>
+                        <p class="text-body mb-4">We believe in transparent and fair compensation. This agreement provides a clear path to earning meaningful equity and ensures that every hour of contribution is valued and accounted for through a deferred wage system.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Vesting Equity Explorer Section -->
+            <section id="vesting" class="mb-16 bg-secondary p-6 md:p-10 rounded-2xl shadow-md border border-gray-200">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-header">Vesting Equity Explorer</h2>
+                    <p class="mt-4 text-lg text-body max-w-3xl mx-auto">Our agreement uses an accelerating vesting schedule to reward long-term commitment. Use the sliders below to see how your equity grant grows over time based on our logarithmic formula.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8 items-center mb-8">
+                    <div class="lg:col-span-1 space-y-6">
+                        <div>
+                            <label for="totalEquity" class="block text-sm font-medium text-gray-700">Total Equity Grant (%)</label>
+                            <input type="range" id="totalEquity" min="1" max="50" value="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="text-center font-semibold text-accent text-lg mt-2"><span id="totalEquityValue">25</span>%</div>
+                        </div>
+                        <div>
+                            <label for="vestingPeriod" class="block text-sm font-medium text-gray-700">Vesting Period (Years)</label>
+                            <input type="range" id="vestingPeriod" min="1" max="10" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="text-center font-semibold text-accent text-lg mt-2"><span id="vestingPeriodValue">4</span> Years</div>
+                        </div>
+                        <div class="bg-accent-light p-4 rounded-lg text-center">
+                            <p class="text-sm text-amber-800">Note: A **6-month (180-day) cliff** applies. No equity is vested before this period is completed.</p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="chart-container">
+                            <canvas id="vestingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                 <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500 min-w-[600px]">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Time (Months)</th>
+                                <th scope="col" class="px-6 py-3">Days Worked</th>
+                                <th scope="col" class="px-6 py-3">Vested Equity (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vestingTableBody">
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Deferred Compensation Calculator Section -->
+            <section id="compensation" class="mb-16 bg-secondary p-6 md:p-10 rounded-2xl shadow-md border border-gray-200">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-header">Deferred Wage Calculator</h2>
+                    <p class="mt-4 text-lg text-body max-w-3xl mx-auto">Understand how deferred wages are paid out when the company has available profit. Enter different scenarios below to see the pro-rata calculation in action.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-8 items-start">
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-header">Inputs</h3>
+                        <div>
+                            <label for="contributorRate" class="block text-sm font-medium text-gray-700">Contributor's Hourly Rate ($)</label>
+                            <input type="number" id="contributorRate" value="75" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="contributorHours" class="block text-sm font-medium text-gray-700">Contributor's Accrued Hours</label>
+                            <input type="number" id="contributorHours" value="66.67" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                         <div>
+                            <label for="founderRate" class="block text-sm font-medium text-gray-700">Founder's Hourly Rate ($)</label>
+                            <input type="number" id="founderRate" value="75" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="founderHours" class="block text-sm font-medium text-gray-700">Founder's Accrued Hours</label>
+                            <input type="number" id="founderHours" value="13.33" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="availableProfit" class="block text-sm font-medium text-gray-700">Available Monthly Profit ($)</label>
+                            <input type="number" id="availableProfit" value="1000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-header">Calculation Breakdown</h3>
+                        <div class="bg-gray-50 p-6 rounded-lg space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-500">Total Accrued Wages</p>
+                                <p id="totalOwed" class="text-2xl font-semibold text-header">$6,000.00</p>
+                            </div>
+                             <div>
+                                <p class="text-sm text-gray-500">Distribution Percentage</p>
+                                <p id="distPercentage" class="text-2xl font-semibold text-header">16.67%</p>
+                            </div>
+                            <hr>
+                            <div>
+                                <p class="text-sm text-gray-500">Contributor's Payment</p>
+                                <p id="contributorPayment" class="text-2xl font-bold text-accent">$833.33</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Founder's Payment</p>
+                                <p id="founderPayment" class="text-2xl font-bold text-accent">$166.67</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Protections Details Section -->
+            <section id="protections-details">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-header">Our Protections Framework</h2>
+                    <p class="mt-4 text-lg text-body max-w-3xl mx-auto">This section outlines the core protections that safeguard our company's assets, culture, and competitive edge. Click each title to learn more.</p>
+                </div>
+                <div class="space-y-4 max-w-4xl mx-auto">
+                    <div class="accordion-item bg-secondary border border-gray-200 rounded-lg">
+                        <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-header">
+                            <span>Intellectual Property (IP) Definition</span>
+                            <span class="transform transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-5 border-t border-gray-200 text-body">
+                                <p>"IP" is defined as a specific set of proprietary assets critical to the business. This includes proprietary user data, customer lists, uniquely created content, and trade secrets. This expressly excludes a contributor's general skills, experience, and knowledge, as well as general software code or industry practices not proprietary to our core IP.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-secondary border border-gray-200 rounded-lg">
+                        <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-header">
+                            <span>Mutual Commitment & At-Will Engagement</span>
+                             <span class="transform transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-5 border-t border-gray-200 text-body space-y-3">
+                                <p>Both founders and contributors agree to a mutual commitment to consistent, high-impact work. Contributions will be evaluated quarterly. If commitments are not met, we reserve the right to re-evaluate roles and terms.</p>
+                                <p>This engagement is at-will, meaning either party may terminate it at any time, with or without cause. Termination does not affect any vested equity or earned deferred wages.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-secondary border border-gray-200 rounded-lg">
+                        <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-header">
+                            <span>Non-Solicitation</span>
+                             <span class="transform transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-5 border-t border-gray-200 text-body">
+                                <p>To protect our team and customer relationships, contributors agree not to solicit employees or customers for a period of twelve (12) months after their departure for competitive purposes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-secondary border border-gray-200 rounded-lg">
+                        <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-header">
+                            <span>Code Reuse & Competitive Projects</span>
+                             <span class="transform transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-5 border-t border-gray-200 text-body">
+                                <p>While general coding skills are yours, code, algorithms, or methodologies developed specifically for the company cannot be used on a directly competing product or service within the same industry for twelve (12) months after departure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 pt-8 border-t border-gray-200">
+            <p class="text-body">This agreement serves as a living document of our shared commitment.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const vestingChartCanvas = document.getElementById('vestingChart');
+            let vestingChart;
+            const cliffDays = 180;
+
+            const totalEquitySlider = document.getElementById('totalEquity');
+            const vestingPeriodSlider = document.getElementById('vestingPeriod');
+            const totalEquityValue = document.getElementById('totalEquityValue');
+            const vestingPeriodValue = document.getElementById('vestingPeriodValue');
+            const vestingTableBody = document.getElementById('vestingTableBody');
+
+            function calculateVesting(totalEquity, totalVestingDays, daysWorked) {
+                if (daysWorked <= cliffDays) return 0;
+                const numerator = daysWorked - cliffDays;
+                const denominator = totalVestingDays - cliffDays;
+                const ratio = numerator / denominator;
+                return totalEquity * Math.pow(ratio, 2);
+            }
+
+            function updateVestingVisuals() {
+                const totalEquity = parseFloat(totalEquitySlider.value);
+                const vestingYears = parseInt(vestingPeriodSlider.value);
+                const totalVestingDays = vestingYears * 365;
+
+                totalEquityValue.textContent = totalEquity;
+                vestingPeriodValue.textContent = vestingYears + (vestingYears > 1 ? ' Years' : ' Year');
+
+                const labels = [];
+                const data = [];
+                const tableData = [];
+
+                for (let i = 0; i <= vestingYears * 12; i += 6) {
+                    const currentDays = (i / 12) * 365;
+                    const vestedEquity = calculateVesting(totalEquity, totalVestingDays, currentDays);
+                    
+                    if(i === 0) {
+                        labels.push('Start');
+                        data.push(0);
+                    } else {
+                        labels.push(`${i} mo`);
+                        data.push(vestedEquity);
+                    }
+                    
+                    tableData.push({
+                        months: i,
+                        days: Math.round(currentDays),
+                        vested: vestedEquity.toFixed(2)
+                    });
+                }
+                
+                vestingTableBody.innerHTML = tableData.map(row => `
+                    <tr class="bg-white border-b">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${row.months}</th>
+                        <td class="px-6 py-4">${row.days}</td>
+                        <td class="px-6 py-4 font-bold ${row.vested > 0 ? 'text-accent' : ''}">${row.vested}%</td>
+                    </tr>
+                `).join('');
+
+                if (vestingChart) {
+                    vestingChart.data.labels = labels;
+                    vestingChart.data.datasets[0].data = data;
+                    vestingChart.update();
+                } else {
+                    vestingChart = new Chart(vestingChartCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Vested Equity (%)',
+                                data: data,
+                                fill: true,
+                                backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                                borderColor: 'rgba(217, 119, 6, 1)',
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgba(217, 119, 6, 1)',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Equity (%)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Time'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return ` Vested: ${context.raw.toFixed(2)}%`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            totalEquitySlider.ad dEventListener('input', updateVestingVisuals);
+            vestingPeriodSlider.addEventListener('input', updateVestingVisuals);
+            
+            updateVestingVisuals();
+
+
+            const contributorRateInput = document.getElementById('contributorRate');
+            const contributorHoursInput = document.getElementById('contributorHours');
+            const founderRateInput = document.getElementById('founderRate');
+            const founderHoursInput = document.getElementById('founderHours');
+            const availableProfitInput = document.getElementById('availableProfit');
+
+            const totalOwedEl = document.getElementById('totalOwed');
+            const distPercentageEl = document.getElementById('distPercentage');
+            const contributorPaymentEl = document.getElementById('contributorPayment');
+            const founderPaymentEl = document.getElementById('founderPayment');
+
+            function updateCompensationCalc() {
+                const contributorRate = parseFloat(contributorRateInput.value) || 0;
+                const contributorHours = parseFloat(contributorHoursInput.value) || 0;
+                const founderRate = parseFloat(founderRateInput.value) || 0;
+                const founderHours = parseFloat(founderHoursInput.value) || 0;
+                const availableProfit = parseFloat(availableProfitInput.value) || 0;
+                
+                const contributorOwed = contributorRate * contributorHours;
+                const founderOwed = founderRate * founderHours;
+                const totalOwed = contributorOwed + founderOwed;
+                
+                const distPercentage = totalOwed > 0 ? (availableProfit / totalOwed) : 0;
+                const cappedDistPercentage = Math.min(distPercentage, 1);
+
+                const contributorPayment = contributorOwed * cappedDistPercentage;
+                const founderPayment = founderOwed * cappedDistPercentage;
+
+                totalOwedEl.textContent = `$${totalOwed.toFixed(2)}`;
+                distPercentageEl.textContent = `${(cappedDistPercentage * 100).toFixed(2)}%`;
+                contributorPaymentEl.textContent = `$${contributorPayment.toFixed(2)}`;
+                founderPaymentEl.textContent = `$${founderPayment.toFixed(2)}`;
+            }
+
+            [contributorRateInput, contributorHoursInput, founderRateInput, founderHoursInput, availableProfitInput].forEach(input => {
+                input.addEventListener('input', updateCompensationCalc);
+            });
+
+            updateCompensationCalc();
+            
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = header.querySelector('span:last-child');
+                header.addEventListener('click', () => {
+                    const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                    
+                    document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = '0px');
+                    document.querySelectorAll('.accordion-header span:last-child').forEach(i => i.style.transform = '');
+
+                    if (!isOpen) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
