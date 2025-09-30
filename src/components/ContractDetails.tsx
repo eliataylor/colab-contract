@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Typography
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
+    Box,
+    Card,
+    CardContent,
+    Divider,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    Typography
 } from '@mui/material';
 import {AttachMoney, ExpandMore, Gavel, Schedule, Security, TrendingUp} from '@mui/icons-material';
 
@@ -230,7 +230,7 @@ const ContractDetails: React.FC = () => {
                 </Accordion>
 
                 {/* Compensation */}
-                <Accordion expanded={expanded === 'compensation'} onChange={handleChange('compensation')}>                    
+                <Accordion expanded={expanded === 'compensation'} onChange={handleChange('compensation')}>
 
                     <AccordionSummary expandIcon={<ExpandMore/>}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>

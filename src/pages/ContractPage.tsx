@@ -5,12 +5,9 @@ import ContractDocument from '../components/ContractDocument';
 const ContractPage: React.FC = () => {
 
     return (
-        <>
-            <FadeIn>
-                <ContractDocument/>
-            </FadeIn>
-
-        </>
+        <FadeIn>
+            <ContractDocument/>
+        </FadeIn>
     );
 };
 

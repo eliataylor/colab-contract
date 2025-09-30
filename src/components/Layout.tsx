@@ -1,36 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {
-  AppBar,
-  Box,
-  Collapse,
-  Divider,
-  Drawer,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Switch,
-  Toolbar,
-  Typography
+    AppBar,
+    Box,
+    Collapse,
+    Divider,
+    Drawer,
+    FormControlLabel,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Switch,
+    Toolbar,
+    Typography
 } from '@mui/material';
 import {
-  AttachMoney,
-  Brightness4,
-  Brightness7,
-  Calculate,
-  Description,
-  ExpandLess,
-  ExpandMore,
-  Gavel,
-  Home,
-  Menu as MenuIcon,
-  Schedule,
-  Security,
-  TrendingUp
+    Brightness4,
+    Brightness7,
+    Calculate,
+    ExpandLess,
+    ExpandMore,
+    Menu as MenuIcon,
+    Schedule,
+    TrendingUp
 } from '@mui/icons-material';
 import {useTheme as useCustomTheme} from '../contexts/ThemeContext';
 import ContractProgressStepper from './ContractProgressStepper';
@@ -119,14 +114,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         {text: 'Deferred Wages', path: '/compensation', icon: <TrendingUp/>},
     ];
 
-    const contractTocItems = [
-        {text: 'Core Principles', hash: '#principles', icon: <Security/>},
-        {text: 'Protections', hash: '#protections', icon: <Gavel/>},
-        {text: 'Compensation', hash: '#compensation', icon: <AttachMoney/>},
-        {text: 'Vesting Equity', hash: '#vesting', icon: <Schedule/>},
-        {text: 'Deferred Compensation', hash: '#deferred', icon: <TrendingUp/>},
-    ];
-
     const drawer = (
         <Box>
             <Toolbar>
@@ -142,17 +129,15 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
             <ContractProgressStepper/>
 
             <List>
-                
-                {/* Contract Details with nested Table of Contents */}
+
+                {/* Contract Details with nested Table of Contents 
                 <ListItem id="MenuContractButtons" disablePadding>
                     <ListItemButton
                         selected={location.pathname === '/'}
                         onClick={() => {
                             if (location.pathname !== '/') {
-                                // Navigate to contract page
                                 navigate('/');
                             } else {
-                                // Toggle the table of contents
                                 handleContractTocToggle();
                             }
                         }}
@@ -196,30 +181,13 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                     </List>
                 </Collapse>
 
+                */}
+
                 {/* Calculators with nested items */}
                 <ListItem id="MenuCalculatorButtons" disablePadding>
                     <ListItemButton
-                        selected={location.pathname === '/vesting' || location.pathname === '/compensation'}
                         onClick={() => {
-                            if (location.pathname !== '/vesting' && location.pathname !== '/compensation') {
-                                // Navigate to first calculator if not on any calculator page
-                                navigate('/vesting');
-                            } else {
-                                // Toggle the calculators menu
-                                handleCalculatorsToggle();
-                            }
-                        }}
-                        sx={{
-                            '&.Mui-selected': {
-                                backgroundColor: 'primary.main',
-                                color: 'primary.contrastText',
-                                '&:hover': {
-                                    backgroundColor: 'primary.dark',
-                                },
-                                '& .MuiListItemIcon-root': {
-                                    color: 'primary.contrastText',
-                                },
-                            },
+                            handleCalculatorsToggle();
                         }}
                     >
                         <ListItemIcon>

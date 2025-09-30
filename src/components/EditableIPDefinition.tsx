@@ -1,14 +1,6 @@
 import React, {useState} from 'react';
-import {
-    Box,
-    Button,
-    TextField,
-    Typography,
-    IconButton,
-    Tooltip,
-    useTheme
-} from '@mui/material';
-import {Edit, Save, Cancel} from '@mui/icons-material';
+import {Box, Button, IconButton, TextField, Tooltip, Typography, useTheme} from '@mui/material';
+import {Cancel, Edit, Save} from '@mui/icons-material';
 import {useFormData} from '../contexts/FormDataContext';
 
 interface EditableIPDefinitionProps {
@@ -66,7 +58,7 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                             onClick={handleEdit}
                             sx={{ml: 1}}
                         >
-                            <Edit fontSize="small" />
+                            <Edit fontSize="small"/>
                         </IconButton>
                     </Tooltip>
                 )}
@@ -113,7 +105,7 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                     <Box sx={{display: 'flex', gap: 1, mt: 1, justifyContent: 'flex-end'}}>
                         <Button
                             size="small"
-                            startIcon={<Save />}
+                            startIcon={<Save/>}
                             onClick={handleSave}
                             variant="contained"
                             color="primary"
@@ -122,7 +114,7 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                         </Button>
                         <Button
                             size="small"
-                            startIcon={<Cancel />}
+                            startIcon={<Cancel/>}
                             onClick={handleCancel}
                             variant="outlined"
                         >

@@ -19,6 +19,8 @@ export interface ContributorData {
     totalEquityGranted: number;
     vestingPeriod: number; // in years
     deferredWageRate: number;
+    cliffDays: number; // cliff period in days
+    vestingExponent: number; // exponent for vesting calculation (default 2)
 }
 
 export interface TimesheetEntry {
@@ -49,7 +51,9 @@ const DEFAULT_CONTRIBUTOR_DATA: ContributorData = {
     address: '',
     totalEquityGranted: 25,
     vestingPeriod: 4,
-    deferredWageRate: 75
+    deferredWageRate: 75,
+    cliffDays: 180,
+    vestingExponent: 2
 };
 
 export interface FormDataContextType {
@@ -92,13 +96,14 @@ const calculateVestingPercentage = (
     totalEquity: number,
     daysWorked: number,
     totalVestingDays: number,
-    cliffDays: number = 180
+    cliffDays: number,
+    vestingExponent: number = 2
 ): number => {
     if (daysWorked < cliffDays) return 0;
 
     const vestingRatio = Math.pow(
         (daysWorked - cliffDays) / (totalVestingDays - cliffDays),
-        2
+        vestingExponent
     );
 
     return Math.min(totalEquity * vestingRatio, totalEquity);
@@ -262,18 +267,19 @@ export const useContractData = () => {
     // Vesting calculations
     const getVestingData = useCallback(() => {
         const vestingPeriodDays = contributorData.vestingPeriod * 365;
-        const cliffDays = 180;
+        const cliffDays = contributorData.cliffDays;
+        const vestingExponent = contributorData.vestingExponent;
 
         return {
-            VESTING_12_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 365, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_18_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 547, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_24_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 730, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_30_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 912, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_36_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1095, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_42_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1277, vestingPeriodDays, cliffDays).toFixed(2)),
-            VESTING_48_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1460, vestingPeriodDays, cliffDays).toFixed(2))
+            VESTING_12_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 365, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_18_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 547, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_24_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 730, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_30_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 912, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_36_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1095, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_42_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1277, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
+            VESTING_48_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1460, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2))
         };
-    }, [contributorData.totalEquityGranted, contributorData.vestingPeriod]);
+    }, [contributorData.totalEquityGranted, contributorData.vestingPeriod, contributorData.cliffDays, contributorData.vestingExponent]);
 
     // Deferred compensation examples
     const getDeferredCompensationExamples = useCallback(() => {
@@ -306,7 +312,9 @@ export const useContractData = () => {
             CUSTOM_IP_DEFINITION: founderData.customIPDefinition,
             CONTRIBUTOR_EQUITY_PERCENTAGE: contributorData.totalEquityGranted,
             VESTING_PERIOD_YEARS: contributorData.vestingPeriod,
-            VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 12,
+            VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 365,
+            CLIFF_DAYS: contributorData.cliffDays,
+            VESTING_EXPONENT: contributorData.vestingExponent,
             FOUNDER_NAME: founderData.name || 'Founder A',
             CONTRIBUTOR_NAME: contributorData.name || 'Contributor A',
             FOUNDER_HOURLY_RATE: founderData.deferredWageRate,

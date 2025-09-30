@@ -3,17 +3,17 @@ import {Button, Chip} from '@mui/material';
 import {Security, TrendingUp} from '@mui/icons-material';
 import {useNavigate} from 'react-router-dom';
 import {
-  CardBody,
-  CardFooter,
-  CardTitle,
-  ChipContainer,
-  Description,
-  FadeIn,
-  HeroSection,
-  MainPageTitle,
-  PageContainer,
-  StyledCard,
-  TwoColumnGrid
+    CardBody,
+    CardFooter,
+    CardTitle,
+    ChipContainer,
+    Description,
+    FadeIn,
+    HeroSection,
+    MainPageTitle,
+    PageContainer,
+    StyledCard,
+    TwoColumnGrid
 } from '../components/styled/StyledComponents';
 import ContractSummary from './ContractSummary';
 
@@ -25,11 +25,11 @@ const HomePage: React.FC = () => {
             <FadeIn>
                 {/* Hero Section */}
                 <HeroSection elevation={3}>
-                    <MainPageTitle variant="h2" component="h1">
+                    <MainPageTitle variant="h1">
                         Founding Contributor Engagement Agreement
                     </MainPageTitle>
 
-                    <Description variant="h5" sx={{maxWidth: '800px', mx: 'auto', opacity: 0.9}}>
+                    <Description variant="h5" sx={{mx: 'auto', opacity: 0.9}}>
                         A transparent framework for building startups with confidence. Define ownership, compensation,
                         and shared commitment in your founding team.
                     </Description>
