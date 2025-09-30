@@ -18,7 +18,7 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import {AttachMoney, Business, ExpandMore, Gavel, Payment, Security, Timeline} from '@mui/icons-material';
+import {AttachMoney, Business, Download, ExpandMore, Gavel, Payment, Security, Timeline} from '@mui/icons-material';
 import {useContractData} from '../contexts/FormDataContext';
 import EditableIPDefinition from './EditableIPDefinition';
 import {useScrollToHash} from '../hooks/useScrollToHash';
@@ -27,6 +27,8 @@ import VestingFormula from './VestingFormula';
 import FounderModal from './FounderModal';
 import ContributorModal from './ContributorModal';
 import {useLocation} from 'react-router-dom';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const ContractDocument: React.FC = () => {
     const {getContractPlaceholders} = useContractData();
@@ -73,6 +75,67 @@ const ContractDocument: React.FC = () => {
         }
     }, [location.hash]);
 
+    const generatePDF = async () => {
+        try {
+            // Expand all accordions for PDF generation
+            const allPanels = ['principles', 'protections', 'compensation', 'vesting', 'deferred'];
+            setExpanded(new Set(allPanels));
+            
+            // Wait a bit for accordions to expand
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Get the contract content element
+            const element = document.getElementById('contract-content');
+            if (!element) {
+                console.error('Contract content element not found');
+                return;
+            }
+
+            // Generate canvas from HTML
+            const canvas = await html2canvas(element, {
+                scale: 2, // Higher quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                scrollX: 0,
+                scrollY: 0,
+                width: element.scrollWidth,
+                height: element.scrollHeight
+            });
+
+            // Create PDF
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 295; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // Add additional pages if needed
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Download the PDF
+            const fileName = `Founding-Contributor-Engagement-Agreement-${new Date().toISOString().split('T')[0]}.pdf`;
+            pdf.save(fileName);
+            
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF. Please try again.');
+        }
+    };
+
     const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(prev => {
             const newSet = new Set(prev);
@@ -100,21 +163,32 @@ const ContractDocument: React.FC = () => {
                 <Typography variant="h3" component="h1" color="primary">
                     <strong>Founding Contributor Engagement Agreement</strong>
                 </Typography>
-                <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={toggleAll}
-                    sx={{ml: 2}}
-                >
-                    {expanded.size === 5 ? 'Collapse All' : 'Expand All'}
-                </Button>
+                <Box sx={{display: 'flex', gap: 1}}>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={toggleAll}
+                    >
+                        {expanded.size === 5 ? 'Collapse All' : 'Expand All'}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={<Download />}
+                        onClick={generatePDF}
+                        color="primary"
+                    >
+                        Download PDF
+                    </Button>
+                </Box>
             </Box>
 
-            <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
-                This agreement is made between <strong>{placeholders.FOUNDER_NAMES}</strong> (collectively, "Founders")
-                and <strong>{placeholders.CONTRIBUTOR_NAMES}</strong> (collectively, "Contributors") to define the terms
-                for ownership, compensation, and shared commitment in building a product together.
-            </Typography>
+            <div id="contract-content">
+                <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    This agreement is made between <strong>{placeholders.FOUNDER_NAMES}</strong> (collectively, "Founders")
+                    and <strong>{placeholders.CONTRIBUTOR_NAMES}</strong> (collectively, "Contributors") to define the terms
+                    for ownership, compensation, and shared commitment in building a product together.
+                </Typography>
 
             <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
                 All parties agree that the following terms shall apply to the entire scope of ownership, compensation,
@@ -633,8 +707,7 @@ const ContractDocument: React.FC = () => {
             <Typography variant="h5" component="h3" gutterBottom color="primary" sx={{mt: 3}}>
                 <strong>Agreement Date:</strong> {placeholders.AGREEMENT_DATE}
             </Typography>
-
-
+            </div>
 
             {/* Modals */}
             <div id="founder-contact">
@@ -651,7 +724,7 @@ const ContractDocument: React.FC = () => {
                 onClose={() => setContributorModalOpen(false)}
             />
             </div>
-        å</Box>
+        </Box>
     );
 };
 

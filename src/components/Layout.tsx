@@ -106,6 +106,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     }
 
     const menuItems = {
+        contract: {text: 'Preview Contract', path: '/', icon: <Schedule/>},
         timesheet: {text: 'Timesheet', path: '/timesheets', icon: <Schedule/>},
     };
 
@@ -124,7 +125,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
             <Divider/>
 
             {/* Contract Preview */}
-            <ContractPreviewButton/>
+            {renderMenuItem(menuItems.contract)}
 
             <ContractProgressStepper/>
 

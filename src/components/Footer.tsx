@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Button, Container, Link, Stack, Typography} from '@mui/material';
-import {Gavel, OpenInNew} from '@mui/icons-material';
+import {Gavel} from '@mui/icons-material';
 
 const Footer: React.FC = () => {
     return (
@@ -29,9 +29,9 @@ const Footer: React.FC = () => {
                             href="http://taylormadetraffic.com/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            endIcon={<OpenInNew/>}
                             size="small"
                             variant="text"
+                            sx={{px:.1}}
                         >
                             TaylorMadeTraffic
                         </Button>
@@ -59,14 +59,12 @@ const Footer: React.FC = () => {
                             href="https://github.com/eliataylor/colab-contract"
                             target="_blank"
                             rel="noopener noreferrer"
-                            endIcon={<img src="https://oaexample.com/oa-assets/github-mark-white.svg" height="20"
-                                          width="20" alt="GitHub"/>}
+                            endIcon={<img src="https://oaexample.com/oa-assets/github-mark-white.svg" height="20" width="20" alt="GitHub"/>}
                             size="small"
                             sx={{textTransform: 'none'}}
                         >
                             Open Source
                         </Button>
-
                     </Stack>
                 </Stack>
             </Container>
