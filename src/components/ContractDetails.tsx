@@ -122,7 +122,7 @@ const ContractDetails: React.FC = () => {
                     <AccordionSummary expandIcon={<ExpandMore/>}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                             <Gavel color="primary"/>
-                            <Typography variant="h6">1. Protections</Typography>
+                            <Typography>1. Protections</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -230,13 +230,15 @@ const ContractDetails: React.FC = () => {
                 </Accordion>
 
                 {/* Compensation */}
-                <Accordion expanded={expanded === 'compensation'} onChange={handleChange('compensation')}>
+                <Accordion expanded={expanded === 'compensation'} onChange={handleChange('compensation')}>                    
+
                     <AccordionSummary expandIcon={<ExpandMore/>}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                             <AttachMoney color="primary"/>
-                            <Typography variant="h6">2. Compensation</Typography>
+                            <Typography>Compensation</Typography>
                         </Box>
                     </AccordionSummary>
+
                     <AccordionDetails>
                         <Typography variant="body1" paragraph>
                             This section is dedicated to providing a clear and transparent path to earning equity and

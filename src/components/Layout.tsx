@@ -142,38 +142,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
             <ContractProgressStepper/>
 
             <List>
-                <Collapse in={calculatorsOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {calculatorItems.map((item) => (
-                            <ListItem key={item.text} disablePadding>
-                                <ListItemButton
-                                    component={Link}
-                                    to={item.path}
-                                    selected={location.pathname === item.path}
-                                    sx={{
-                                        pl: 4,
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'primary.main',
-                                            color: 'primary.contrastText',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                            '& .MuiListItemIcon-root': {
-                                                color: 'primary.contrastText',
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.text}/>
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Collapse>
-
+                
                 {/* Contract Details with nested Table of Contents */}
                 <ListItem id="MenuContractButtons" disablePadding>
                     <ListItemButton
@@ -204,7 +173,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                             <Description/>
                         </ListItemIcon>
                         <ListItemText primary="Overview"/>
-                        {contractTocOpen ? <ExpandLess/> : <ExpandMore/>}
+                        {contractTocOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                 </ListItem>
 
@@ -260,6 +229,38 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         {calculatorsOpen ? <ExpandLess/> : <ExpandMore/>}
                     </ListItemButton>
                 </ListItem>
+
+                <Collapse in={calculatorsOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        {calculatorItems.map((item) => (
+                            <ListItem key={item.text} disablePadding>
+                                <ListItemButton
+                                    component={Link}
+                                    to={item.path}
+                                    selected={location.pathname === item.path}
+                                    sx={{
+                                        pl: 4,
+                                        '&.Mui-selected': {
+                                            backgroundColor: 'primary.main',
+                                            color: 'primary.contrastText',
+                                            '&:hover': {
+                                                backgroundColor: 'primary.dark',
+                                            },
+                                            '& .MuiListItemIcon-root': {
+                                                color: 'primary.contrastText',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.text}/>
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Collapse>
 
                 {renderMenuItem(menuItems.timesheet)}
 
