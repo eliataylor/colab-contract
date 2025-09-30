@@ -1,0 +1,33 @@
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer Rounded Rectangle (Background/Container) -->
+    <rect x="5" y="5" width="90" height="90" rx="18" fill="#FFFFFF" stroke="#FBBF24" stroke-width="2"/>
+
+    <g transform="translate(50, 50)">
+        <!-- Left Collaboration/Agreement Arc (Deep Amber - #D97706) -->
+        <path d="M -30 15 A 30 30 0 0 1 0 -10"
+              stroke="#D97706"
+              stroke-width="7"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+        <!-- Right Collaboration/Agreement Arc (Deep Amber - #D97706) -->
+        <path d="M 30 15 A 30 30 0 0 0 0 -10"
+              stroke="#D97706"
+              stroke-width="7"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+        <!-- Growth Curve/Vesting Line (Darker Accent - #4A4A4A) -->
+        <!-- This path starts near the bottom center and moves upward sharply, representing accelerated vesting/growth -->
+        <path d="M -15 25 Q 0 5, 15 25"
+              stroke="#4A4A4A"
+              stroke-width="3"
+              fill="none"
+              stroke-linecap="round"/>
+
+        <!-- Anchor Point for Growth -->
+        <circle cx="0" cy="25" r="3" fill="#D97706"/>
+    </g>
+</svg>

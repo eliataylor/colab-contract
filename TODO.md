@@ -1,0 +1,5 @@
+- Focus on Contract Details summary
+- Enable Peview Contract at all times
+- Prepopulate calculators from query params
+- Add line 'edit' button in IP defintion section to turn IP definition in textarea updating context
+- 
