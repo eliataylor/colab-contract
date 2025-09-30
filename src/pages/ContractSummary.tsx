@@ -12,6 +12,7 @@ import {
     Divider,
     List,
     ListItem,
+    ListItemAvatar,
     ListItemText,
     Paper,
     Table,
@@ -246,9 +247,10 @@ const ContractSummary: React.FC = () => {
                                 <TwoColumnGrid>
                                     <Card variant="outlined">
                                         <CardContent>
-                                            <CardTitle variant="h6" color="primary">
-                                                1. Protections
-                                            </CardTitle>
+                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                            <Gavel color="primary"/>
+                                            <Typography>1. Protections</Typography>
+                                        </Box>
                                             <List dense>
                                                 <ListItem>
                                                     <ListItemText
@@ -274,9 +276,12 @@ const ContractSummary: React.FC = () => {
 
                                     <Card variant="outlined">
                                         <CardContent>
-                                            <CardTitle variant="h6" color="primary">
-                                                2. Compensation
-                                            </CardTitle>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                            <AttachMoney color="primary"/>
+                                                <Typography>2. Compensation</Typography>
+                                            </Box>
+
+
                                             <List dense>
                                                 <ListItem>
                                                     <ListItemText
@@ -297,16 +302,16 @@ const ContractSummary: React.FC = () => {
                             </AccordionDetails>
                         </Accordion>
 
-                        {/* Protections */}
                         <Accordion
                             id="accordion-protections"
                             expanded={expanded.has('protections')}
                             onChange={handleChange('protections')}
                         >
                             <AccordionSummary expandIcon={<ExpandMore/>}>
-                                <CardTitle variant="h6">
-                                    <Gavel/> 1. Protections
-                                </CardTitle>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                            <Gavel color="primary"/>
+                            <Typography>1. Protections</Typography>
+                        </Box>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <CardTitle variant="h6">

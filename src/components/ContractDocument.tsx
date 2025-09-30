@@ -8,6 +8,8 @@ import {
     Divider,
     List,
     ListItem,
+    ListItemButton,
+    ListItemIcon,
     ListItemText,
     Paper,
     Table,
@@ -18,7 +20,7 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import {AttachMoney, Business, Download, ExpandMore, Gavel, Payment, Security, Timeline} from '@mui/icons-material';
+import { Business, Download, ExpandMore, Gavel, MonetizationOn, Payment, Security, Timeline} from '@mui/icons-material';
 import {useContractData} from '../contexts/FormDataContext';
 import EditableIPDefinition from './EditableIPDefinition';
 import {useScrollToHash} from '../hooks/useScrollToHash';
@@ -261,12 +263,18 @@ const ContractDocument: React.FC = () => {
                 onChange={handleChange('protections')}
             >
                 <AccordionSummary expandIcon={<ExpandMore/>}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, pl: 2.5}}>
-                        <Security color="primary" fontSize="small"/>
+
+
+                    <ListItemButton sx={{pl: 2}}>
+                        <ListItemIcon>
+                            <Security color="primary"/>
+                        </ListItemIcon>
                         <Typography variant="h4" component="h2" color="primary">
-                            Protections
+                        Protections
                         </Typography>
-                    </Box>
+                    </ListItemButton>
+
+
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
@@ -286,14 +294,6 @@ const ContractDocument: React.FC = () => {
                     </Typography>
 
                     <EditableIPDefinition value={placeholders.CUSTOM_IP_DEFINITION}/>
-
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6, mt: 2}}>
-                        <em>This definition expressly excludes the Contributors' general skills, experience, and
-                            knowledge, as
-                            well as general software code, algorithms, and development methodologies that are not
-                            proprietary to
-                            the Company's core IP.</em>
-                    </Typography>
 
                     <Typography variant="h5" component="h3" gutterBottom sx={{mt: 3, mb: 2}} color="primary">
                         <strong>Mutual Commitment and Impact</strong>
@@ -381,12 +381,15 @@ const ContractDocument: React.FC = () => {
             >
                 <AccordionSummary expandIcon={<ExpandMore/>}>
 
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, pl: 2.5}}>
-                        <AttachMoney color="primary"/>
+                    <ListItemButton sx={{pl: 2}}>
+                        <ListItemIcon>
+                            <MonetizationOn color="primary"/>
+                        </ListItemIcon>
                         <Typography variant="h4" component="h2" color="primary">
-                            Compensation
+                        Compensation
                         </Typography>
-                    </Box>
+                    </ListItemButton>
+
 
                 </AccordionSummary>
                 <AccordionDetails>
@@ -403,12 +406,15 @@ const ContractDocument: React.FC = () => {
                 onChange={handleChange('vesting')}
             >
                 <AccordionSummary expandIcon={<ExpandMore/>}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, pl: 6}}>
-                        <Timeline color="primary" fontSize="small"/>
-                        <Typography variant="h6" component="h2" color="primary">
-                            Equity Vesting Schedule
+                    <ListItemButton sx={{pl: 6}}>
+                        <ListItemIcon>
+                            <Timeline color="primary"/>
+                        </ListItemIcon>
+                        <Typography variant="h5" component="h2" color="primary">
+                        Equity Vesting Schedule
                         </Typography>
-                    </Box>
+                    </ListItemButton>
+                    
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
@@ -532,12 +538,17 @@ const ContractDocument: React.FC = () => {
                 onChange={handleChange('deferred')}
             >
                 <AccordionSummary expandIcon={<ExpandMore/>}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, pl: 6}}>
-                        <Payment color="primary" fontSize="small"/>
-                        <Typography variant="h6" component="h2" color="primary">
-                            Deferred Compensation
+                    
+                    <ListItemButton sx={{pl: 6}}>
+                        <ListItemIcon>
+                            <Payment color="primary"/>
+                        </ListItemIcon>
+                        <Typography variant="h5" component="h2" color="primary">
+                        Deferred Compensation
                         </Typography>
-                    </Box>
+                    </ListItemButton>
+
+
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>

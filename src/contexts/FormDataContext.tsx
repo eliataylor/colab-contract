@@ -1,6 +1,32 @@
 import type {ReactNode} from 'react';
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
 
+// Query parameter parsing utilities
+const parseQueryParams = (): Record<string, string> => {
+    if (typeof window === 'undefined') return {};
+    
+    const params = new URLSearchParams(window.location.search);
+    const result: Record<string, string> = {};
+    
+    params.forEach((value, key) => {
+        result[key] = value;
+    });
+    
+    return result;
+};
+
+const getQueryParamValue = (params: Record<string, string>, key: string, defaultValue: string = ''): string => {
+    return params[key] || defaultValue;
+};
+
+const getQueryParamNumber = (params: Record<string, string>, key: string, defaultValue: number): number => {
+    const value = params[key];
+    if (!value) return defaultValue;
+    
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? defaultValue : parsed;
+};
+
 // Simplified data interfaces matching contract template
 export interface FounderData {
     name: string;
@@ -32,28 +58,37 @@ export interface TimesheetEntry {
     total: number;
 }
 
-// Default values from contract template
-const DEFAULT_FOUNDER_DATA: FounderData = {
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    customIPDefinition: `* Proprietary user data and customer lists.
+// Function to get default values with query parameter overrides
+const getDefaultFounderData = (): FounderData => {
+    const queryParams = parseQueryParams();
+    
+    return {
+        name: getQueryParamValue(queryParams, 'founderName'),
+        email: getQueryParamValue(queryParams, 'founderEmail'),
+        phone: getQueryParamValue(queryParams, 'founderPhone'),
+        address: getQueryParamValue(queryParams, 'founderAddress'),
+        customIPDefinition: getQueryParamValue(queryParams, 'customIPDefinition', `* Proprietary user data and customer lists.
 * Content, created or curated uniquely to the Company.
-* Trade secrets related to business strategies, financial information, and customer data.`,
-    deferredWageRate: 75
+* Trade secrets related to business strategies, financial information, and customer data.\n
+_This definition expressly excludes the Contributors' general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company's core IP._`),
+        deferredWageRate: getQueryParamNumber(queryParams, 'founderDeferredWageRate', 75)
+    };
 };
 
-const DEFAULT_CONTRIBUTOR_DATA: ContributorData = {
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    totalEquityGranted: 25,
-    vestingPeriod: 4,
-    deferredWageRate: 75,
-    cliffDays: 180,
-    vestingExponent: 2
+const getDefaultContributorData = (): ContributorData => {
+    const queryParams = parseQueryParams();
+    
+    return {
+        name: getQueryParamValue(queryParams, 'contributorName'),
+        email: getQueryParamValue(queryParams, 'contributorEmail'),
+        phone: getQueryParamValue(queryParams, 'contributorPhone'),
+        address: getQueryParamValue(queryParams, 'contributorAddress'),
+        totalEquityGranted: getQueryParamNumber(queryParams, 'totalEquityGranted', 25),
+        vestingPeriod: getQueryParamNumber(queryParams, 'vestingPeriod', 2),
+        deferredWageRate: getQueryParamNumber(queryParams, 'contributorDeferredWageRate', 75),
+        cliffDays: getQueryParamNumber(queryParams, 'cliffDays', 180),
+        vestingExponent: getQueryParamNumber(queryParams, 'vestingExponent', 2)
+    };
 };
 
 export interface FormDataContextType {
@@ -65,6 +100,10 @@ export interface FormDataContextType {
     // User interaction tracking
     founderFieldsModified: Set<keyof FounderData>;
     contributorFieldsModified: Set<keyof ContributorData>;
+
+    // Query parameter tracking
+    hasQueryParams: boolean;
+    queryParamsUsed: Set<string>;
 
     // Actions
     updateFounderData: (updates: Partial<FounderData>) => void;
@@ -110,11 +149,22 @@ const calculateVestingPercentage = (
 };
 
 export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) => {
-    const [founderData, setFounderData] = useState<FounderData>(DEFAULT_FOUNDER_DATA);
-    const [contributorData, setContributorData] = useState<ContributorData>(DEFAULT_CONTRIBUTOR_DATA);
+    // Initialize with query parameters
+    const [founderData, setFounderData] = useState<FounderData>(() => getDefaultFounderData());
+    const [contributorData, setContributorData] = useState<ContributorData>(() => getDefaultContributorData());
     const [timesheetEntries, setTimesheetEntries] = useState<TimesheetEntry[]>([]);
     const [founderFieldsModified, setFounderFieldsModified] = useState<Set<keyof FounderData>>(new Set());
     const [contributorFieldsModified, setContributorFieldsModified] = useState<Set<keyof ContributorData>>(new Set());
+    
+    // Track query parameters
+    const [queryParamsUsed] = useState<Set<string>>(() => {
+        const params = parseQueryParams();
+        return new Set(Object.keys(params));
+    });
+    const [hasQueryParams] = useState<boolean>(() => {
+        const params = parseQueryParams();
+        return Object.keys(params).length > 0;
+    });
 
     // Update functions
     const updateFounderData = useCallback((updates: Partial<FounderData>) => {
@@ -154,8 +204,8 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) =>
     }, []);
 
     const clearAllData = useCallback(() => {
-        setFounderData(DEFAULT_FOUNDER_DATA);
-        setContributorData(DEFAULT_CONTRIBUTOR_DATA);
+        setFounderData(getDefaultFounderData());
+        setContributorData(getDefaultContributorData());
         setTimesheetEntries([]);
         setFounderFieldsModified(new Set());
         setContributorFieldsModified(new Set());
@@ -199,6 +249,8 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) =>
         timesheetEntries,
         founderFieldsModified,
         contributorFieldsModified,
+        hasQueryParams,
+        queryParamsUsed,
         updateFounderData,
         updateContributorData,
         addTimesheetEntry,
@@ -371,4 +423,32 @@ export const replaceContractPlaceholders = (template: string, placeholders: Reco
     });
 
     return result;
+};
+
+// Utility to generate shareable URL with query parameters
+export const generateShareableUrl = (founderData: FounderData, contributorData: ContributorData, baseUrl?: string): string => {
+    const params = new URLSearchParams();
+    
+    // Add founder data
+    if (founderData.name) params.set('founderName', founderData.name);
+    if (founderData.email) params.set('founderEmail', founderData.email);
+    if (founderData.phone) params.set('founderPhone', founderData.phone);
+    if (founderData.address) params.set('founderAddress', founderData.address);
+    if (founderData.deferredWageRate !== 75) params.set('founderDeferredWageRate', founderData.deferredWageRate.toString());
+    
+    // Add contributor data
+    if (contributorData.name) params.set('contributorName', contributorData.name);
+    if (contributorData.email) params.set('contributorEmail', contributorData.email);
+    if (contributorData.phone) params.set('contributorPhone', contributorData.phone);
+    if (contributorData.address) params.set('contributorAddress', contributorData.address);
+    if (contributorData.totalEquityGranted !== 25) params.set('totalEquityGranted', contributorData.totalEquityGranted.toString());
+    if (contributorData.vestingPeriod !== 2) params.set('vestingPeriod', contributorData.vestingPeriod.toString());
+    if (contributorData.deferredWageRate !== 75) params.set('contributorDeferredWageRate', contributorData.deferredWageRate.toString());
+    if (contributorData.cliffDays !== 180) params.set('cliffDays', contributorData.cliffDays.toString());
+    if (contributorData.vestingExponent !== 2) params.set('vestingExponent', contributorData.vestingExponent.toString());
+    
+    const queryString = params.toString();
+    const url = baseUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '');
+    
+    return queryString ? `${url}?${queryString}` : url;
 };

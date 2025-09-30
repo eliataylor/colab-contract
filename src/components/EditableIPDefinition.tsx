@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Box, Button, IconButton, TextField, Tooltip, Typography, useTheme} from '@mui/material';
 import {Cancel, Edit, Save} from '@mui/icons-material';
 import {useFormData} from '../contexts/FormDataContext';
+import ReactMarkdown from 'react-markdown';
 
 interface EditableIPDefinitionProps {
     value: string;
@@ -129,20 +130,11 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                 <Box sx={{
                     backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.50',
                     color: theme.palette.text.primary,
-                    p: 2,
-                    borderRadius: 1,
+                    px: 1,
                     border: '1px solid',
-                    borderColor: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.300',
-                    fontFamily: 'monospace',
-                    whiteSpace: 'pre-line',
-                    fontSize: '0.95rem',
-                    lineHeight: 1.5,
-                    position: 'relative',
-                    '&:hover': {
-                        borderColor: theme.palette.mode === 'dark' ? 'grey.500' : 'grey.400',
-                    }
+                    borderColor: theme.palette.mode === 'dark' ? 'grey.800' : 'grey.200'
                 }}>
-                    {value}
+                    <ReactMarkdown>{value}</ReactMarkdown>
                 </Box>
             )}
         </Box>
