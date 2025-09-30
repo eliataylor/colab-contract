@@ -113,7 +113,7 @@ const ContractSummary: React.FC = () => {
                                             <Chip label={`Phone: ${founderData.phone}`} color="primary"
                                                   variant="outlined"/>}
                                         {founderData.deferredWageRate &&
-                                            <Chip label={`Rate: $${founderData.deferredWageRate}/hr`} color="primary"
+                                            <Chip label={`Rate: $${founderData.deferredWageRate.toFixed(2)}/hr`} color="primary"
                                                   variant="outlined"/>}
                                     </Box>
                                 ) : (
@@ -147,10 +147,10 @@ const ContractSummary: React.FC = () => {
                                             <Chip label={`Email: ${contributorData.email}`} color="secondary"
                                                   variant="outlined"/>}
                                         {contributorData.totalEquityGranted &&
-                                            <Chip label={`Equity: ${contributorData.totalEquityGranted}%`}
+                                            <Chip label={`Equity: ${contributorData.totalEquityGranted.toFixed(2)}%`}
                                                   color="secondary" variant="outlined"/>}
                                         {contributorData.deferredWageRate &&
-                                            <Chip label={`Rate: $${contributorData.deferredWageRate}/hr`}
+                                            <Chip label={`Rate: $${contributorData.deferredWageRate.toFixed(2)}/hr`}
                                                   color="secondary" variant="outlined"/>}
                                     </Box>
                                 ) : (

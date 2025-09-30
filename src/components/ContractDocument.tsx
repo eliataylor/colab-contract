@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Accordion,
     AccordionDetails,
@@ -26,6 +26,7 @@ import SimpleVestingCalculator from './SimpleVestingCalculator';
 import VestingFormula from './VestingFormula';
 import FounderModal from './FounderModal';
 import ContributorModal from './ContributorModal';
+import {useLocation} from 'react-router-dom';
 
 const ContractDocument: React.FC = () => {
     const {getContractPlaceholders} = useContractData();
@@ -33,9 +34,44 @@ const ContractDocument: React.FC = () => {
     const [expanded, setExpanded] = useState<Set<string>>(new Set(['principles']));
     const [founderModalOpen, setFounderModalOpen] = useState(false);
     const [contributorModalOpen, setContributorModalOpen] = useState(false);
+    const location = useLocation();
 
     // Use the scroll to hash hook
     useScrollToHash();
+
+    // Auto-expand accordion based on hash
+    useEffect(() => {
+        const hash = location.hash.replace('#', '');
+        
+        // Map hash values to accordion panel names
+        const hashToPanelMap: { [key: string]: string } = {
+            'principles': 'principles',
+            'protections': 'protections', 
+            'compensation': 'compensation',
+            'vesting': 'vesting',
+            'deferred-wage': 'deferred',
+            'founder-contact': 'founder-contact',
+            'contributor-contact': 'contributor-contact'
+        };
+
+        if (hash && hashToPanelMap[hash]) {
+            const panelToExpand = hashToPanelMap[hash];
+            
+            // For contact sections, open the appropriate modal
+            if (panelToExpand === 'founder-contact') {
+                setFounderModalOpen(true);
+            } else if (panelToExpand === 'contributor-contact') {
+                setContributorModalOpen(true);
+            } else {
+                // For accordion sections, expand the panel
+                setExpanded(prev => {
+                    const newSet = new Set(prev);
+                    newSet.add(panelToExpand);
+                    return newSet;
+                });
+            }
+        }
+    }, [location.hash]);
 
     const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(prev => {
@@ -417,7 +453,7 @@ const ContractDocument: React.FC = () => {
             </Accordion>
 
             <Accordion
-                id="deferred"
+                id="deferred-wage"
                 expanded={expanded.has('deferred')}
                 onChange={handleChange('deferred')}
             >
@@ -598,18 +634,24 @@ const ContractDocument: React.FC = () => {
                 <strong>Agreement Date:</strong> {placeholders.AGREEMENT_DATE}
             </Typography>
 
+
+
             {/* Modals */}
+            <div id="founder-contact">
             <FounderModal
                 layout="dialog"
                 open={founderModalOpen}
                 onClose={() => setFounderModalOpen(false)}
             />
+            </div>
+            <div id="contributor-contact">
             <ContributorModal
                 layout="dialog"
                 open={contributorModalOpen}
                 onClose={() => setContributorModalOpen(false)}
             />
-        </Box>
+            </div>
+        å</Box>
     );
 };
 

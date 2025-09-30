@@ -209,7 +209,7 @@ const SimpleVestingCalculator: React.FC = () => {
                                                 <TableCell>{row.days}</TableCell>
                                                 <TableCell align="right">
                                                     <Chip
-                                                        label={`${row.vested}%`}
+                                                        label={`${row.vested.toFixed(2)}%`}
                                                         color={row.vested > 0 ? 'primary' : 'default'}
                                                         variant={row.vested > 0 ? 'filled' : 'outlined'}
                                                         size="small"

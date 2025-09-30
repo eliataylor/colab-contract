@@ -18,43 +18,43 @@ import {useFormData} from '../contexts/FormDataContext';
 const progressSteps = [
     {
         id: 'founder-contact',
-        label: 'Founder Contact',
+        label: 'Founder',
         description: 'Name, email, phone, address',
         icon: <Business/>,
-        path: '/founder',
-        hash: '#personal-info'
+        path: '/',
+        hash: '#founder-contact'
     },
     {
         id: 'contributor-contact',
-        label: 'Contributor Contact',
+        label: 'Contributor',
         description: 'Name, email, phone, address',
         icon: <People/>,
-        path: '/contributor',
-        hash: '#personal-info'
+        path: '/',
+        hash: '#contributor-contact'
     },
     {
         id: 'founder-protections',
-        label: 'Founder Protections',
+        label: 'IP Definition',
         description: 'Custom IP definition',
         icon: <Security/>,
-        path: '/founder',
-        hash: '#additional-terms'
+        path: '/',
+        hash: '#protections'
     },
     {
         id: 'founder-incentives',
-        label: 'Founder Incentives',
-        description: 'Deferred wage rate',
+        label: 'Vesting Schedule',
+        description: '',
         icon: <AttachMoney/>,
-        path: '/founder',
-        hash: '#compensation'
+        path: '/',
+        hash: '#vesting'
     },
     {
-        id: 'contributor-incentives',
-        label: 'Contributor Incentives',
-        description: 'Equity, vesting, wage rate',
-        icon: <TrendingUp/>,
-        path: '/contributor',
-        hash: '#compensation-expectations'
+        id: 'founder-incentives',
+        label: 'Deferred Wages',
+        description: '',
+        icon: <AttachMoney/>,
+        path: '/',
+        hash: '#deferred-wage'
     }
 ];
 

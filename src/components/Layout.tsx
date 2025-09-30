@@ -111,7 +111,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
     const calculatorItems = [
         {text: 'Vesting Schedule', path: '/vesting', icon: <Calculate/>},
-        {text: 'Deferred Wages', path: '/compensation', icon: <TrendingUp/>},
+        {text: 'Deferred Wages', path: '/deferred-wage', icon: <TrendingUp/>},
     ];
 
     const drawer = (

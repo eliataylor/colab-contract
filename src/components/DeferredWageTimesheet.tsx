@@ -298,7 +298,7 @@ const DeferredWageTimesheet: React.FC = () => {
                                         <TextField
                                             label="Total"
                                             type="number"
-                                            value={formData.hours * formData.rate}
+                                            value={(formData.hours * formData.rate).toFixed(2)}
                                             disabled
                                             inputProps={{readOnly: true}}
                                         />
