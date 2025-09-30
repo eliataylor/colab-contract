@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, Dialog, DialogContent, DialogTitle, IconButton} from '@mui/material';
 import {Close} from '@mui/icons-material';
-import {useFormData} from '../contexts/FormDataContext';
 import FounderForm from './FounderForm';
 
 type LayoutType = 'button' | 'dialog' | 'page';
@@ -23,7 +22,6 @@ const FounderModal: React.FC<FounderModalProps> = ({
                                                        buttonVariant = "outlined",
                                                        buttonColor = "primary"
                                                    }) => {
-    const {founderData} = useFormData();
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleOpen = () => {

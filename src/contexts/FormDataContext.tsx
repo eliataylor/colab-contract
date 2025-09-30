@@ -4,14 +4,14 @@ import React, {createContext, useCallback, useContext, useMemo, useState} from '
 // Query parameter parsing utilities
 const parseQueryParams = (): Record<string, string> => {
     if (typeof window === 'undefined') return {};
-    
+
     const params = new URLSearchParams(window.location.search);
     const result: Record<string, string> = {};
-    
+
     params.forEach((value, key) => {
         result[key] = value;
     });
-    
+
     return result;
 };
 
@@ -22,7 +22,7 @@ const getQueryParamValue = (params: Record<string, string>, key: string, default
 const getQueryParamNumber = (params: Record<string, string>, key: string, defaultValue: number): number => {
     const value = params[key];
     if (!value) return defaultValue;
-    
+
     const parsed = parseFloat(value);
     return isNaN(parsed) ? defaultValue : parsed;
 };
@@ -61,7 +61,7 @@ export interface TimesheetEntry {
 // Function to get default values with query parameter overrides
 const getDefaultFounderData = (): FounderData => {
     const queryParams = parseQueryParams();
-    
+
     return {
         name: getQueryParamValue(queryParams, 'founderName'),
         email: getQueryParamValue(queryParams, 'founderEmail'),
@@ -77,7 +77,7 @@ _This definition expressly excludes the Contributors' general skills, experience
 
 const getDefaultContributorData = (): ContributorData => {
     const queryParams = parseQueryParams();
-    
+
     return {
         name: getQueryParamValue(queryParams, 'contributorName'),
         email: getQueryParamValue(queryParams, 'contributorEmail'),
@@ -155,7 +155,7 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) =>
     const [timesheetEntries, setTimesheetEntries] = useState<TimesheetEntry[]>([]);
     const [founderFieldsModified, setFounderFieldsModified] = useState<Set<keyof FounderData>>(new Set());
     const [contributorFieldsModified, setContributorFieldsModified] = useState<Set<keyof ContributorData>>(new Set());
-    
+
     // Track query parameters
     const [queryParamsUsed] = useState<Set<string>>(() => {
         const params = parseQueryParams();
@@ -428,14 +428,14 @@ export const replaceContractPlaceholders = (template: string, placeholders: Reco
 // Utility to generate shareable URL with query parameters
 export const generateShareableUrl = (founderData: FounderData, contributorData: ContributorData, baseUrl?: string): string => {
     const params = new URLSearchParams();
-    
+
     // Add founder data
     if (founderData.name) params.set('founderName', founderData.name);
     if (founderData.email) params.set('founderEmail', founderData.email);
     if (founderData.phone) params.set('founderPhone', founderData.phone);
     if (founderData.address) params.set('founderAddress', founderData.address);
     if (founderData.deferredWageRate !== 75) params.set('founderDeferredWageRate', founderData.deferredWageRate.toString());
-    
+
     // Add contributor data
     if (contributorData.name) params.set('contributorName', contributorData.name);
     if (contributorData.email) params.set('contributorEmail', contributorData.email);
@@ -446,9 +446,9 @@ export const generateShareableUrl = (founderData: FounderData, contributorData: 
     if (contributorData.deferredWageRate !== 75) params.set('contributorDeferredWageRate', contributorData.deferredWageRate.toString());
     if (contributorData.cliffDays !== 180) params.set('cliffDays', contributorData.cliffDays.toString());
     if (contributorData.vestingExponent !== 2) params.set('vestingExponent', contributorData.vestingExponent.toString());
-    
+
     const queryString = params.toString();
     const url = baseUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '');
-    
+
     return queryString ? `${url}?${queryString}` : url;
 };

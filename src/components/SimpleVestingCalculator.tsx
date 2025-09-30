@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import {LineChart} from '@mui/x-charts/LineChart';
 import {useContributorData} from '../contexts/FormDataContext';
-import VestingFormula from './VestingFormula';
 
 interface VestingData {
     months: number;
@@ -105,7 +104,7 @@ const SimpleVestingCalculator: React.FC = () => {
                             </Box>
 
                             <Box sx={{mb: 4}}>
-                            <Typography gutterBottom variant="body2">
+                                <Typography gutterBottom variant="body2">
                                     Vesting
                                     Period: <strong>{vestingDays} days</strong> ({Math.round(vestingDays / 365 * 10) / 10} years)
                                 </Typography>
@@ -132,7 +131,7 @@ const SimpleVestingCalculator: React.FC = () => {
                             </Box>
 
                             <Box sx={{mb: 4}}>
-                            <Typography gutterBottom variant="body2">
+                                <Typography gutterBottom variant="body2">
                                     Waiting (cliff)
                                     Period: <strong>{cliffDays} days</strong> ({Math.round(cliffDays / 30.44)} months)
                                 </Typography>
@@ -249,7 +248,7 @@ const SimpleVestingCalculator: React.FC = () => {
                     </CardContent>
                 </Card>
             </Box>
-                        
+
         </Box>
     );
 };

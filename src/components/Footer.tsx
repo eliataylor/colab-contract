@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
                             rel="noopener noreferrer"
                             size="small"
                             variant="text"
-                            sx={{px:.1}}
+                            sx={{px: .1, ml: 1}}
                         >
                             TaylorMadeTraffic
                         </Button>
@@ -59,12 +59,24 @@ const Footer: React.FC = () => {
                             href="https://github.com/eliataylor/colab-contract"
                             target="_blank"
                             rel="noopener noreferrer"
-                            endIcon={<img src="https://oaexample.com/oa-assets/github-mark-white.svg" height="20" width="20" alt="GitHub"/>}
+                            endIcon={<img src="https://oaexample.com/oa-assets/github-mark-white.svg" height="20"
+                                          width="20" alt="GitHub"/>}
                             size="small"
                             sx={{textTransform: 'none'}}
                         >
                             Open Source
                         </Button>
+
+                        <Button
+                            size="small"
+                            href='https://g.co/gemini/share/fc835c61e484'
+                            target='_blank'
+                            endIcon={<img src={'/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
+                            sx={{textTransform: 'none', mr: 2}}
+                        >
+                            Join Gemini Chat
+                        </Button>
+
                     </Stack>
                 </Stack>
             </Container>

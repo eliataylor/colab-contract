@@ -1,37 +1,12 @@
 import React from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Box, Button, Chip, Paper, Step, StepContent, StepLabel, Stepper, Typography} from '@mui/material';
-import {
-    AttachMoney,
-    Business,
-    CheckCircle,
-    People,
-    RadioButtonUnchecked,
-    Security,
-    TrendingUp,
-    Warning
-} from '@mui/icons-material';
+import {AttachMoney, Business, CheckCircle, People, RadioButtonUnchecked, Security, Warning} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
 import {useFormData} from '../contexts/FormDataContext';
 
 // Progress steps configuration
 const progressSteps = [
-    {
-        id: 'founder-contact',
-        label: 'Founder',
-        description: 'Name, email, phone, address',
-        icon: <Business/>,
-        path: '/',
-        hash: '#founder-contact'
-    },
-    {
-        id: 'contributor-contact',
-        label: 'Contributor',
-        description: 'Name, email, phone, address',
-        icon: <People/>,
-        path: '/',
-        hash: '#contributor-contact'
-    },
     {
         id: 'founder-protections',
         label: 'IP Definition',
@@ -55,6 +30,22 @@ const progressSteps = [
         icon: <AttachMoney/>,
         path: '/',
         hash: '#deferred-wage'
+    },
+    {
+        id: 'founder-contact',
+        label: 'Founder Info',
+        description: 'Name, email, phone, address',
+        icon: <Business/>,
+        path: '/',
+        hash: '#founder-contact'
+    },
+    {
+        id: 'contributor-contact',
+        label: 'Contributor Info',
+        description: 'Name, email, phone, address',
+        icon: <People/>,
+        path: '/',
+        hash: '#contributor-contact'
     }
 ];
 
@@ -110,12 +101,6 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
     // Progress calculation based on user interaction
     const getStepStatus = (stepId: string) => {
         switch (stepId) {
-            case 'founder-contact':
-                return founderFieldsModified.has('name') && founderFieldsModified.has('email') &&
-                    founderFieldsModified.has('phone') && founderFieldsModified.has('address');
-            case 'contributor-contact':
-                return contributorFieldsModified.has('name') && contributorFieldsModified.has('email') &&
-                    contributorFieldsModified.has('phone') && contributorFieldsModified.has('address');
             case 'founder-protections':
                 return founderFieldsModified.has('customIPDefinition');
             case 'founder-incentives':
@@ -124,6 +109,12 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
                 return contributorFieldsModified.has('totalEquityGranted') &&
                     contributorFieldsModified.has('vestingPeriod') &&
                     contributorFieldsModified.has('deferredWageRate');
+            case 'founder-contact':
+                return founderFieldsModified.has('name') && founderFieldsModified.has('email') &&
+                    founderFieldsModified.has('phone') && founderFieldsModified.has('address');
+            case 'contributor-contact':
+                return contributorFieldsModified.has('name') && contributorFieldsModified.has('email') &&
+                    contributorFieldsModified.has('phone') && contributorFieldsModified.has('address');
             default:
                 return false;
         }

@@ -133,14 +133,6 @@ const DeferredWageTimesheet: React.FC = () => {
         window.URL.revokeObjectURL(url);
     };
 
-    // Group entries by contributor
-    const entriesByContributor = timesheetEntries.reduce((acc, entry, index) => {
-        if (!acc[entry.contributor]) {
-            acc[entry.contributor] = [];
-        }
-        acc[entry.contributor].push({...entry, index});
-        return acc;
-    }, {} as Record<string, (TimesheetEntry & { index: number })[]>);
 
     return (
         <PageContainer>

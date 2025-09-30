@@ -12,7 +12,6 @@ import {
     Divider,
     List,
     ListItem,
-    ListItemAvatar,
     ListItemText,
     Paper,
     Table,
@@ -114,7 +113,8 @@ const ContractSummary: React.FC = () => {
                                             <Chip label={`Phone: ${founderData.phone}`} color="primary"
                                                   variant="outlined"/>}
                                         {founderData.deferredWageRate &&
-                                            <Chip label={`Rate: $${founderData.deferredWageRate.toFixed(2)}/hr`} color="primary"
+                                            <Chip label={`Rate: $${founderData.deferredWageRate.toFixed(2)}/hr`}
+                                                  color="primary"
                                                   variant="outlined"/>}
                                     </Box>
                                 ) : (
@@ -247,10 +247,10 @@ const ContractSummary: React.FC = () => {
                                 <TwoColumnGrid>
                                     <Card variant="outlined">
                                         <CardContent>
-                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                            <Gavel color="primary"/>
-                                            <Typography>1. Protections</Typography>
-                                        </Box>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                <Gavel color="primary"/>
+                                                <Typography>1. Protections</Typography>
+                                            </Box>
                                             <List dense>
                                                 <ListItem>
                                                     <ListItemText
@@ -277,7 +277,7 @@ const ContractSummary: React.FC = () => {
                                     <Card variant="outlined">
                                         <CardContent>
                                             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                            <AttachMoney color="primary"/>
+                                                <AttachMoney color="primary"/>
                                                 <Typography>2. Compensation</Typography>
                                             </Box>
 
@@ -308,10 +308,10 @@ const ContractSummary: React.FC = () => {
                             onChange={handleChange('protections')}
                         >
                             <AccordionSummary expandIcon={<ExpandMore/>}>
-                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                            <Gavel color="primary"/>
-                            <Typography>1. Protections</Typography>
-                        </Box>
+                                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                    <Gavel color="primary"/>
+                                    <Typography>1. Protections</Typography>
+                                </Box>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <CardTitle variant="h6">

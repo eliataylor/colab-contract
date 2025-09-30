@@ -57,7 +57,7 @@ export const FlexBetween = styled(Box)(({theme}) => ({
 }));
 
 // Card components
-export const StyledCard = styled(Card)(({theme}) => ({
+export const StyledCard = styled(Card)(() => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -121,7 +121,7 @@ export const SecondaryButton = styled(Button)(({theme}) => ({
     padding: theme.spacing(SPACING.sm, SPACING.lg),
 }));
 
-export const ActionButton = styled(Button)(({theme}) => ({
+export const ActionButton = styled(Button)(() => ({
     minWidth: 120,
 }));
 
@@ -234,7 +234,7 @@ export const ShowOnMobile = styled(Box)(({theme}) => ({
 }));
 
 // Animation utilities
-export const FadeIn = styled(Box)(({theme}) => ({
+export const FadeIn = styled(Box)(() => ({
     animation: 'fadeIn 0.3s ease-in-out',
     '@keyframes fadeIn': {
         from: {
@@ -248,7 +248,7 @@ export const FadeIn = styled(Box)(({theme}) => ({
     },
 }));
 
-export const SlideIn = styled(Box)(({theme}) => ({
+export const SlideIn = styled(Box)(() => ({
     animation: 'slideIn 0.3s ease-out',
     '@keyframes slideIn': {
         from: {

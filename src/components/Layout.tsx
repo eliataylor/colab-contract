@@ -3,7 +3,6 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {
     AppBar,
     Box,
-    Button,
     Collapse,
     Divider,
     Drawer,
@@ -44,12 +43,14 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     const [calculatorsOpen, setCalculatorsOpen] = useState(false);
     const {mode, toggleTheme} = useCustomTheme();
     const location = useLocation();
+    // @ts-ignore
     const navigate = useNavigate();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
+    // @ts-ignore
     const handleContractTocToggle = () => {
         setContractTocOpen(!contractTocOpen);
     };
@@ -257,16 +258,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <Button variant="outlined" 
-                        size="small" 
-                        href='https://g.co/gemini/share/fc835c61e484'
-                        target='_blank' 
-                        startIcon={<img src={'/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
-                        component={Link}
-                        sx={{textTransform: 'none', mr:2}}
-                        >
-                            Gemini Chat                      
-                        </Button>
                         <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1}}>
                             Founding Contributor Agreement
                         </Typography>
