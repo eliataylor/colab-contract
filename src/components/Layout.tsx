@@ -3,6 +3,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {
     AppBar,
     Box,
+    Button,
     Collapse,
     Divider,
     Drawer,
@@ -29,7 +30,6 @@ import {
 } from '@mui/icons-material';
 import {useTheme as useCustomTheme} from '../contexts/ThemeContext';
 import ContractProgressStepper from './ContractProgressStepper';
-import ContractPreviewButton from './ContractPreviewButton';
 import Footer from './Footer';
 
 const drawerWidth = 240;
@@ -257,6 +257,16 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         >
                             <MenuIcon/>
                         </IconButton>
+                        <Button variant="outlined" 
+                        size="small" 
+                        href='https://g.co/gemini/share/fc835c61e484'
+                        target='_blank' 
+                        startIcon={<img src={'/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
+                        component={Link}
+                        sx={{textTransform: 'none', mr:2}}
+                        >
+                            Gemini Chat                      
+                        </Button>
                         <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1}}>
                             Founding Contributor Agreement
                         </Typography>
