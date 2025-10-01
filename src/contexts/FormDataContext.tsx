@@ -1,6 +1,5 @@
 import type {ReactNode} from 'react';
 import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
-
 // Query parameter parsing utilities
 const parseQueryParams = (): Record<string, string> => {
     if (typeof window === 'undefined') return {};
@@ -13,19 +12,16 @@ const parseQueryParams = (): Record<string, string> => {
     });
 
     return result;
-};
-
-const getQueryParamValue = (params: Record<string, string>, key: string, defaultValue: string = ''): string => {
+}, getQueryParamValue = (params: Record<string, string>, key: string, defaultValue: string = ''): string => {
     return params[key] || defaultValue;
-};
-
-const getQueryParamNumber = (params: Record<string, string>, key: string, defaultValue: number): number => {
+}, getQueryParamNumber = (params: Record<string, string>, key: string, defaultValue: number): number => {
     const value = params[key];
     if (!value) return defaultValue;
 
     const parsed = parseFloat(value);
     return isNaN(parsed) ? defaultValue : parsed;
 };
+
 
 // Simplified data interfaces matching contract template
 export interface FounderData {
@@ -64,16 +60,15 @@ const getDefaultFounderData = (): FounderData => {
     const queryParams = parseQueryParams();
 
     return {
-        name: getQueryParamValue(queryParams, 'founderName'),
+        name: getQueryParamValue(queryParams, 'founderName', 'Founder'),
         email: getQueryParamValue(queryParams, 'founderEmail'),
         phone: getQueryParamValue(queryParams, 'founderPhone'),
         address: getQueryParamValue(queryParams, 'founderAddress'),
         companyName: getQueryParamValue(queryParams, 'companyName'),
         customIPDefinition: getQueryParamValue(queryParams, 'customIPDefinition', `* Proprietary user data and customer lists.
-* Content, created or curated uniquely to the Company.
-* Trade secrets related to business strategies, financial information, and customer data.\n
-_This definition expressly excludes the Contributors' general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company's core IP._`),
-        deferredWageRate: getQueryParamNumber(queryParams, 'founderDeferredWageRate', 75)
+* Content, created or curated uniquely to the Company or it's users.
+* Trade secrets related to business strategies, financial information, and customer data.`),
+        deferredWageRate: getQueryParamNumber(queryParams, 'founderDeferredWageRate', 150)
     };
 };
 
@@ -81,13 +76,13 @@ const getDefaultContributorData = (): ContributorData => {
     const queryParams = parseQueryParams();
 
     return {
-        name: getQueryParamValue(queryParams, 'contributorName'),
+        name: getQueryParamValue(queryParams, 'contributorName', 'Contributor'),
         email: getQueryParamValue(queryParams, 'contributorEmail'),
         phone: getQueryParamValue(queryParams, 'contributorPhone'),
         address: getQueryParamValue(queryParams, 'contributorAddress'),
         totalEquityGranted: getQueryParamNumber(queryParams, 'totalEquityGranted', 25),
         vestingPeriod: getQueryParamNumber(queryParams, 'vestingPeriod', 2),
-        deferredWageRate: getQueryParamNumber(queryParams, 'contributorDeferredWageRate', 75),
+        deferredWageRate: getQueryParamNumber(queryParams, 'contributorDeferredWageRate', 150),
         cliffDays: getQueryParamNumber(queryParams, 'cliffDays', 180),
         vestingExponent: getQueryParamNumber(queryParams, 'vestingExponent', 2)
     };

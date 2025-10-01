@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Box, Card, CardContent, Divider, Paper, Stack, TextField, Typography} from '@mui/material';
+import {Alert, Box, Card, CardContent, Divider, Stack, Grid, TextField, Typography, useTheme} from '@mui/material';
 import {PieChart} from '@mui/x-charts/PieChart';
+import {useFormData} from '../contexts/FormDataContext';
 
 interface CompensationData {
     contributorOwed: number;
@@ -12,11 +13,37 @@ interface CompensationData {
 }
 
 const SimpleDeferredCompensationCalculator: React.FC = () => {
-    const [contributorRate, setContributorRate] = useState(200);
-    const [contributorHours, setContributorHours] = useState(60);
-    const [founderRate, setFounderRate] = useState(150);
-    const [founderHours, setFounderHours] = useState(40);
+    const {contributorData, founderData, timesheetEntries, updateFounderData, updateContributorData} = useFormData();
+    const theme = useTheme();
+    
+    // Calculate hours and rates from timesheet data
+    const contributorHoursFromTimesheet = timesheetEntries
+        .filter(entry => entry.contributor === contributorData.name)
+        .reduce((sum, entry) => sum + entry.hours, 0);
+    const contributorRate = contributorHoursFromTimesheet > 0 
+        ? timesheetEntries
+            .filter(entry => entry.contributor === contributorData.name)
+            .reduce((sum, entry) => sum + entry.total, 0) / contributorHoursFromTimesheet
+        : contributorData.deferredWageRate;
+    
+    const founderHoursFromTimesheet = timesheetEntries
+        .filter(entry => entry.contributor === founderData.name)
+        .reduce((sum, entry) => sum + entry.hours, 0);
+    const founderRate = founderHoursFromTimesheet > 0
+        ? timesheetEntries
+            .filter(entry => entry.contributor === founderData.name)
+            .reduce((sum, entry) => sum + entry.total, 0) / founderHoursFromTimesheet
+        : founderData.deferredWageRate;
+    
+    // Use timesheet hours if available, otherwise use default example hours
+    const contributorHours = contributorHoursFromTimesheet > 0 ? contributorHoursFromTimesheet : 60;
+    const founderHours = founderHoursFromTimesheet > 0 ? founderHoursFromTimesheet : 40;
+    
     const [availableProfit, setAvailableProfit] = useState(1000);
+    const [localContributorRate, setLocalContributorRate] = useState(contributorRate);
+    const [localContributorHours, setLocalContributorHours] = useState(contributorHours);
+    const [localFounderRate, setLocalFounderRate] = useState(founderRate);
+    const [localFounderHours, setLocalFounderHours] = useState(founderHours);
     const [compensationData, setCompensationData] = useState<CompensationData>({
         contributorOwed: 0,
         founderOwed: 0,
@@ -25,10 +52,19 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
         contributorPayment: 0,
         founderPayment: 0
     });
+    
+    // Sync local state with context data when it changes
+    useEffect(() => {
+        setLocalContributorRate(contributorRate);
+        setLocalContributorHours(contributorHours);
+        setLocalFounderRate(founderRate);
+        setLocalFounderHours(founderHours);
+    }, [contributorRate, contributorHours, founderRate, founderHours]);
+
+    const contributorOwed = localContributorRate * localContributorHours;
+    const founderOwed = localFounderRate * localFounderHours;
 
     useEffect(() => {
-        const contributorOwed = contributorRate * contributorHours;
-        const founderOwed = founderRate * founderHours;
         const totalOwed = contributorOwed + founderOwed;
         const distributionPercentage = totalOwed > 0 ? Math.min(availableProfit / totalOwed, 1) : 0;
         const contributorPayment = contributorOwed * distributionPercentage;
@@ -42,45 +78,51 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
             contributorPayment,
             founderPayment
         });
-    }, [contributorRate, contributorHours, founderRate, founderHours, availableProfit]);
+    }, [contributorOwed, founderOwed, availableProfit]);
 
     const pieChartData = [
-        {id: 0, value: compensationData.contributorPayment, label: 'Contributor Payment', color: '#1976d2'},
-        {id: 1, value: compensationData.founderPayment, label: 'Founder Payment', color: '#dc004e'}
+        {
+            id: 0, 
+            value: compensationData.contributorPayment, 
+            color: theme.palette.secondary.main
+        },
+        {
+            id: 1, 
+            value: compensationData.founderPayment, 
+            color: theme.palette.primary.main
+        }
     ].filter(item => item.value > 0);
 
     return (
         <Box>
-            <Typography variant="h4" gutterBottom align="center" color="primary">
-                Deferred Wage Calculator
-            </Typography>
-
-            <Typography variant="body1" paragraph align="center" color="text.secondary">
-                Understand how deferred wages are paid out when the company has available profit.
-                Enter different scenarios to see the pro-rata calculation in action.
-            </Typography>
-
-            <Box sx={{display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, gap: 4}}>
+            <Box sx={{display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, gap:1}}>
                 {/* Input Controls */}
                 <Box sx={{flex: 1, minWidth: 300}}>
                     <Card elevation={2}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                Input Parameters
+                                1 Month Scenario Calculator
                             </Typography>
-
+                            <Typography variant="body2" gutterBottom>
+                                Shows profit distribution for one month when profit might be less than total deferred wages.
+                            </Typography>
+                            
                             <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        Contributor Details
+                                        {contributorData.name} - Total Owed: ${Intl.NumberFormat('en-US').format(contributorOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
                                         <TextField
                                             fullWidth
                                             label="Hourly Rate ($)"
                                             type="number"
-                                            value={contributorRate}
-                                            onChange={(e) => setContributorRate(parseFloat(e.target.value) || 0)}
+                                            value={localContributorRate}
+                                            onChange={(e) => {
+                                                const value = parseFloat(e.target.value) || 0;
+                                                setLocalContributorRate(value);
+                                                updateContributorData({deferredWageRate: value});
+                                            }}
                                             variant="outlined"
                                             size="small"
                                         />
@@ -88,8 +130,8 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Accrued Hours"
                                             type="number"
-                                            value={contributorHours}
-                                            onChange={(e) => setContributorHours(parseFloat(e.target.value) || 0)}
+                                            value={localContributorHours}
+                                            onChange={(e) => setLocalContributorHours(parseFloat(e.target.value) || 0)}
                                             variant="outlined"
                                             size="small"
                                             inputProps={{step: 0.01}}
@@ -99,15 +141,19 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        Founder Details
+                                        {founderData.name} - Total Owed: ${Intl.NumberFormat('en-US').format(founderOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
                                         <TextField
                                             fullWidth
                                             label="Hourly Rate ($)"
                                             type="number"
-                                            value={founderRate}
-                                            onChange={(e) => setFounderRate(parseFloat(e.target.value) || 0)}
+                                            value={localFounderRate}
+                                            onChange={(e) => {
+                                                const value = parseFloat(e.target.value) || 0;
+                                                setLocalFounderRate(value);
+                                                updateFounderData({deferredWageRate: value});
+                                            }}
                                             variant="outlined"
                                             size="small"
                                         />
@@ -115,8 +161,8 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Accrued Hours"
                                             type="number"
-                                            value={founderHours}
-                                            onChange={(e) => setFounderHours(parseFloat(e.target.value) || 0)}
+                                            value={localFounderHours}
+                                            onChange={(e) => setLocalFounderHours(parseFloat(e.target.value) || 0)}
                                             variant="outlined"
                                             size="small"
                                             inputProps={{step: 1}}
@@ -126,11 +172,11 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        Company Profit
+                                        1 Month Company Profit*
                                     </Typography>
                                     <TextField
                                         fullWidth
-                                        label="Available Monthly Profit ($)"
+                                        label="Available Profit this Month ($)"
                                         type="number"
                                         value={availableProfit}
                                         onChange={(e) => setAvailableProfit(parseFloat(e.target.value) || 0)}
@@ -142,10 +188,10 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                             <Alert severity="info" sx={{mt: 3}}>
                                 <Typography variant="body2">
-                                    <strong>Payment Conditions:</strong><br/>
+                                    <strong>"Profit" is after:</strong><br/>
                                     • All operating expenses paid<br/>
                                     • All employee wages paid<br/>
-                                    • 3-month cash reserve maintained
+                                    • 3 months of median operating expenses + employee wages on reserve 
                                 </Typography>
                             </Alert>
                         </CardContent>
@@ -154,76 +200,19 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                 {/* Results */}
                 <Box sx={{flex: 1, minWidth: 300}}>
+                    
                     <Card elevation={2}>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" gutterBottom>
                                 Calculation Results
                             </Typography>
 
-                            <Box sx={{mb: 3}}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Total Accrued Wages
-                                </Typography>
-                                <Typography variant="h4" color="primary">
-                                    ${compensationData.totalOwed.toFixed(2)}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{mb: 3}}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Distribution Percentage
-                                </Typography>
-                                <Typography variant="h4" color="primary">
-                                    {(compensationData.distributionPercentage * 100).toFixed(2)}%
-                                </Typography>
-                            </Box>
-
-                            <Divider sx={{my: 2}}/>
-
-                            <Stack spacing={2}>
-                                <Box>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Contributor's Payment
-                                    </Typography>
-                                    <Typography variant="h5" color="success.main">
-                                        ${compensationData.contributorPayment.toFixed(2)}
-                                    </Typography>
-                                </Box>
-
-                                <Box>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Founder's Payment
-                                    </Typography>
-                                    <Typography variant="h5" color="success.main">
-                                        ${compensationData.founderPayment.toFixed(2)}
-                                    </Typography>
-                                </Box>
-                            </Stack>
-
-                            {compensationData.distributionPercentage < 1 && (
-                                <Alert severity="warning" sx={{mt: 2}}>
-                                    <Typography variant="body2">
-                                        <strong>Partial
-                                            Payment:</strong> Only {(compensationData.distributionPercentage * 100).toFixed(2)}%
-                                        of accrued wages can be paid due to limited profit.
-                                    </Typography>
-                                </Alert>
-                            )}
-                        </CardContent>
-                    </Card>
-                </Box>
-            </Box>
+                            <Grid container>
 
             {/* Pie Chart */}
             {pieChartData.length > 0 && (
-                <Box sx={{mt: 4}}>
-                    <Card elevation={2}>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                Payment Distribution
-                            </Typography>
-                            <Box sx={{height: 300, display: 'flex', justifyContent: 'center'}}>
-                                <PieChart
+                            <Grid sx={{height: 300, display: 'flex', justifyContent: 'center'}}>
+                                <PieChart                                    
                                     series={[
                                         {
                                             data: pieChartData,
@@ -235,62 +224,67 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                         }
                                     ]}
                                     height={300}
-                                    width={400}
+                                    margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
                                 />
+                            </Grid>
+            )}
+            <Grid>
+
+                            <Box sx={{mb: 1}}>
+                                <Typography variant="body2" >
+                                    Distributable Profit
+                                </Typography>
+                                <Typography variant="h6" >
+                                    ${Intl.NumberFormat('en-US').format(availableProfit)}
+                                </Typography>
                             </Box>
+
+                            <Box sx={{mb: 3}}>
+                                <Typography variant="body2" >
+                                    Pro-Rata Distribution
+                                </Typography>
+                                <Typography variant="h6" >
+                                    {(compensationData.distributionPercentage * 100).toFixed(2)}%
+                                </Typography>
+                            </Box>
+
+                        
+                            <Divider sx={{my: 2}}/>
+
+                            <Stack spacing={2}>
+                                <Box>
+                                    <Typography variant="body2" color="secondary.main">
+                                        {contributorData.name}'s Payment
+                                    </Typography>
+                                    <Typography variant="h5" color="secondary.main">
+                                        ${compensationData.contributorPayment.toFixed(2)}
+                                    </Typography>
+                                </Box>
+
+                                <Box>
+                                    <Typography variant="body2" color="primary.main">
+                                        {founderData.name}'s Payment
+                                    </Typography>
+                                    <Typography variant="h5" color="primary.main">
+                                        ${compensationData.founderPayment.toFixed(2)}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+            </Grid>
+                            </Grid>
+                            
+                            <Alert severity="info" sx={{mt: 2}}>
+                            <Typography variant="body2">
+                                Pro-Rata Formula: Available Profit (${Intl.NumberFormat('en-US').format(availableProfit)}) / Total Debt (${Intl.NumberFormat('en-US').format(compensationData.totalOwed)}) = {(compensationData.distributionPercentage * 100).toFixed(2)}%
+                            </Typography>
+                            </Alert>
+
                         </CardContent>
                     </Card>
                 </Box>
-            )}
-
-            {/* Breakdown Table */}
-            <Box sx={{mt: 4}}>
-                <Card elevation={2}>
-                    <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                            Detailed Breakdown
-                        </Typography>
-
-                        <Box sx={{display: 'flex', flexDirection: {xs: 'column', md: 'row'}, gap: 2}}>
-                            <Paper variant="outlined" sx={{p: 2, flex: 1}}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Contributor Calculation
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Rate: ${contributorRate}/hour
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Hours: {contributorHours}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Total Owed: ${compensationData.contributorOwed.toFixed(2)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Payment: ${compensationData.contributorPayment.toFixed(2)}
-                                </Typography>
-                            </Paper>
-
-                            <Paper variant="outlined" sx={{p: 2, flex: 1}}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Founder Calculation
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Rate: ${founderRate}/hour
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Hours: {founderHours}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Total Owed: ${compensationData.founderOwed.toFixed(2)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Payment: ${compensationData.founderPayment.toFixed(2)}
-                                </Typography>
-                            </Paper>
-                        </Box>
-                    </CardContent>
-                </Card>
             </Box>
+
+            
         </Box>
     );
 };

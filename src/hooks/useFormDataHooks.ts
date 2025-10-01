@@ -1,4 +1,4 @@
-import {useFormData as useFormDataInternal} from '../contexts/FormDataContext';
+import {useFormData as useFormDataInternal, type FounderData, type ContributorData} from '../contexts/FormDataContext';
 
 // Re-export the main hook
 export const useFormData = useFormDataInternal;
@@ -142,12 +142,62 @@ export const useContractData = () => {
         console.log(container, placeholder, value);
     }
 
+    // Get a single placeholder by key
+    const getPlaceholder = (key: string): string | number | undefined => {
+        const placeholders = getContractPlaceholders();
+        return placeholders[key as keyof typeof placeholders];
+    };
+
+    // Set a single placeholder by key (updates the underlying form data)
+    const setPlaceholder = (key: string, value: string | number) => {
+        const {updateFounderData, updateContributorData} = useFormDataInternal();
+        
+        // Map placeholder keys to their corresponding form data fields
+        const founderFields: Record<string, keyof FounderData> = {
+            'FOUNDER_NAMES': 'name',
+            'FOUNDER_NAME': 'name',
+            'FOUNDER_EMAIL': 'email',
+            'FOUNDER_PHONE': 'phone',
+            'FOUNDER_ADDRESS': 'address',
+            'FOUNDER_HOURLY_RATE': 'deferredWageRate',
+            'CUSTOM_IP_DEFINITION': 'customIPDefinition'
+        };
+
+        const contributorFields: Record<string, keyof ContributorData> = {
+            'CONTRIBUTOR_NAMES': 'name',
+            'CONTRIBUTOR_NAME': 'name',
+            'CONTRIBUTOR_EMAIL': 'email',
+            'CONTRIBUTOR_PHONE': 'phone',
+            'CONTRIBUTOR_ADDRESS': 'address',
+            'CONTRIBUTOR_HOURLY_RATE': 'deferredWageRate',
+            'CONTRIBUTOR_EQUITY_PERCENTAGE': 'totalEquityGranted',
+            'VESTING_PERIOD_YEARS': 'vestingPeriod',
+            'CLIFF_DAYS': 'cliffDays',
+            'VESTING_EXPONENT': 'vestingExponent'
+        };
+
+        // Update founder data if key matches
+        if (founderFields[key]) {
+            updateFounderData({ [founderFields[key]]: value as any });
+        }
+        // Update contributor data if key matches
+        else if (contributorFields[key]) {
+            updateContributorData({ [contributorFields[key]]: value as any });
+        }
+        // For computed values, we can't directly set them as they're calculated
+        else {
+            console.warn(`Cannot set computed placeholder: ${key}. This value is calculated from other form data.`);
+        }
+    };
+
     return {
         isContractReady,
         getVestingData,
         setContractData,
         getDeferredCompensationExamples,
         getContractPlaceholders,
-        populateContractTemplate
+        populateContractTemplate,
+        getPlaceholder,
+        setPlaceholder
     };
 };

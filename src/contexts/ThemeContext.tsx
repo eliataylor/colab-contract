@@ -3,10 +3,11 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import {createTheme, type Theme, ThemeProvider as MuiThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-type ThemeMode = 'light' | 'dark' | 'system';
+type ThemeMode = 'light' | 'dark';
 
 interface ThemeContextType {
     mode: ThemeMode;
+    setMode: (mode: ThemeMode) => void;
     toggleTheme: () => void;
     theme: Theme;
 }
@@ -30,65 +31,55 @@ export const useTheme = (): ThemeContextType => {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
     const [mode, setMode] = useState<ThemeMode>(() => {
         // Check localStorage for saved theme preference, default to system
-        const savedTheme = localStorage.getItem('themeMode');
-        return (savedTheme as ThemeMode) || 'system';
+        const savedTheme = localStorage.getItem('themeMode') as ThemeMode | null;
+        return savedTheme ? savedTheme : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     });
-
-    // Get the actual theme mode (resolving 'system' to light/dark)
-    const getActualMode = (): 'light' | 'dark' => {
-        if (mode === 'system') {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        return mode as 'light' | 'dark';
-    };
-
-    const actualMode = getActualMode();
 
     // Create MUI theme based on actual mode
     const theme = createTheme({
         palette: {
-            mode: actualMode,
+            mode: mode,
             primary: {
-                main: actualMode === 'light' ? '#d97705' : '#f59e0b',
-                light: actualMode === 'light' ? '#cf7a1a' : '#fb9e24',
-                dark: actualMode === 'light' ? '#b45309' : '#d97705',
+                main: mode === 'light' ? '#d97705' : '#f59e0b',
+                light: mode === 'light' ? '#cf7a1a' : '#fb9e24',
+                dark: mode === 'light' ? '#b45309' : '#d97705',
                 contrastText: '#ffffff',
             },
             secondary: {
-                main: actualMode === 'light' ? '#137108' : '#137108',
-                light: actualMode === 'light' ? '#299f1b' : '#299f1b',
+                main: mode === 'light' ? '#137108' : '#137108',
+                light: mode === 'light' ? '#299f1b' : '#299f1b',
                 contrastText: '#ffffff',
             },
             background: {
-                default: actualMode === 'light' ? '#fef7ed' : '#0f0f0f',
-                paper: actualMode === 'light' ? '#ffffff' : '#1a1a1a',
+                default: mode === 'light' ? '#ffffff' : '#0f0f0f',
+                paper: mode === 'light' ? '#fefff7' : '#1a1a1a',
             },
             text: {
-                primary: actualMode === 'light' ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
-                secondary: actualMode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+                primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
+                secondary: mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)',
             },
             error: {
-                main: actualMode === 'light' ? '#dc2626' : '#ef4444',
-                light: actualMode === 'light' ? '#fca5a5' : '#fca5a5',
-                dark: actualMode === 'light' ? '#b91c1c' : '#dc2626',
+                main: mode === 'light' ? '#dc2626' : '#ef4444',
+                light: mode === 'light' ? '#fca5a5' : '#fca5a5',
+                dark: mode === 'light' ? '#b91c1c' : '#dc2626',
                 contrastText: '#ffffff',
             },
             warning: {
-                main: actualMode === 'light' ? '#d97705' : '#f59e0b',
-                light: actualMode === 'light' ? '#fed7aa' : '#fde68a',
-                dark: actualMode === 'light' ? '#b45309' : '#d97705',
+                main: mode === 'light' ? '#d97705' : '#f59e0b',
+                light: mode === 'light' ? '#fed7aa' : '#fde68a',
+                dark: mode === 'light' ? '#b45309' : '#d97705',
                 contrastText: '#ffffff',
             },
             info: {
-                main: actualMode === 'light' ? '#0ea5e9' : '#38bdf8',
-                light: actualMode === 'light' ? '#7dd3fc' : '#7dd3fc',
-                dark: actualMode === 'light' ? '#0284c7' : '#0ea5e9',
+                main: mode === 'light' ? '#0ea5e9' : '#38bdf8',
+                light: mode === 'light' ? '#7dd3fc' : '#7dd3fc',
+                dark: mode === 'light' ? '#0284c7' : '#0ea5e9',
                 contrastText: '#ffffff',
             },
             success: {
-                main: actualMode === 'light' ? '#16a34a' : '#22c55e',
-                light: actualMode === 'light' ? '#86efac' : '#86efac',
-                dark: actualMode === 'light' ? '#15803d' : '#16a34a',
+                main: mode === 'light' ? '#16a34a' : '#22c55e',
+                light: mode === 'light' ? '#86efac' : '#86efac',
+                dark: mode === 'light' ? '#15803d' : '#16a34a',
                 contrastText: '#ffffff',
             },
         },
@@ -141,17 +132,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
             MuiCssBaseline: {
                 styleOverrides: {
                     body: {
-                        scrollbarColor: actualMode === 'light' ? '#d97705 #fef7ed' : '#f59e0b #1a1a1a',
+                        scrollbarColor: mode === 'light' ? '#d97705 #fef7ed' : '#f59e0b #1a1a1a',
                         '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
                             width: 8,
                         },
                         '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
                             borderRadius: 8,
-                            backgroundColor: actualMode === 'light' ? '#d97705' : '#f59e0b',
+                            backgroundColor: mode === 'light' ? '#d97705' : '#f59e0b',
                         },
                         '&::-webkit-scrollbar-track, & *::-webkit-scrollbar-track': {
                             borderRadius: 8,
-                            backgroundColor: actualMode === 'light' ? '#fef7ed' : '#1a1a1a',
+                            backgroundColor: mode === 'light' ? '#fef7ed' : '#1a1a1a',
                         },
                     },
                 },
@@ -160,11 +151,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                 styleOverrides: {
                     root: {
                         borderRadius: 0,
-                        boxShadow: actualMode === 'light'
+                        boxShadow: mode === 'light'
                             ? '0 2px 8px rgba(0,0,0,0.1)'
                             : '0 2px 8px rgba(0,0,0,0.3)',
                         '&:hover': {
-                            boxShadow: actualMode === 'light'
+                            boxShadow: mode === 'light'
                                 ? '0 4px 16px rgba(0,0,0,0.15)'
                                 : '0 4px 16px rgba(0,0,0,0.4)',
                         },
@@ -177,17 +168,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                         borderRadius: 0,
                     },
                     elevation1: {
-                        boxShadow: actualMode === 'light'
+                        boxShadow: mode === 'light'
                             ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
                             : '0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4)',
                     },
                     elevation2: {
-                        boxShadow: actualMode === 'light'
+                        boxShadow: mode === 'light'
                             ? '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
                             : '0 3px 6px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5)',
                     },
                     elevation3: {
-                        boxShadow: actualMode === 'light'
+                        boxShadow: mode === 'light'
                             ? '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
                             : '0 10px 20px rgba(0,0,0,0.5), 0 6px 6px rgba(0,0,0,0.6)',
                     },
@@ -202,11 +193,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                         padding: '8px 16px',
                     },
                     contained: {
-                        boxShadow: actualMode === 'light'
+                        boxShadow: mode === 'light'
                             ? '0 2px 4px rgba(0,0,0,0.1)'
                             : '0 2px 4px rgba(0,0,0,0.3)',
                         '&:hover': {
-                            boxShadow: actualMode === 'light'
+                            boxShadow: mode === 'light'
                                 ? '0 4px 8px rgba(0,0,0,0.15)'
                                 : '0 4px 8px rgba(0,0,0,0.4)',
                         },
@@ -264,8 +255,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
             let newMode: ThemeMode;
             if (prevMode === 'light') {
                 newMode = 'dark';
-            } else if (prevMode === 'dark') {
-                newMode = 'system';
             } else {
                 newMode = 'light';
             }
@@ -274,20 +263,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
         });
     };
 
-    // Listen for system theme changes when mode is 'system'
-    useEffect(() => {
-        if (mode === 'system') {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            const handleChange = () => {
-                // Force re-render when system theme changes
-                setMode('system');
-            };
-
-            mediaQuery.addEventListener('change', handleChange);
-            return () => mediaQuery.removeEventListener('change', handleChange);
-        }
-    }, [mode]);
-
     // Save theme preference to localStorage whenever mode changes
     useEffect(() => {
         localStorage.setItem('themeMode', mode);
@@ -295,6 +270,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
 
     const value: ThemeContextType = {
         mode,
+        setMode,
         toggleTheme,
         theme,
     };

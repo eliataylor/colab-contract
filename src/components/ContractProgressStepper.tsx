@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Box, Button, Chip, Paper, Step, StepContent, StepLabel, Stepper, Typography} from '@mui/material';
 import {AttachMoney, Business, CheckCircle, People, RadioButtonUnchecked, Security, Warning} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
@@ -29,7 +29,7 @@ const progressSteps = [
         description: '',
         icon: <AttachMoney/>,
         path: '/',
-        hash: '#deferred'
+        hash: '#deferred-wage'
     },
     {
         id: 'founder-contact',
@@ -76,12 +76,6 @@ const StepLabelContainer = styled(Box)(({theme}) => ({
     gap: theme.spacing(1),
 }));
 
-const StepDescription = styled(Typography)(({theme}) => ({
-    color: theme.palette.text.secondary,
-    display: 'block',
-    marginTop: theme.spacing(0.5),
-}));
-
 const ActionButton = styled(Button)(({theme}) => ({
     textTransform: 'none',
     fontSize: '0.75rem',
@@ -96,7 +90,6 @@ interface ContractProgressStepperProps {
 const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStepClick}) => {
     const {founderFieldsModified, contributorFieldsModified} = useFormData();
     const navigate = useNavigate();
-    const location = useLocation();
 
     // Progress calculation based on user interaction
     const getStepStatus = (stepId: string) => {
@@ -172,12 +165,6 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
         }
     };
 
-    const isCurrentStep = (step: typeof progressSteps[0]) => {
-        const isCurrent = location.pathname === step.path && location.hash === step.hash;
-        console.log(`Checking step ${step.id}: path=${location.pathname}, hash=${location.hash}, stepPath=${step.path}, stepHash=${step.hash}, isCurrent=${isCurrent}`);
-        return isCurrent;
-    };
-
     const completedSteps = progressSteps.filter(step => getStepStatus(step.id)).length;
     const totalSteps = progressSteps.length;
 
@@ -195,7 +182,6 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
                     const status = getStepCompletion(step.id);
                     const isComplete = status === 'complete';
                     const isPartial = status === 'partial';
-                    const isCurrent = isCurrentStep(step);
 
                     return (
                         <Step key={step.id} completed={isComplete}
@@ -225,11 +211,6 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
                                         />
                                     )}
                                 </StepLabelContainer>
-                                {isCurrent && (
-                                    <StepDescription variant="caption">
-                                        {step.description}
-                                    </StepDescription>
-                                )}
                             </StepLabel>
                             <StepContent>
                                 <Box sx={{mb: 2}}>

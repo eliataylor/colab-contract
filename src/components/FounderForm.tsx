@@ -32,9 +32,18 @@ const FounderForm: React.FC<FounderFormProps> = ({onSuccess}) => {
         <Box>
             <form onSubmit={handleSubmit}>
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
+
                     <TextField
                         fullWidth
-                        label="Full Name"
+                        label="Company Name"
+                        value={founderData.companyName}
+                        onChange={handleInputChange('companyName')}
+                        placeholder="Enter your company name"
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Founder Name"
                         value={founderData.name}
                         onChange={handleInputChange('name')}
                         placeholder="Enter your full name"
@@ -66,6 +75,8 @@ const FounderForm: React.FC<FounderFormProps> = ({onSuccess}) => {
                         onChange={handleInputChange('address')}
                         placeholder="Enter your full address"
                     />
+
+
                 </Box>
 
                 <Box sx={{mt: 4, textAlign: 'center'}}>

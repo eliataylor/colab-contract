@@ -5,7 +5,7 @@ import Layout from './components/Layout';
 import DeferredWageTimesheet from './components/DeferredWageTimesheet';
 import ContractDocument from "./pages/ContractDocument.tsx";
 import VestingPage from './pages/VestingPage.tsx';
-import SimpleDeferredCompensationCalculator from './components/SimpleDeferredCompensationCalculator.tsx';
+import DeferredWagePage from './pages/DeferredWagePage.tsx';
 
 function App() {
     return (
@@ -16,7 +16,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<ContractDocument/>}/>
                             <Route path="/vesting" element={<VestingPage/>}/>
-                            <Route path="/deferred-wage" element={<SimpleDeferredCompensationCalculator/>}/>
+                            <Route path="/deferred-wage" element={<DeferredWagePage/>}/>
                             <Route path="/timesheets" element={<DeferredWageTimesheet/>}/>
                         </Routes>
                     </Layout>

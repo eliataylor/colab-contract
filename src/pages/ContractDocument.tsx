@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, CardHeader, Collapse, Divider, List, ListItem, ListItemText, Typography} from '@mui/material';
-import {Business, Download, ExpandLess, ExpandMore, MonetizationOn, Security} from '@mui/icons-material';
+import {Box, Button, CardHeader, Collapse, Divider, IconButton, Typography} from '@mui/material';
+import {Business, Download, ExpandLess, ExpandMore, MonetizationOn, Security, Edit} from '@mui/icons-material';
 import {useContractData} from '../hooks/useFormDataHooks';
 import EditableIPDefinition from '../components/EditableIPDefinition.tsx';
 import {useScrollToHash} from '../hooks/useScrollToHash.ts';
@@ -12,11 +12,13 @@ import {useLocation} from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import ShareButton from '../components/ShareButton.tsx';
+import SimpleDeferredCompensationCalculator from '../components/SimpleDeferredCompensationCalculator.tsx';
+import { useTheme } from '../contexts/ThemeContext.tsx';
 
 const ContractDocument: React.FC = () => {
+    const {setMode} = useTheme();
     const {getContractPlaceholders} = useContractData();
     const placeholders = getContractPlaceholders();
-    const [expanded, setExpanded] = useState<Set<string>>(new Set(['principles']));
     const [founderModalOpen, setFounderModalOpen] = useState(false);
     const [contributorModalOpen, setContributorModalOpen] = useState(false);
 
@@ -35,11 +37,11 @@ const ContractDocument: React.FC = () => {
 
         // Map hash values to accordion panel names
         const hashToPanelMap: { [key: string]: string } = {
-            'principles': 'principles',
+            'overview': 'overview',
             'protections': 'protections',
             'compensation': 'compensation',
             'vesting': 'vesting',
-            'deferred-wage': 'deferred',
+            'deferred-wage': 'deferred-wage',
             'founder-contact': 'founder-contact',
             'contributor-contact': 'contributor-contact'
         };
@@ -50,15 +52,16 @@ const ContractDocument: React.FC = () => {
             // For contact sections, open the appropriate modal
             if (panelToExpand === 'founder-contact') {
                 setFounderModalOpen(true);
-            } else if (panelToExpand === 'contributor-contact') {
+            } if (panelToExpand === 'contributor-contact') {
                 setContributorModalOpen(true);
             } else {
-                // For accordion sections, expand the panel
-                setExpanded(prev => {
-                    const newSet = new Set(prev);
-                    newSet.add(panelToExpand);
-                    return newSet;
-                });
+                if (panelToExpand === 'protections') {
+                    setProtectionsOpen(true);
+                } else if (panelToExpand === 'vesting') {
+                    setVestingOpen(true);
+                } else if (panelToExpand === 'deferred-wage') {
+                    setDeferredOpen(true);
+                }
             }
         }
     }, [location.hash]);
@@ -66,8 +69,10 @@ const ContractDocument: React.FC = () => {
     const generatePDF = async () => {
         try {
             // Expand all accordions for PDF generation
-            const allPanels = ['principles', 'protections', 'compensation', 'vesting', 'deferred'];
-            setExpanded(new Set(allPanels));
+            setProtectionsOpen(true);
+            setVestingOpen(true);
+            setDeferredOpen(true);
+            setMode('light');
 
             // Wait a bit for accordions to expand
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -124,15 +129,6 @@ const ContractDocument: React.FC = () => {
         }
     };
 
-    const toggleAll = () => {
-        const allPanels = ['principles', 'protections', 'compensation', 'vesting', 'deferred'];
-        if (expanded.size === allPanels.length) {
-            setExpanded(new Set());
-        } else {
-            setExpanded(new Set(allPanels));
-        }
-    };
-
     return (
         <Box sx={{margin: '0 auto', padding: 3}}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3}}>
@@ -141,18 +137,11 @@ const ContractDocument: React.FC = () => {
                 </Typography>
                 <Box sx={{display: 'flex', gap: 1}}>
                     <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={toggleAll}
-                    >
-                        {expanded.size === 5 ? 'Collapse All' : 'Expand All'}
-                    </Button>
-                    <Button
                         variant="contained"
                         size="small"
                         startIcon={<Download/>}
                         onClick={generatePDF}
-                        color="primary"
+                        color="secondary"
                     >
                         Download PDF
                     </Button>
@@ -178,7 +167,7 @@ const ContractDocument: React.FC = () => {
                 </Typography>
 
                 <Typography
-                    id="principles"
+                    id="overview"
                     variant="h4"
                     component="h2"
                     gutterBottom
@@ -196,7 +185,7 @@ const ContractDocument: React.FC = () => {
                 </Typography>
 
                 <Typography variant="h6"  >
-                Protections:
+                1. Protections:
                 </Typography>
                 <Box component="ul" sx={{pl: 3}}>
                         <Typography component="li" >
@@ -214,7 +203,7 @@ const ContractDocument: React.FC = () => {
 
 
                 <Typography variant="h6"  >
-                Compensation:
+                2. Compensation:
                 </Typography>
                 <Box component="ul" sx={{pl: 3}}>
                     <Typography component="li">To grant each Contributor a transparent path to earning
@@ -229,19 +218,19 @@ const ContractDocument: React.FC = () => {
                 <CardHeader
                     onClick={() => setProtectionsOpen(!protectionsOpen)}
                     id="protections"
-                    sx={{pl:0}}
+                    sx={{pl:0, cursor: 'pointer'}}
                     avatar={<Security color="primary"/>}
                     title={<Typography variant="h4" component="h2" color="primary">
                         Protections
                     </Typography>}
-                    action={protectionsOpen ? <ExpandMore/> : <ExpandLess/>}
+                    action={<IconButton size="large" color="primary" 
+                        onClick={() => setProtectionsOpen(!protectionsOpen)}>{protectionsOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
+
                 />
 
                 <Collapse in={protectionsOpen} timeout="auto" unmountOnExit>
                     <Typography variant="body1" >
-                        This section is dedicated to protecting the shared business vision and ensuring consistent,
-                        high-impact
-                        contributions.
+                        This section is meant to protect the Founder's Intellectual Property as well as the Founding Contributor's freedom to pursue other opportunities after the engagement ends.
                     </Typography>
 
                     <Typography variant="h5" component="h3" gutterBottom sx={{mt: 3, mb: 2}} color="primary">
@@ -254,7 +243,12 @@ const ContractDocument: React.FC = () => {
                         the business: 
                     </Typography>
 
+                    <Box sx={{my: 2}}>
                     <EditableIPDefinition value={placeholders.CUSTOM_IP_DEFINITION}/>
+                    </Box>
+                    <Typography variant="body1" >   
+                        This definition expressly excludes the Contributors' general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company's core IP.
+                    </Typography>
 
                     <Typography variant="h5" component="h3" gutterBottom sx={{mt: 3, mb: 2}} color="primary">
                         <strong>Mutual Commitment and Impact</strong>
@@ -337,8 +331,8 @@ const ContractDocument: React.FC = () => {
 
                 <CardHeader
                     onClick={() => setVestingOpen(!vestingOpen)}
-                    id="deferred-wage"
-                    sx={{alignItems: 'flex-start', pl: 5}}
+                    id="vesting"
+                    sx={{alignItems: 'flex-start', pl: 5, cursor: 'pointer'}}
                     title={<Typography variant="h5" component="h2" color="primary">
                         Vesting Equity
                     </Typography>}
@@ -353,7 +347,8 @@ const ContractDocument: React.FC = () => {
                             separate capital contribution.
                         </Typography>
                     }
-                    action={vestingOpen ? <ExpandMore/> : <ExpandLess/>}
+                    action={<IconButton size="large" color="primary" 
+                        onClick={() => setVestingOpen(!vestingOpen)}>{vestingOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
                 />
 
                 <Collapse in={vestingOpen} timeout="auto" unmountOnExit>
@@ -413,8 +408,8 @@ const ContractDocument: React.FC = () => {
 
                 <CardHeader
                     onClick={() => setDeferredOpen(!deferredOpen)}
-                    id="vesting"
-                    sx={{alignItems: 'flex-start', pl: 5}}
+                    id="deferred-wage"
+                    sx={{alignItems: 'flex-start', pl: 5, cursor: 'pointer'}}
                     title={<Typography variant="h5" component="h2" color="primary">
                         Deferred Wages
                     </Typography>}
@@ -427,7 +422,8 @@ const ContractDocument: React.FC = () => {
                             will be reimbursed for unpaid efforts invested in the Company.
                         </Typography>
                     }
-                    action={deferredOpen ? <ExpandMore/> : <ExpandLess/>}
+                    action={<IconButton size="large" color="primary" 
+                        onClick={() => setDeferredOpen(!deferredOpen)}>{deferredOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
                 />
 
 
@@ -442,19 +438,19 @@ const ContractDocument: React.FC = () => {
                             on the balance sheet of the Company.
                         </Typography>
                         <Typography component="li" >
-                            <strong>Rates:</strong> Both the Founders and the Contributors shall be entitled to
-                            deferred
-                            wages
-                            at the rates below:
                             <Box component="ul" sx={{pl: 3, mt: 1}}>
-                                <Typography component="li">
-                                    <strong>{placeholders.FOUNDER_NAME}:</strong> ${placeholders.FOUNDER_HOURLY_RATE} /
-                                    hour
-                                </Typography>
+                                {placeholders.FOUNDER_HOURLY_RATE > 0 && 
+                                    <Typography component="li">
+                                        <strong>{placeholders.FOUNDER_NAME}:</strong> ${placeholders.FOUNDER_HOURLY_RATE} /
+                                        hour
+                                    </Typography>
+                                }
+                                {placeholders.CONTRIBUTOR_HOURLY_RATE > 0 && 
                                 <Typography component="li">
                                     <strong>{placeholders.CONTRIBUTOR_NAME}:</strong> ${placeholders.CONTRIBUTOR_HOURLY_RATE} /
                                     hour
                                 </Typography>
+                                }
                             </Box>
                         </Typography>
                         <Typography component="li" >
@@ -486,27 +482,9 @@ const ContractDocument: React.FC = () => {
                                     months of average monthly operating expenses.</Typography>
                             </Box>
                         </Typography>
-                        <Typography component="li" >
-                            <strong>Example Calculation:</strong>
-                            <Box component="ul" sx={{pl: 3, mt: 1}}>
-                                <Typography component="li"><strong>Total
-                                    Owed:</strong> ${placeholders.EXAMPLE_CONTRIBUTOR_TOTAL} (Contributor) +
-                                    ${placeholders.EXAMPLE_FOUNDER_TOTAL} (Founder) =
-                                    ${placeholders.EXAMPLE_TOTAL_OWED}
-                                </Typography>
-                                <Typography component="li"><strong>Available
-                                    Profit:</strong> ${placeholders.EXAMPLE_AVAILABLE_PROFIT}</Typography>
-                                <Typography component="li"><strong>Distribution
-                                    Percentage:</strong> ${placeholders.EXAMPLE_AVAILABLE_PROFIT} /
-                                    ${placeholders.EXAMPLE_TOTAL_OWED} = {placeholders.EXAMPLE_DISTRIBUTION_PERCENTAGE}%</Typography>
-                                <Typography component="li"><strong>Contributor's
-                                    Payment:</strong> ${placeholders.EXAMPLE_CONTRIBUTOR_TOTAL} × {placeholders.EXAMPLE_DISTRIBUTION_PERCENTAGE}%
-                                    = ${placeholders.EXAMPLE_CONTRIBUTOR_PAYMENT}</Typography>
-                                <Typography component="li"><strong>Founder's
-                                    Payment:</strong> ${placeholders.EXAMPLE_FOUNDER_TOTAL} × {placeholders.EXAMPLE_DISTRIBUTION_PERCENTAGE}%
-                                    = ${placeholders.EXAMPLE_FOUNDER_PAYMENT}</Typography>
-                            </Box>
-                        </Typography>
+
+                        <SimpleDeferredCompensationCalculator />
+
                         <Typography component="li" >
                             <strong>Time Tracking:</strong> Both parties agree to maintain accurate time records in
                             a
@@ -541,61 +519,84 @@ const ContractDocument: React.FC = () => {
 
                 <Divider sx={{my: 4}}/>
 
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                    <Typography variant="h5" component="h3" color="primary">
-                        <strong>Founder Contact Information:</strong>
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => setFounderModalOpen(true)}
-                        sx={{ml: 2}}
-                    >
-                        Edit
-                    </Button>
-                </Box>
-                <List dense>
-                    <ListItem>
-                        <ListItemText primary="Name" secondary={placeholders.FOUNDER_NAME}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Email" secondary={placeholders.FOUNDER_EMAIL}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Phone" secondary={placeholders.FOUNDER_PHONE}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Address" secondary={placeholders.FOUNDER_ADDRESS}/>
-                    </ListItem>
-                </List>
+                {/* Signature Sections */}
+                <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
+                    {/* Founder Signature Section */}
+                    <Box sx={{ flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography variant="h6" component="h3" color="primary">
+                                <strong>Founder Signature</strong>
+                            </Typography>
+                            <IconButton
+                                size="small"
+                                onClick={() => setFounderModalOpen(true)}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Box>
+                        
+                        <Box sx={{ mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider' }}>
+                            {/* Signature line placeholder */}
+                        </Box>
+                        
+                        <Box sx={{ mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Name:</strong> {placeholders.FOUNDER_NAME}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Email:</strong> {placeholders.FOUNDER_EMAIL}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Phone:</strong> {placeholders.FOUNDER_PHONE}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Address:</strong> {placeholders.FOUNDER_ADDRESS}
+                            </Typography>
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                            Date: _______________
+                        </Typography>
+                    </Box>
 
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, mt: 3}}>
-                    <Typography variant="h5" component="h3" color="primary">
-                        <strong>Contributor Contact Information:</strong>
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => setContributorModalOpen(true)}
-                        sx={{ml: 2}}
-                    >
-                        Edit
-                    </Button>
+                    {/* Contributor Signature Section */}
+                    <Box sx={{ flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography variant="h6" component="h3" color="primary">
+                                <strong>Contributor Signature</strong>
+                            </Typography>
+                            <IconButton
+                                size="small"
+                                onClick={() => setContributorModalOpen(true)}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Box>
+                        
+                        <Box sx={{ mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider' }}>
+                            {/* Signature line placeholder */}
+                        </Box>
+                        
+                        <Box sx={{ mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Name:</strong> {placeholders.CONTRIBUTOR_NAME}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Email:</strong> {placeholders.CONTRIBUTOR_EMAIL}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <strong>Phone:</strong> {placeholders.CONTRIBUTOR_PHONE}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Address:</strong> {placeholders.CONTRIBUTOR_ADDRESS}
+                            </Typography>
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                            Date: _______________
+                        </Typography>
+                    </Box>
                 </Box>
-                <List dense>
-                    <ListItem>
-                        <ListItemText primary="Name" secondary={placeholders.CONTRIBUTOR_NAME}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Email" secondary={placeholders.CONTRIBUTOR_EMAIL}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Phone" secondary={placeholders.CONTRIBUTOR_PHONE}/>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText primary="Address" secondary={placeholders.CONTRIBUTOR_ADDRESS}/>
-                    </ListItem>
-                </List>
 
 
                 <Typography variant="body1" 
