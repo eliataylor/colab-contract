@@ -47,7 +47,7 @@ export interface ContributorData {
 }
 
 export interface TimesheetEntry {
-    contributor: string;
+    partner: string;
     date: string;
     workDone: string;
     hours: number;
@@ -60,7 +60,7 @@ const getDefaultFounderData = (): FounderData => {
     const queryParams = parseQueryParams();
 
     return {
-        name: getQueryParamValue(queryParams, 'founderName', 'Founder'),
+        name: getQueryParamValue(queryParams, 'founderName'),
         email: getQueryParamValue(queryParams, 'founderEmail'),
         phone: getQueryParamValue(queryParams, 'founderPhone'),
         address: getQueryParamValue(queryParams, 'founderAddress'),
@@ -76,7 +76,7 @@ const getDefaultContributorData = (): ContributorData => {
     const queryParams = parseQueryParams();
 
     return {
-        name: getQueryParamValue(queryParams, 'contributorName', 'Contributor'),
+        name: getQueryParamValue(queryParams, 'contributorName'),
         email: getQueryParamValue(queryParams, 'contributorEmail'),
         phone: getQueryParamValue(queryParams, 'contributorPhone'),
         address: getQueryParamValue(queryParams, 'contributorAddress'),

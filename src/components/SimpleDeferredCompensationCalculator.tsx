@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Box, Card, CardContent, Divider, Grid, Stack, TextField, Typography, useTheme} from '@mui/material';
 import {PieChart} from '@mui/x-charts/PieChart';
 import {useFormData} from '../contexts/FormDataContext';
+import {useContractData} from '../hooks/useFormDataHooks';
 
 interface CompensationData {
     contributorOwed: number;
@@ -14,6 +15,7 @@ interface CompensationData {
 
 const SimpleDeferredCompensationCalculator: React.FC = () => {
     const {contributorData, founderData, timesheetEntries, updateFounderData, updateContributorData} = useFormData();
+    const {getPlaceholder} = useContractData();
     const theme = useTheme();
 
     // Calculate hours and rates from timesheet data
@@ -107,7 +109,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                             <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {contributorData.name} - Total Owed:
+                                        {getPlaceholder('CONTRIBUTOR_NAME')} - Total Owed:
                                         ${Intl.NumberFormat('en-US').format(contributorOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
@@ -139,7 +141,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {founderData.name} - Total Owed:
+                                        {getPlaceholder('FOUNDER_NAME')} - Total Owed:
                                         ${Intl.NumberFormat('en-US').format(founderOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
@@ -190,7 +192,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                     <strong>"Profit" is after:</strong><br/>
                                     • All operating expenses paid<br/>
                                     • All employee wages paid<br/>
-                                    • 3 months of median operating expenses + employee wages on reserve
+                                    • 3 months of median operating expenses + employee wages are on reserve
                                 </Typography>
                             </Alert>
                         </CardContent>
@@ -253,7 +255,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                     <Stack spacing={2}>
                                         <Box>
                                             <Typography variant="body2" color="secondary.main">
-                                                {contributorData.name}'s Payment
+                                                {getPlaceholder('CONTRIBUTOR_NAME')}'s Payment
                                             </Typography>
                                             <Typography variant="h5" color="secondary.main">
                                                 ${compensationData.contributorPayment.toFixed(2)}
@@ -262,7 +264,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                         <Box>
                                             <Typography variant="body2" color="primary.main">
-                                                {founderData.name}'s Payment
+                                                {getPlaceholder('FOUNDER_NAME')}'s Payment
                                             </Typography>
                                             <Typography variant="h5" color="primary.main">
                                                 ${compensationData.founderPayment.toFixed(2)}
