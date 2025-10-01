@@ -81,7 +81,7 @@ const SimpleVestingCalculator: React.FC = () => {
 
             <Box sx={{display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, gap: 2}}>
                 {/* Controls */}
-                <Box sx={{minWidth: 320}}>
+                <Box sx={{minWidth: 320, width: '100%'}}>
                     <Card elevation={2} sx={{px: 1}}>
                         <CardContent>
                             <Box sx={{mb: 4}}>
@@ -184,13 +184,13 @@ const SimpleVestingCalculator: React.FC = () => {
                     </Card>
                 </Box>
 
-                <Box>
+                <Box sx={{width: '100%'}}>
                     <Card elevation={2}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                Vesting Schedule Details
+                                Vesting Schedule Calculation
                             </Typography>
-                            <TableContainer>
+                            <TableContainer sx={{width: '100%'}}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>

@@ -252,8 +252,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
             MuiTypography: {
                 styleOverrides: {
                     root: {
-                        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                        maxWidth: '900px',
+                        maxWidth: '900px'
                     },
                 },
             },

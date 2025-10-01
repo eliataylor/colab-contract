@@ -161,7 +161,7 @@ const ContractDocument: React.FC = () => {
             </Box>
 
             <div id="contract-content">
-                <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                <Typography variant="body1"  >
                     This agreement is made between <strong>{placeholders.FOUNDER_NAMES}</strong> (collectively,
                     "Founders")
                     and <strong>{placeholders.CONTRIBUTOR_NAMES}</strong> (collectively, "Contributors") to define the
@@ -169,7 +169,7 @@ const ContractDocument: React.FC = () => {
                     for ownership, compensation, and shared commitment in building a product together.
                 </Typography>
 
-                <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                <Typography variant="body1"  >
                     All parties agree that the following terms shall apply to the entire scope of ownership,
                     compensation,
                     and protections within the IP Holding Company ("Company") and any subsidiary corporations or
@@ -191,25 +191,32 @@ const ContractDocument: React.FC = () => {
                     </Box>
                 </Typography>
 
-                <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                <Typography variant="body1"  gutterBottom>
                     This agreement is built on two core principles:
                 </Typography>
 
-                <strong>Protections:</strong>
-                <ul style={{paddingLeft: 0, listStylePosition: 'inside', marginTop: '3px'}}>
-                    <Typography component="li">
+                <Typography variant="h6"  >
+                Protections:
+                </Typography>
+                <Box component="ul" sx={{pl: 3}}>
+                        <Typography component="li" >
                         To protect each Founder's brand ownership, Company IP and
-                        ensure they have final authority in the direction of the Company</Typography>
-                    <Typography component="li">
+                        ensure they have final authority in the direction of the Company
+                        </Typography>
+                        <Typography component="li">
                         To protect each Contributor's
                         freedom
                         to pursue other opportunities as a founder or contributor in other projects so long they
                         honor all
                         terms in this agreement.</Typography>
                     <Typography component="li">Ensure mutual commitment and accountability.</Typography>
-                </ul>
-                <strong>Compensation:</strong>
-                <ul style={{paddingLeft: 0, listStylePosition: 'inside', marginTop: '3px'}}>
+                </Box>
+
+
+                <Typography variant="h6"  >
+                Compensation:
+                </Typography>
+                <Box component="ul" sx={{pl: 3}}>
                     <Typography component="li">To grant each Contributor a transparent path to earning
                         minority
                         equity holdings in the Company. </Typography>
@@ -217,11 +224,12 @@ const ContractDocument: React.FC = () => {
                         company
                         is sold or starts to earn enough profit.
                     </Typography>
-                </ul>
+                </Box>
 
                 <CardHeader
                     onClick={() => setProtectionsOpen(!protectionsOpen)}
                     id="protections"
+                    sx={{pl:0}}
                     avatar={<Security color="primary"/>}
                     title={<Typography variant="h4" component="h2" color="primary">
                         Protections
@@ -230,7 +238,7 @@ const ContractDocument: React.FC = () => {
                 />
 
                 <Collapse in={protectionsOpen} timeout="auto" unmountOnExit>
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    <Typography variant="body1" >
                         This section is dedicated to protecting the shared business vision and ensuring consistent,
                         high-impact
                         contributions.
@@ -240,10 +248,10 @@ const ContractDocument: React.FC = () => {
                         <strong>Definitions</strong>
                     </Typography>
 
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    <Typography variant="body1" >
                         For the purpose of this agreement, "IP" is defined as a specific set of proprietary assets
                         critical to
-                        the business. This includes:
+                        the business: 
                     </Typography>
 
                     <EditableIPDefinition value={placeholders.CUSTOM_IP_DEFINITION}/>
@@ -252,30 +260,19 @@ const ContractDocument: React.FC = () => {
                         <strong>Mutual Commitment and Impact</strong>
                     </Typography>
 
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    <Typography variant="body1" >
                         Both Founders and Contributors agree to a mutual commitment to consistent, high-impact work.
                         This is the
                         foundation upon which this agreement is built.
                     </Typography>
 
-                    <Box component="ul" sx={{pl: 3, fontSize: '1.1rem', lineHeight: 1.6}}>
-                        <Typography component="li" paragraph>
+                    <Box component="ul" sx={{pl: 3}}>
+                        <Typography component="li" >
                             <strong>Performance Review:</strong> Contributions will be evaluated quarterly based on
                             the
-                            agreed-upon goals.
+                            agreed-upon goals to ensure all parties are aligned and committed to the shared goal.
                         </Typography>
-                        <Typography component="li" paragraph>
-                            <strong>Accountability:</strong> If a Contributor is not meeting their agreed-upon
-                            commitments, the
-                            Founders reserve the right to work with the Contributor to re-evaluate their role,
-                            vesting
-                            schedule,
-                            or engagement with the Company, ensuring that all parties are aligned and committed to
-                            the
-                            shared
-                            goal.
-                        </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>At-Will Engagement:</strong> This engagement is at-will. Either party may
                             terminate
                             the
@@ -293,7 +290,7 @@ const ContractDocument: React.FC = () => {
                         <strong>Non-Solicitation</strong>
                     </Typography>
 
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    <Typography variant="body1"  >
                         To protect the relationships we've built, the Contributor agrees that for a period
                         of <strong>twelve
                         (12) months</strong> following their departure from the Company, they will not, either
@@ -302,14 +299,14 @@ const ContractDocument: React.FC = () => {
                         indirectly:
                     </Typography>
 
-                    <Box component="ul" sx={{pl: 3, fontSize: '1.1rem', lineHeight: 1.6}}>
-                        <Typography component="li" paragraph>
+                    <Box component="ul" sx={{pl: 3}}>
+                        <Typography component="li" >
                             Solicit, entice, or persuade any employee or independent contractor of the Company to
                             leave
                             their
                             employment or engagement.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             Solicit any customer of the Company with whom they had direct contact during their
                             engagement, for
                             the purpose of providing services or products that are competitive with the Company's
@@ -321,24 +318,17 @@ const ContractDocument: React.FC = () => {
                         <strong>Code Reuse & Competitive Projects</strong>
                     </Typography>
 
-                    <Typography variant="body1" paragraph sx={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    <Typography variant="body1"  >
                         As defined above, the Company's IP does not include general software code or algorithms.
                         However, to
-                        protect the Founder's market positioning, the Contributor agrees that for a period
-                        of <strong>twelve
-                        (12) months</strong> following their departure from the Company, they will not, either
-                        directly
-                        or
-                        indirectly, use software code, algorithms, or development methodologies developed for the
-                        Company to
-                        work on a new product or service within the same industry that directly competes with the
-                        Company's
-                        business.
+                        protect the Founder's market positioning, the Contributor agrees to copy and rebrand the codebase 
+                        to compete with Company directly or indirectly.
                     </Typography>
                 </Collapse>
 
                 <CardHeader
                     id="compensation"
+                    sx={{pl:0}}
                     avatar={<MonetizationOn color="primary"/>}
                     title={<Typography variant="h4" component="h2" color="primary">
                         Compensation
@@ -348,7 +338,7 @@ const ContractDocument: React.FC = () => {
                 <CardHeader
                     onClick={() => setVestingOpen(!vestingOpen)}
                     id="deferred-wage"
-                    sx={{alignItems: 'flex-start', pl: 7}}
+                    sx={{alignItems: 'flex-start', pl: 5}}
                     title={<Typography variant="h5" component="h2" color="primary">
                         Vesting Equity
                     </Typography>}
@@ -367,8 +357,8 @@ const ContractDocument: React.FC = () => {
                 />
 
                 <Collapse in={vestingOpen} timeout="auto" unmountOnExit>
-                    <Box component="ul" sx={{pl: 3, fontSize: '1.1rem', lineHeight: 1.6}}>
-                        <Typography component="li" paragraph>
+                    <Box component="ul" sx={{pl: 3}}>
+                        <Typography component="li" >
                             <strong>Vesting
                                 Schedule:</strong> The <strong>{placeholders.CONTRIBUTOR_EQUITY_PERCENTAGE}%</strong> equity
                             allocation shall vest over a <strong>{placeholders.VESTING_PERIOD_YEARS}</strong>-year
@@ -377,7 +367,7 @@ const ContractDocument: React.FC = () => {
                             accelerate over
                             time, rewarding sustained commitment.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Vesting Formula:</strong> The amount of vested equity will be calculated using
                             the
                             following
@@ -394,7 +384,7 @@ const ContractDocument: React.FC = () => {
                             variant="body1"
                             sx={{mt: 1, mb: 2, p: 2, borderRadius: 1}}
                         />
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Example Vesting Schedule:</strong> Below is an example of
                             a <strong>{placeholders.CONTRIBUTOR_EQUITY_PERCENTAGE}%</strong> equity grant vesting
                             over <strong>{placeholders.VESTING_PERIOD_YEARS}</strong> years
@@ -407,8 +397,8 @@ const ContractDocument: React.FC = () => {
 
                     <SimpleVestingCalculator/>
 
-                    <Box component="ul" sx={{pl: 3, fontSize: '1.1rem', lineHeight: 1.6}}>
-                        <Typography component="li" paragraph>
+                    <Box component="ul" sx={{pl: 3, }}>
+                        <Typography component="li" >
                             <strong>Leaving the Company:</strong> If a Contributor's engagement ends before
                             the {Math.round(placeholders.CLIFF_DAYS / 30.44)}-month cliff,
                             no equity will have vested, and the entire equity grant will be returned to the Company.
@@ -424,7 +414,7 @@ const ContractDocument: React.FC = () => {
                 <CardHeader
                     onClick={() => setDeferredOpen(!deferredOpen)}
                     id="vesting"
-                    sx={{alignItems: 'flex-start', pl: 7}}
+                    sx={{alignItems: 'flex-start', pl: 5}}
                     title={<Typography variant="h5" component="h2" color="primary">
                         Deferred Wages
                     </Typography>}
@@ -443,15 +433,15 @@ const ContractDocument: React.FC = () => {
 
                 <Collapse in={deferredOpen} timeout="auto" unmountOnExit>
 
-                    <Box component="ul" sx={{pl: 3, fontSize: '1.1rem', lineHeight: 1.6}}>
-                        <Typography component="li" paragraph>
+                    <Box component="ul" sx={{pl: 3}}>
+                        <Typography component="li" >
                             <strong>Accrual:</strong> This deferred hourly wage begins accumulating upon signing and
                             continues
                             until the Company is able to negotiate a standard salary paid monthly. It shall be
                             considered a debt
                             on the balance sheet of the Company.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Rates:</strong> Both the Founders and the Contributors shall be entitled to
                             deferred
                             wages
@@ -467,7 +457,7 @@ const ContractDocument: React.FC = () => {
                                 </Typography>
                             </Box>
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Pro-Rata Payment:</strong> Accrued deferred wages shall be paid from monthly net
                             income (as
                             defined by GAAP accounting standards) on a pro-rata basis. The pro-rata share for each
@@ -478,7 +468,7 @@ const ContractDocument: React.FC = () => {
                             wages of
                             all parties.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Conditions for Payment:</strong> Payment shall be made at the end of any month
                             in
                             which the
@@ -496,7 +486,7 @@ const ContractDocument: React.FC = () => {
                                     months of average monthly operating expenses.</Typography>
                             </Box>
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Example Calculation:</strong>
                             <Box component="ul" sx={{pl: 3, mt: 1}}>
                                 <Typography component="li"><strong>Total
@@ -517,7 +507,7 @@ const ContractDocument: React.FC = () => {
                                     = ${placeholders.EXAMPLE_FOUNDER_PAYMENT}</Typography>
                             </Box>
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Time Tracking:</strong> Both parties agree to maintain accurate time records in
                             a
                             shared
@@ -525,7 +515,7 @@ const ContractDocument: React.FC = () => {
                             Done, Hours,
                             Rate ($/hr), Total.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Disputes:</strong> Any Founder or Contributor may dispute any log entry for
                             another
                             within
@@ -534,7 +524,7 @@ const ContractDocument: React.FC = () => {
                             to earn
                             those hours.
                         </Typography>
-                        <Typography component="li" paragraph>
+                        <Typography component="li" >
                             <strong>Rate Changes:</strong> Once the Company has cleared all debts and can afford a
                             salary
                             guarantee, the Founders may propose a standard salary for the Contributors. The
@@ -608,8 +598,8 @@ const ContractDocument: React.FC = () => {
                 </List>
 
 
-                <Typography variant="body1" paragraph
-                            sx={{fontSize: '1.1rem', lineHeight: 1.6, mt: 3, fontStyle: 'italic'}}>
+                <Typography variant="body1" 
+                            sx={{ mt: 3, fontStyle: 'italic'}}>
                     This agreement serves as a living document of our shared commitment.
                 </Typography>
                 <Typography variant="h5" component="h3" gutterBottom color="primary">

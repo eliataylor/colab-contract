@@ -13,3 +13,8 @@
 #root {
     margin: 0 auto;
 }
+
+/* Ensure Typography elements have max-width of 900px */
+.MuiTypography-root {
+    max-width: 900px !important;
+}
