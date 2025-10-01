@@ -14,6 +14,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
     TableRow,
     TextField
@@ -136,39 +137,8 @@ const DeferredWageTimesheet: React.FC = () => {
 
 
     return (
-        <PageContainer>
-            <FadeIn>
-                <PageTitle variant="h4" color="primary">
-                    Deferred Wage Timesheet
-                </PageTitle>
-
-                <Description>
-                    Track hours worked and deferred compensation for all contributors
-                </Description>
-
-                <StyledCard>
-                    <CardBody>
-                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3}}>
-                            <CardTitle variant="h5">
-                                Timesheet Entries
-                            </CardTitle>
-                            <Box sx={{display: 'flex', gap: 2}}>
-                                <Button
-                                    variant="contained"
-                                    startIcon={<Add/>}
-                                    onClick={() => handleOpen()}
-                                >
-                                    Add Entry
-                                </Button>
-                                <Button
-                                    startIcon={<Download/>}
-                                    onClick={exportToCSV}
-                                    variant="outlined"
-                                >
-                                    Export CSV
-                                </Button>
-                            </Box>
-                        </Box>
+                <>
+                    <>
 
                         {/* Summary Cards */}
                         <Box sx={{display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap'}}>
@@ -189,11 +159,6 @@ const DeferredWageTimesheet: React.FC = () => {
                             />
                         </Box>
 
-                        {timesheetEntries.length === 0 ? (
-                            <Alert severity="info">
-                                No timesheet entries yet. Click "Add Entry" to get started.
-                            </Alert>
-                        ) : (
                             <TableContainer component={Paper}>
                                 <Table>
                                     <TableHead>
@@ -235,9 +200,34 @@ const DeferredWageTimesheet: React.FC = () => {
                                             </TableRow>
                                         ))}
                                     </TableBody>
+                                    <TableFooter  sx={{py:0}}>
+                                        <TableRow sx={{py:0}}>  
+                                            <TableCell colSpan={3} align="left" sx={{py:0, px:1}}>
+                                            <Button
+                                    variant="contained"
+                                    size="small"
+                                    sx={{py:.2}}
+                                    startIcon={<Add/>}
+                                    onClick={() => handleOpen()}
+                                >
+                                    Add Entry
+                                </Button>
+                                </TableCell>
+                                <TableCell colSpan={4} align="right" sx={{p:1, gap: 1}}>
+                                <Button
+                                    size="small"
+                                    startIcon={<Download/>}
+                                    onClick={exportToCSV}
+                                    sx={{py:.2}}
+                                    variant="outlined"
+                                >
+                                    Export CSV
+                                </Button>
+                                            </TableCell>                                
+                                        </TableRow>
+                                    </TableFooter>
                                 </Table>
                             </TableContainer>
-                        )}
 
                         {/* Add/Edit Dialog */}
                         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -305,10 +295,8 @@ const DeferredWageTimesheet: React.FC = () => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                    </CardBody>
-                </StyledCard>
-            </FadeIn>
-        </PageContainer>
+                    </>
+                </>
     );
 };
 

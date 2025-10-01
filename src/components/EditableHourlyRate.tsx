@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, InputAdornment, TextField, Typography} from '@mui/material';
+import {InputAdornment, TextField, Typography} from '@mui/material';
 
 interface EditableHourlyRateProps {
     label: string;

@@ -16,6 +16,7 @@ import ShareButton from '../components/ShareButton.tsx';
 import SimpleDeferredCompensationCalculator from '../components/SimpleDeferredCompensationCalculator.tsx';
 import { useTheme } from '../contexts/ThemeContext.tsx';
 import { Link } from 'react-router-dom';
+import DeferredWageTimesheet from '../components/DeferredWageTimesheet.tsx';
 
 const ContractDocument: React.FC = () => {
     const {setMode} = useTheme();
@@ -28,6 +29,7 @@ const ContractDocument: React.FC = () => {
     const [deferredOpen, setDeferredOpen] = useState(false);
     const [vestingOpen, setVestingOpen] = useState(false);
     const [exampleScenariosOpen, setExampleScenariosOpen] = useState(true);
+    const [timesheetsOpen, setTimesheetsOpen] = useState(true);
 
     const location = useLocation();
 
@@ -523,6 +525,16 @@ const ContractDocument: React.FC = () => {
                             Done, Hours,
                             Rate ($/hr), Total.
                         </Typography>
+
+                        <Box sx={{my: 3}}>
+                        <Button variant="text" 
+                        onClick={() => setTimesheetsOpen(!timesheetsOpen)}>
+                                {timesheetsOpen ? 'Hide Timesheets' : 'Show Timesheets'}
+                        </Button>
+                        <Collapse in={timesheetsOpen} timeout="auto" unmountOnExit>
+                            <DeferredWageTimesheet />
+                        </Collapse>
+                        </Box>                        
 
                         <Typography variant='h6' sx={{mt:2}} >
                             Disputes
