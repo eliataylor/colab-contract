@@ -20,20 +20,20 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
     // Calculate hours and rates from timesheet data
     const contributorHoursFromTimesheet = timesheetEntries
-        .filter(entry => entry.contributor === contributorData.name)
+        .filter(entry => entry.partner === contributorData.name)
         .reduce((sum, entry) => sum + entry.hours, 0);
     const contributorRate = contributorHoursFromTimesheet > 0
         ? timesheetEntries
-        .filter(entry => entry.contributor === contributorData.name)
+        .filter(entry => entry.partner === contributorData.name)
         .reduce((sum, entry) => sum + entry.total, 0) / contributorHoursFromTimesheet
         : contributorData.deferredWageRate;
 
     const founderHoursFromTimesheet = timesheetEntries
-        .filter(entry => entry.contributor === founderData.name)
+        .filter(entry => entry.partner === founderData.name)
         .reduce((sum, entry) => sum + entry.hours, 0);
     const founderRate = founderHoursFromTimesheet > 0
         ? timesheetEntries
-        .filter(entry => entry.contributor === founderData.name)
+        .filter(entry => entry.partner === founderData.name)
         .reduce((sum, entry) => sum + entry.total, 0) / founderHoursFromTimesheet
         : founderData.deferredWageRate;
 

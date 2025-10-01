@@ -43,14 +43,6 @@ const ShareButton: React.FC<ShareButtonProps> = () => {
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    // Check if there's any progress made on the contract
-    const hasProgress = founderFieldsModified.size > 0 || contributorFieldsModified.size > 0;
-
-    // Don't render if no progress has been made
-    if (!hasProgress) {
-        return null;
-    }
-
     const handleShareClick = () => {
         setOpen(true);
     };
@@ -75,7 +67,7 @@ const ShareButton: React.FC<ShareButtonProps> = () => {
     return (
         <>
             <Button
-                variant="contained"
+                variant="outlined"
                 color="secondary"
                 size="small"
                 onClick={handleShareClick}

@@ -29,7 +29,7 @@ export interface FounderData {
     email: string;
     phone: string;
     address: string;
-    companyName: string
+    companyName: string;
     customIPDefinition: string;
     deferredWageRate: number;
 }

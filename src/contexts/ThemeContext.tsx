@@ -82,6 +82,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                 dark: mode === 'light' ? '#15803d' : '#16a34a',
                 contrastText: '#ffffff',
             },
+            action: {
+                disabled: mode === 'light' ? 'rgba(0, 0, 0, 0.26)' : 'rgba(255, 255, 255, 0.26)',
+                disabledBackground: mode === 'light' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+                hover: mode === 'light' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)',
+                selected: mode === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+            },
         },
         shape: {
             borderRadius: 0, // Consistent border radius
@@ -143,6 +149,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                         '&::-webkit-scrollbar-track, & *::-webkit-scrollbar-track': {
                             borderRadius: 8,
                             backgroundColor: mode === 'light' ? '#fef7ed' : '#1a1a1a',
+                        },
+                    },
+                },
+            },
+            MuiButtonBase: {
+                styleOverrides: {
+                    root: {
+                        '&.Mui-disabled': {
+                            color: mode === 'light' ? 'rgba(0, 0, 0, 0.26)' : 'rgba(255, 255, 255, 0.26)',
+                            backgroundColor: mode === 'light' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
                         },
                     },
                 },

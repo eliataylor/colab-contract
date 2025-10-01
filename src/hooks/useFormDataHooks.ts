@@ -97,6 +97,7 @@ export const useContractData = () => {
             FOUNDER_NAMES: founderData.name || '[Founders\' Names]',
             CONTRIBUTOR_NAMES: contributorData.name || '[Contributors\' Names]',
             CUSTOM_IP_DEFINITION: founderData.customIPDefinition,
+            COMPANY_NAME: founderData.companyName,
             CONTRIBUTOR_EQUITY_PERCENTAGE: contributorData.totalEquityGranted,
             VESTING_PERIOD_YEARS: contributorData.vestingPeriod,
             VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 365,
@@ -160,7 +161,8 @@ export const useContractData = () => {
             'FOUNDER_PHONE': 'phone',
             'FOUNDER_ADDRESS': 'address',
             'FOUNDER_HOURLY_RATE': 'deferredWageRate',
-            'CUSTOM_IP_DEFINITION': 'customIPDefinition'
+            'CUSTOM_IP_DEFINITION': 'customIPDefinition',
+            'COMPANY_NAME': 'companyName'
         };
 
         const contributorFields: Record<string, keyof ContributorData> = {

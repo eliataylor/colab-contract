@@ -160,16 +160,16 @@ const ContractDocument: React.FC = () => {
                     "Founders")
                     and <strong>{placeholders.CONTRIBUTOR_NAMES}</strong> (collectively, "Contributors") to define the
                     terms
-                    for ownership, compensation, and shared commitment in building a product together.
+                    for ownership, compensation, and shared commitment in building 
+                    a {placeholders.COMPANY_NAME.length > 0 ? <em>{placeholders.COMPANY_NAME}</em> : 'company and product'} together.
                 </Typography>
 
                 <Typography variant="body1">
                     All parties agree that the following terms shall apply to the entire scope of ownership,
                     compensation,
-                    and protections within the IP Holding Company ("Company") and any subsidiary corporations or
-                    business
-                    entities.
+                    and protections within the IP Holding Company, any subsidiary corporations, products or brands thereunder, hereinafter collectively referred to as the "Company".
                 </Typography>
+
 
                 <Typography
                     id="overview"

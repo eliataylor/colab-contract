@@ -88,26 +88,22 @@ interface ContractProgressStepperProps {
 }
 
 const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStepClick}) => {
-    const {founderFieldsModified, contributorFieldsModified} = useFormData();
+    const {founderData, contributorData} = useFormData();
     const navigate = useNavigate();
 
-    // Progress calculation based on user interaction
+    // Progress calculation based on field values (including query parameter prepopulated data)
     const getStepStatus = (stepId: string) => {
         switch (stepId) {
             case 'founder-protections':
-                return founderFieldsModified.has('customIPDefinition');
-            case 'founder-incentives':
-                return founderFieldsModified.has('deferredWageRate');
-            case 'contributor-incentives':
-                return contributorFieldsModified.has('totalEquityGranted') &&
-                    contributorFieldsModified.has('vestingPeriod') &&
-                    contributorFieldsModified.has('deferredWageRate');
+                return !!founderData.customIPDefinition;
+            case 'vesting':
+                return contributorData.totalEquityGranted > 0 && contributorData.vestingPeriod > 0;
+            case 'deferred':
+                return founderData.deferredWageRate > 0 && contributorData.deferredWageRate > 0;
             case 'founder-contact':
-                return founderFieldsModified.has('name') && founderFieldsModified.has('email') &&
-                    founderFieldsModified.has('phone') && founderFieldsModified.has('address');
+                return !!(founderData.name && founderData.email && founderData.phone && founderData.address);
             case 'contributor-contact':
-                return contributorFieldsModified.has('name') && contributorFieldsModified.has('email') &&
-                    contributorFieldsModified.has('phone') && contributorFieldsModified.has('address');
+                return !!(contributorData.name && contributorData.email && contributorData.phone && contributorData.address);
             default:
                 return false;
         }
@@ -125,19 +121,15 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
     const getPartialCompletion = (stepId: string) => {
         switch (stepId) {
             case 'founder-contact':
-                return founderFieldsModified.has('name') || founderFieldsModified.has('email') ||
-                    founderFieldsModified.has('phone') || founderFieldsModified.has('address');
+                return !!(founderData.name || founderData.email || founderData.phone || founderData.address);
             case 'contributor-contact':
-                return contributorFieldsModified.has('name') || contributorFieldsModified.has('email') ||
-                    contributorFieldsModified.has('phone') || contributorFieldsModified.has('address');
+                return !!(contributorData.name || contributorData.email || contributorData.phone || contributorData.address);
             case 'founder-protections':
-                return founderFieldsModified.has('customIPDefinition');
-            case 'founder-incentives':
-                return founderFieldsModified.has('deferredWageRate');
-            case 'contributor-incentives':
-                return contributorFieldsModified.has('totalEquityGranted') ||
-                    contributorFieldsModified.has('vestingPeriod') ||
-                    contributorFieldsModified.has('deferredWageRate');
+                return !!founderData.customIPDefinition;
+            case 'vesting':
+                return contributorData.totalEquityGranted > 0 || contributorData.vestingPeriod > 0;
+            case 'deferred':
+                return founderData.deferredWageRate > 0 || contributorData.deferredWageRate > 0;
             default:
                 return false;
         }
