@@ -12,9 +12,9 @@ import {
     ListItemIcon,
     ListItemText
 } from '@mui/material';
-import {Close, Visibility} from '@mui/icons-material';
+import {Close, Gavel} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
-import ContractDocument from './ContractDocument';
+import ContractDocument from '../pages/ContractDocument.tsx';
 
 // Styled components following the existing pattern
 const PreviewButton = styled(ListItemButton)(({theme}) => ({
@@ -65,9 +65,9 @@ const ContractPreviewButton: React.FC<ContractPreviewButtonProps> = ({onPreviewC
             <ListItem disablePadding>
                 <PreviewButton onClick={handlePreviewClick}>
                     <ListItemIcon>
-                        <Visibility color="inherit"/>
+                        <Gavel color="inherit"/>
                     </ListItemIcon>
-                    <ListItemText primary="Preview Contract"/>
+                    <ListItemText primary="Contract"/>
                 </PreviewButton>
             </ListItem>
 

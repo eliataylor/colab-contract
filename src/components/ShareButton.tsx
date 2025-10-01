@@ -14,7 +14,8 @@ import {
 } from '@mui/material';
 import {Close as CloseIcon, ContentCopy as CopyIcon, Share as ShareIcon} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
-import {generateShareableUrl, useFormData} from '../contexts/FormDataContext';
+import {useFormData} from '../hooks/useFormDataHooks';
+import {generateShareableUrl} from '../utils/contractUtils';
 
 const DialogContentStyled = styled(DialogContent)(({theme}) => ({
     padding: theme.spacing(3),

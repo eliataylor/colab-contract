@@ -34,7 +34,7 @@ const FounderModal: React.FC<FounderModalProps> = ({
     };
 
     const renderContent = () => {
-        return <FounderForm/>;
+        return <FounderForm onSuccess={handleClose}/>;
     };
 
     if (layout === 'page') {

@@ -34,7 +34,12 @@ const ContributorModal: React.FC<ContributorModalProps> = ({
     };
 
     const renderContent = () => {
-        return <ContributorForm/>;
+        return <ContributorForm onSuccess={() => {
+            if (layout === 'dialog') {
+                setDialogOpen(false);
+            }
+            onClose?.();
+        }}/>;
     };
 
     if (layout === 'page') {

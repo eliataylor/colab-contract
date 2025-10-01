@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {createTheme, ThemeProvider as MuiThemeProvider} from '@mui/material/styles';
+import {createTheme, type Theme, ThemeProvider as MuiThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -8,7 +8,7 @@ type ThemeMode = 'light' | 'dark' | 'system';
 interface ThemeContextType {
     mode: ThemeMode;
     toggleTheme: () => void;
-    theme: any; // Using any to avoid Theme type issues in MUI v7
+    theme: Theme;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -16,6 +16,16 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
     children: ReactNode;
 }
+
+// Internal hook - exported for use in hooks file
+// eslint-disable-next-line react-refresh/only-export-components
+export const useTheme = (): ThemeContextType => {
+    const context = useContext(ThemeContext);
+    if (context === undefined) {
+        throw new Error('useTheme must be used within a ThemeProvider');
+    }
+    return context;
+};
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
     const [mode, setMode] = useState<ThemeMode>(() => {
@@ -40,14 +50,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
             mode: actualMode,
             primary: {
                 main: actualMode === 'light' ? '#d97705' : '#f59e0b',
-                light: actualMode === 'light' ? '#ea580c' : '#fbbf24',
+                light: actualMode === 'light' ? '#cf7a1a' : '#fb9e24',
                 dark: actualMode === 'light' ? '#b45309' : '#d97705',
                 contrastText: '#ffffff',
             },
             secondary: {
-                main: actualMode === 'light' ? '#7c3aed' : '#a78bfa',
-                light: actualMode === 'light' ? '#8b5cf6' : '#c4b5fd',
-                dark: actualMode === 'light' ? '#6d28d9' : '#7c3aed',
+                main: actualMode === 'light' ? '#137108' : '#137108',
+                light: actualMode === 'light' ? '#299f1b' : '#299f1b',
                 contrastText: '#ffffff',
             },
             background: {
@@ -240,6 +249,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                     },
                 },
             },
+            MuiTypography: {
+                styleOverrides: {
+                    root: {
+                        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                        maxWidth: '900px',
+                    },
+                },
+            },
         },
     });
 
@@ -293,10 +310,3 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
     );
 };
 
-export const useTheme = (): ThemeContextType => {
-    const context = useContext(ThemeContext);
-    if (context === undefined) {
-        throw new Error('useTheme must be used within a ThemeProvider');
-    }
-    return context;
-};

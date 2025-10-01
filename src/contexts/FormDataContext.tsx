@@ -33,6 +33,7 @@ export interface FounderData {
     email: string;
     phone: string;
     address: string;
+    companyName: string
     customIPDefinition: string;
     deferredWageRate: number;
 }
@@ -67,6 +68,7 @@ const getDefaultFounderData = (): FounderData => {
         email: getQueryParamValue(queryParams, 'founderEmail'),
         phone: getQueryParamValue(queryParams, 'founderPhone'),
         address: getQueryParamValue(queryParams, 'founderAddress'),
+        companyName: getQueryParamValue(queryParams, 'companyName'),
         customIPDefinition: getQueryParamValue(queryParams, 'customIPDefinition', `* Proprietary user data and customer lists.
 * Content, created or curated uniquely to the Company.
 * Trade secrets related to business strategies, financial information, and customer data.\n
@@ -130,22 +132,15 @@ interface FormDataProviderProps {
     children: ReactNode;
 }
 
-// Vesting calculation utility
-const calculateVestingPercentage = (
-    totalEquity: number,
-    daysWorked: number,
-    totalVestingDays: number,
-    cliffDays: number,
-    vestingExponent: number = 2
-): number => {
-    if (daysWorked < cliffDays) return 0;
 
-    const vestingRatio = Math.pow(
-        (daysWorked - cliffDays) / (totalVestingDays - cliffDays),
-        vestingExponent
-    );
-
-    return Math.min(totalEquity * vestingRatio, totalEquity);
+// Internal hook - exported for use in hooks file
+// eslint-disable-next-line react-refresh/only-export-components
+export const useFormData = (): FormDataContextType => {
+    const context = useContext(FormDataContext);
+    if (context === undefined) {
+        throw new Error('useFormData must be used within a FormDataProvider');
+    }
+    return context;
 };
 
 export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) => {
@@ -270,185 +265,4 @@ export const FormDataProvider: React.FC<FormDataProviderProps> = ({children}) =>
             {children}
         </FormDataContext.Provider>
     );
-};
-
-export const useFormData = (): FormDataContextType => {
-    const context = useContext(FormDataContext);
-    if (context === undefined) {
-        throw new Error('useFormData must be used within a FormDataProvider');
-    }
-    return context;
-};
-
-// Specialized hooks with computed methods
-export const useFounderData = () => {
-    const {founderData, updateFounderData, isFounderDataComplete} = useFormData();
-    return {founderData, updateFounderData, isFounderDataComplete};
-};
-
-export const useContributorData = () => {
-    const {contributorData, updateContributorData, isContributorDataComplete} = useFormData();
-    return {contributorData, updateContributorData, isContributorDataComplete};
-};
-
-export const useTimesheetData = () => {
-    const {
-        timesheetEntries,
-        addTimesheetEntry,
-        updateTimesheetEntry,
-        removeTimesheetEntry,
-        totalDeferredWages,
-        totalHoursWorked,
-        averageHourlyRate
-    } = useFormData();
-    return {
-        timesheetEntries,
-        addTimesheetEntry,
-        updateTimesheetEntry,
-        removeTimesheetEntry,
-        totalDeferredWages,
-        totalHoursWorked,
-        averageHourlyRate
-    };
-};
-
-// Contract data hook with computed methods
-export const useContractData = () => {
-    const {founderData, contributorData, isContractReady} = useFormData();
-
-    // Vesting calculations
-    const getVestingData = useCallback(() => {
-        const vestingPeriodDays = contributorData.vestingPeriod * 365;
-        const cliffDays = contributorData.cliffDays;
-        const vestingExponent = contributorData.vestingExponent;
-
-        return {
-            VESTING_12_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 365, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_18_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 547, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_24_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 730, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_30_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 912, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_36_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1095, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_42_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1277, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2)),
-            VESTING_48_MONTHS: Number(calculateVestingPercentage(contributorData.totalEquityGranted, 1460, vestingPeriodDays, cliffDays, vestingExponent).toFixed(2))
-        };
-    }, [contributorData.totalEquityGranted, contributorData.vestingPeriod, contributorData.cliffDays, contributorData.vestingExponent]);
-
-    // Deferred compensation examples
-    const getDeferredCompensationExamples = useCallback(() => {
-        const exampleContributorTotal = 5000; // From contract template
-        const exampleFounderTotal = 1000; // From contract template
-        const exampleTotalOwed = exampleContributorTotal + exampleFounderTotal;
-        const exampleAvailableProfit = 1000; // From contract template
-        const exampleDistributionPercentage = (exampleAvailableProfit / exampleTotalOwed) * 100;
-
-        return {
-            EXAMPLE_CONTRIBUTOR_TOTAL: exampleContributorTotal,
-            EXAMPLE_FOUNDER_TOTAL: exampleFounderTotal,
-            EXAMPLE_TOTAL_OWED: exampleTotalOwed,
-            EXAMPLE_AVAILABLE_PROFIT: exampleAvailableProfit,
-            EXAMPLE_DISTRIBUTION_PERCENTAGE: Number(exampleDistributionPercentage.toFixed(2)),
-            EXAMPLE_CONTRIBUTOR_PAYMENT: Number(((exampleContributorTotal * exampleDistributionPercentage) / 100).toFixed(2)),
-            EXAMPLE_FOUNDER_PAYMENT: Number(((exampleFounderTotal * exampleDistributionPercentage) / 100).toFixed(2))
-        };
-    }, []);
-
-    // Contract placeholder data
-    const getContractPlaceholders = useCallback(() => {
-        const vestingData = getVestingData();
-        const deferredExamples = getDeferredCompensationExamples();
-
-        return {
-            // User-entered data
-            FOUNDER_NAMES: founderData.name || '[Founders\' Names]',
-            CONTRIBUTOR_NAMES: contributorData.name || '[Contributors\' Names]',
-            CUSTOM_IP_DEFINITION: founderData.customIPDefinition,
-            CONTRIBUTOR_EQUITY_PERCENTAGE: contributorData.totalEquityGranted,
-            VESTING_PERIOD_YEARS: contributorData.vestingPeriod,
-            VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 365,
-            CLIFF_DAYS: contributorData.cliffDays,
-            VESTING_EXPONENT: contributorData.vestingExponent,
-            FOUNDER_NAME: founderData.name || 'Founder A',
-            CONTRIBUTOR_NAME: contributorData.name || 'Contributor A',
-            FOUNDER_HOURLY_RATE: founderData.deferredWageRate,
-            CONTRIBUTOR_HOURLY_RATE: contributorData.deferredWageRate,
-            FOUNDER_EMAIL: founderData.email || '[Founder Email]',
-            FOUNDER_PHONE: founderData.phone || '[Founder Phone]',
-            FOUNDER_ADDRESS: founderData.address || '[Founder Address]',
-            CONTRIBUTOR_EMAIL: contributorData.email || '[Contributor Email]',
-            CONTRIBUTOR_PHONE: contributorData.phone || '[Contributor Phone]',
-            CONTRIBUTOR_ADDRESS: contributorData.address || '[Contributor Address]',
-            AGREEMENT_DATE: new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }),
-
-            // Computed data
-            ...vestingData,
-            ...deferredExamples
-        };
-    }, [founderData, contributorData, getVestingData, getDeferredCompensationExamples]);
-
-    // Contract template replacement
-    const populateContractTemplate = useCallback((template: string) => {
-        const placeholders = getContractPlaceholders();
-        let result = template;
-
-        // Replace all placeholders with actual values
-        Object.entries(placeholders).forEach(([key, value]) => {
-            const placeholder = `{{${key}}}`;
-            result = result.replace(new RegExp(placeholder, 'g'), String(value));
-        });
-
-        return result;
-    }, [getContractPlaceholders]);
-
-    return {
-        isContractReady,
-        getVestingData,
-        getDeferredCompensationExamples,
-        getContractPlaceholders,
-        populateContractTemplate
-    };
-};
-
-// Contract template placeholder replacement utility
-export const replaceContractPlaceholders = (template: string, placeholders: Record<string, any>): string => {
-    let result = template;
-
-    // Replace all placeholders with actual values
-    Object.entries(placeholders).forEach(([key, value]) => {
-        const placeholder = `{{${key}}}`;
-        result = result.replace(new RegExp(placeholder, 'g'), String(value));
-    });
-
-    return result;
-};
-
-// Utility to generate shareable URL with query parameters
-export const generateShareableUrl = (founderData: FounderData, contributorData: ContributorData, baseUrl?: string): string => {
-    const params = new URLSearchParams();
-
-    // Add founder data
-    if (founderData.name) params.set('founderName', founderData.name);
-    if (founderData.email) params.set('founderEmail', founderData.email);
-    if (founderData.phone) params.set('founderPhone', founderData.phone);
-    if (founderData.address) params.set('founderAddress', founderData.address);
-    if (founderData.deferredWageRate !== 75) params.set('founderDeferredWageRate', founderData.deferredWageRate.toString());
-
-    // Add contributor data
-    if (contributorData.name) params.set('contributorName', contributorData.name);
-    if (contributorData.email) params.set('contributorEmail', contributorData.email);
-    if (contributorData.phone) params.set('contributorPhone', contributorData.phone);
-    if (contributorData.address) params.set('contributorAddress', contributorData.address);
-    if (contributorData.totalEquityGranted !== 25) params.set('totalEquityGranted', contributorData.totalEquityGranted.toString());
-    if (contributorData.vestingPeriod !== 2) params.set('vestingPeriod', contributorData.vestingPeriod.toString());
-    if (contributorData.deferredWageRate !== 75) params.set('contributorDeferredWageRate', contributorData.deferredWageRate.toString());
-    if (contributorData.cliffDays !== 180) params.set('cliffDays', contributorData.cliffDays.toString());
-    if (contributorData.vestingExponent !== 2) params.set('vestingExponent', contributorData.vestingExponent.toString());
-
-    const queryString = params.toString();
-    const url = baseUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '');
-
-    return queryString ? `${url}?${queryString}` : url;
 };

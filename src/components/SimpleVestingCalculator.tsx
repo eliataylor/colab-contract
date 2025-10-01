@@ -15,7 +15,7 @@ import {
     Typography
 } from '@mui/material';
 import {LineChart} from '@mui/x-charts/LineChart';
-import {useContributorData} from '../contexts/FormDataContext';
+import {useContributorData} from '../hooks/useFormDataHooks';
 
 interface VestingData {
     months: number;

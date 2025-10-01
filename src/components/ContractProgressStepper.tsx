@@ -3,7 +3,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {Box, Button, Chip, Paper, Step, StepContent, StepLabel, Stepper, Typography} from '@mui/material';
 import {AttachMoney, Business, CheckCircle, People, RadioButtonUnchecked, Security, Warning} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
-import {useFormData} from '../contexts/FormDataContext';
+import {useFormData} from '../hooks/useFormDataHooks';
 
 // Progress steps configuration
 const progressSteps = [
@@ -16,7 +16,7 @@ const progressSteps = [
         hash: '#protections'
     },
     {
-        id: 'founder-incentives',
+        id: 'vesting',
         label: 'Vesting Schedule',
         description: '',
         icon: <AttachMoney/>,
@@ -24,12 +24,12 @@ const progressSteps = [
         hash: '#vesting'
     },
     {
-        id: 'founder-incentives',
+        id: 'deferred',
         label: 'Deferred Wages',
         description: '',
         icon: <AttachMoney/>,
         path: '/',
-        hash: '#deferred-wage'
+        hash: '#deferred'
     },
     {
         id: 'founder-contact',
@@ -51,11 +51,11 @@ const progressSteps = [
 
 // Styled components following the existing pattern
 const ProgressContainer = styled(Paper)(({theme}) => ({
-    margin: theme.spacing(2),
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.mode === 'light' ? '#f8fafc' : '#1e293b',
-    border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#334155'}`,
-    borderRadius: 8,
+    margin: theme.spacing(1),
+    padding: theme.spacing(1.5),
+    backgroundColor: theme.palette.mode === 'light' ? '#f8fafc' : '#040f1b',
+    border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#071b32'}`,
+    borderRadius: '0 0 8px 0',
 }));
 
 const ProgressTitle = styled(Typography)(({theme}) => ({
@@ -199,6 +199,7 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
 
                     return (
                         <Step key={step.id} completed={isComplete}
+                              style={{cursor: 'pointer'}}
                               onClick={() => handleStepClick(step)}>
                             <StepLabel
                                 icon={getStepIcon(step.id)}

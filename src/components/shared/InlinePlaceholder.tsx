@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import {Box, Button, IconButton, TextField, Tooltip, Typography, useTheme} from '@mui/material';
 import {Cancel, Edit, Save} from '@mui/icons-material';
-import {useFormData} from '../hooks/useFormDataHooks';
 import ReactMarkdown from 'react-markdown';
 
-interface EditableIPDefinitionProps {
+interface InlinePlaceholderProps {
     value: string;
-    onSave?: (newValue: string) => void;
+    placeholder?: string;
 }
 
-const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSave}) => {
+const InlinePlaceholder: React.FC<InlinePlaceholderProps> = ({value}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
-    const {updateFounderData} = useFormData();
     const theme = useTheme();
 
     const handleEdit = () => {
@@ -21,10 +19,7 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
     };
 
     const handleSave = () => {
-        updateFounderData({customIPDefinition: editValue});
-        if (onSave) {
-            onSave(editValue);
-        }
+
         setIsEditing(false);
     };
 
@@ -43,6 +38,28 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
 
     return (
         <Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                mb: 1
+            }}>
+                <Typography variant="body2" color="text.secondary" sx={{fontStyle: 'italic'}}>
+                    IP Definition
+                </Typography>
+                {!isEditing && (
+                    <Tooltip title="Edit IP Definition">
+                        <IconButton
+                            size="small"
+                            onClick={handleEdit}
+                            sx={{ml: 1}}
+                        >
+                            <Edit fontSize="small"/>
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Box>
+
             {isEditing ? (
                 <Box>
                     <TextField
@@ -79,7 +96,7 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                             },
                         }}
                         placeholder="Enter IP definition..."
-                        rows={10}
+                        rows={6}
                     />
                     <Box sx={{display: 'flex', gap: 1, mt: 1, justifyContent: 'flex-end'}}>
                         <Button
@@ -104,30 +121,9 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                         Press Ctrl+Enter to save, Esc to cancel
                     </Typography>
                 </Box>
-            ) : (
-                <Box sx={{
-                    backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.50',
-                    color: theme.palette.text.primary,
-                    px: 1,
-                    position: 'relative',
-                    border: '1px solid',
-                    borderColor: theme.palette.mode === 'dark' ? 'grey.800' : 'grey.200'
-                }}>
-                    <Tooltip title="Edit IP Definition">
-                        <IconButton
-                            size="small"
-                            onClick={handleEdit}
-                            sx={{position: 'absolute', right: 1}}
-                        >
-                            <Edit fontSize="small"/>
-                        </IconButton>
-                    </Tooltip>
-
-                    <ReactMarkdown>{value}</ReactMarkdown>
-                </Box>
-            )}
+            ) : <ReactMarkdown>{value}</ReactMarkdown>}
         </Box>
     );
 };
 
-export default EditableIPDefinition;
+export default InlinePlaceholder;

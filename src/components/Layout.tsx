@@ -1,37 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import {
-    AppBar,
     Box,
     Collapse,
     Divider,
     Drawer,
+    Fab,
     FormControlLabel,
-    IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Switch,
-    Toolbar,
-    Typography
+    Switch
 } from '@mui/material';
+import {FadeIn} from '../components/styled/StyledComponents';
 import {
     Brightness4,
     Brightness7,
     Calculate,
     ExpandLess,
     ExpandMore,
+    Gavel,
     Menu as MenuIcon,
     Schedule,
     TrendingUp
 } from '@mui/icons-material';
-import {useTheme as useCustomTheme} from '../contexts/ThemeContext';
+import {useTheme as useCustomTheme} from '../hooks/useThemeHook';
 import ContractProgressStepper from './ContractProgressStepper';
 import Footer from './Footer';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -39,34 +38,18 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({children}) => {
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [contractTocOpen, setContractTocOpen] = useState(false);
     const [calculatorsOpen, setCalculatorsOpen] = useState(false);
     const {mode, toggleTheme} = useCustomTheme();
     const location = useLocation();
-    // @ts-ignore
-    const navigate = useNavigate();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
-    };
-
-    // @ts-ignore
-    const handleContractTocToggle = () => {
-        setContractTocOpen(!contractTocOpen);
     };
 
     const handleCalculatorsToggle = () => {
         setCalculatorsOpen(!calculatorsOpen);
     };
 
-    // Auto-open sections based on current page
-    useEffect(() => {
-        if (location.pathname === '/contract') {
-            setContractTocOpen(true);
-        } else {
-            setContractTocOpen(false);
-        }
-    }, [location.pathname]);
 
     useEffect(() => {
         if (location.pathname === '/vesting' || location.pathname === '/compensation') {
@@ -87,7 +70,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 selected={location.pathname === item.path}
                 sx={{
                     '&.Mui-selected': {
-                        backgroundColor: 'primary.main',
+                        backgroundColor: item.text === 'Colab Contract' ? 'secondary.main' : 'primary.main',
                         color: 'primary.contrastText',
                         '&:hover': {
                             backgroundColor: 'primary.dark',
@@ -107,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     }
 
     const menuItems = {
-        contract: {text: 'Preview Contract', path: '/', icon: <Schedule/>},
+        contract: {text: 'Colab Contract', path: '/', icon: <Gavel/>},
         timesheet: {text: 'Timesheet', path: '/timesheets', icon: <Schedule/>},
     };
 
@@ -118,12 +101,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
     const drawer = (
         <Box>
-            <Toolbar>
-                <Typography variant="h6" noWrap component="div" sx={{fontWeight: 'bold'}}>
-                    Colab Contract
-                </Typography>
-            </Toolbar>
-            <Divider/>
 
             {/* Contract Preview */}
             {renderMenuItem(menuItems.contract)}
@@ -131,59 +108,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
             <ContractProgressStepper/>
 
             <List>
-
-                {/* Contract Details with nested Table of Contents 
-                <ListItem id="MenuContractButtons" disablePadding>
-                    <ListItemButton
-                        selected={location.pathname === '/'}
-                        onClick={() => {
-                            if (location.pathname !== '/') {
-                                navigate('/');
-                            } else {
-                                handleContractTocToggle();
-                            }
-                        }}
-                        sx={{
-                            '&.Mui-selected': {
-                                backgroundColor: 'primary.main',
-                                color: 'primary.contrastText',
-                                '&:hover': {
-                                    backgroundColor: 'primary.dark',
-                                },
-                                '& .MuiListItemIcon-root': {
-                                    color: 'primary.contrastText',
-                                },
-                            },
-                        }}
-                    >
-                        <ListItemIcon>
-                            <Description/>
-                        </ListItemIcon>
-                        <ListItemText primary="Overview"/>
-                        {contractTocOpen ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                </ListItem>
-
-                <Collapse in={contractTocOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {contractTocItems.map((item) => (
-                            <ListItem key={item.text} disablePadding>
-                                <ListItemButton
-                                    component={Link}
-                                    to={`/contract${item.hash}`}
-                                    sx={{pl: 4}}
-                                >
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.text}/>
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Collapse>
-
-                */}
 
                 {/* Calculators with nested items */}
                 <ListItem id="MenuCalculatorButtons" disablePadding>
@@ -235,50 +159,41 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 {renderMenuItem(menuItems.timesheet)}
 
             </List>
+
+            <Divider/>
+
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={mode === 'dark'}
+                        onChange={toggleTheme}
+                        icon={<Brightness7 fontSize={'small'}/>}
+                        checkedIcon={<Brightness4 fontSize={'small'}/>}
+                    />
+                }
+                label={
+                    mode === 'light' ? 'Light' :
+                        mode === 'dark' ? 'Dark' :
+                            'System'
+                }
+                sx={{display: 'flex', justifyContent: 'center', mt: 2}}
+            />
         </Box>
     );
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
             <Box sx={{display: 'flex', flexGrow: 1}}>
-                <AppBar
-                    position="fixed"
-                    sx={{
-                        width: {md: `calc(100% - ${drawerWidth}px)`},
-                        ml: {md: `${drawerWidth}px`},
-                    }}
+                <Fab
+                    aria-label="open drawer"
+                    size="small"
+                    color="primary"
+                    onClick={handleDrawerToggle}
+                    style={{position: 'absolute', top: 8, right: 8}}
+                    sx={{display: {md: 'none'}}}
                 >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            edge="start"
-                            onClick={handleDrawerToggle}
-                            sx={{mr: 2, display: {md: 'none'}}}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1}}>
-                            Founding Contributor Agreement
-                        </Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={mode === 'dark'}
-                                    onChange={toggleTheme}
-                                    icon={<Brightness7/>}
-                                    checkedIcon={<Brightness4/>}
-                                />
-                            }
-                            label={
-                                mode === 'light' ? 'Light' :
-                                    mode === 'dark' ? 'Dark' :
-                                        'System'
-                            }
-                            sx={{color: 'white'}}
-                        />
-                    </Toolbar>
-                </AppBar>
+                    <MenuIcon/>
+                </Fab>
 
                 <Box
                     component="nav"
@@ -315,15 +230,14 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                     component="main"
                     sx={{
                         flexGrow: 1,
-                        width: {md: `calc(100% - ${drawerWidth}px)`},
-                        mt: 8, // Account for AppBar height
+                        width: '100%',
                         display: 'flex',
                         flexDirection: 'column',
                     }}
                 >
-                    <Box sx={{flexGrow: 1}}>
+                    <FadeIn>
                         {children}
-                    </Box>
+                    </FadeIn>
                     <Footer/>
                 </Box>
             </Box>

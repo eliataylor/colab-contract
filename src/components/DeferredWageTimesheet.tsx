@@ -19,7 +19,8 @@ import {
     TextField
 } from '@mui/material';
 import {Add, Delete, Download, Edit} from '@mui/icons-material';
-import {type TimesheetEntry, useFormData} from '../contexts/FormDataContext';
+import {type TimesheetEntry} from '../contexts/FormDataContext';
+import {useFormData} from '../hooks/useFormDataHooks';
 import {
     CardBody,
     CardTitle,
@@ -119,7 +120,7 @@ const DeferredWageTimesheet: React.FC = () => {
             '',
             '',
             'Contributor,Date,Work Done,Hours,Rate ($/hr),Total',
-            ...timesheetEntries.map(entry =>
+            ...timesheetEntries.map((entry: TimesheetEntry) =>
                 `"${entry.contributor}","${entry.date}","${entry.workDone}",${entry.hours},$${entry.rate.toFixed(2)},"$${entry.total.toFixed(2)}"`
             )
         ].join('\n');
@@ -207,7 +208,7 @@ const DeferredWageTimesheet: React.FC = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {timesheetEntries.map((entry, index) => (
+                                        {timesheetEntries.map((entry: TimesheetEntry, index: number) => (
                                             <TableRow key={index}>
                                                 <TableCell>{entry.contributor}</TableCell>
                                                 <TableCell>{entry.date}</TableCell>

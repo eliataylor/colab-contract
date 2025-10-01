@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
-import {Box, Button, Paper, TextField, Typography} from '@mui/material';
-import {CheckCircle} from '@mui/icons-material';
+import React from 'react';
+import {Box, Button, TextField} from '@mui/material';
 import {useScrollToHash} from '../hooks/useScrollToHash';
-import {useFormData} from '../contexts/FormDataContext';
+import {useFormData} from '../hooks/useFormDataHooks';
 
-const FounderForm: React.FC = () => {
+interface FounderFormProps {
+    onSuccess: () => void;
+}
+
+const FounderForm: React.FC<FounderFormProps> = ({onSuccess}) => {
     useScrollToHash(); // Enable hash scrolling
     const {founderData, updateFounderData} = useFormData();
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleInputChange = (field: keyof typeof founderData) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -18,99 +20,65 @@ const FounderForm: React.FC = () => {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        setIsSubmitted(true);
+        onSuccess()
         console.log('Founder form submitted:', founderData);
     };
 
     const isFormValid = () => {
-        return !!(founderData.name && founderData.email && founderData.phone && founderData.address);
+        return !!(founderData.name);
     };
-
-    if (isSubmitted) {
-        return (
-            <Box textAlign="center" py={8}>
-                <CheckCircle color="success" sx={{fontSize: 80, mb: 2}}/>
-                <Typography variant="h4" gutterBottom color="success.main">
-                    Contact Information Saved!
-                </Typography>
-                <Typography variant="body1" color="text.secondary" paragraph>
-                    Your founder contact information has been saved and will be used in the contract.
-                </Typography>
-                <Button
-                    variant="contained"
-                    onClick={() => setIsSubmitted(false)}
-                >
-                    Edit Information
-                </Button>
-            </Box>
-        );
-    }
 
     return (
         <Box>
-            <Typography variant="h4" gutterBottom align="center" color="primary" id="personal-info">
-                Founder Contact Information
-            </Typography>
+            <form onSubmit={handleSubmit}>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
+                    <TextField
+                        fullWidth
+                        label="Full Name"
+                        value={founderData.name}
+                        onChange={handleInputChange('name')}
+                        placeholder="Enter your full name"
+                    />
 
-            <Typography variant="body1" paragraph align="center" color="text.secondary" sx={{mb: 4}}>
-                Enter your contact details for the collaboration agreement
-            </Typography>
+                    <TextField
+                        fullWidth
+                        label="Email Address"
+                        type="email"
+                        value={founderData.email}
+                        onChange={handleInputChange('email')}
+                        placeholder="Enter your email address"
+                    />
 
-            <Paper elevation={2} sx={{p: 4, maxWidth: 600, mx: 'auto'}}>
-                <form onSubmit={handleSubmit}>
-                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
-                        <TextField
-                            fullWidth
-                            label="Full Name"
-                            value={founderData.name}
-                            onChange={handleInputChange('name')}
-                            required
-                            placeholder="Enter your full name"
-                        />
+                    <TextField
+                        fullWidth
+                        label="Phone Number"
+                        value={founderData.phone}
+                        onChange={handleInputChange('phone')}
+                        placeholder="Enter your phone number"
+                    />
 
-                        <TextField
-                            fullWidth
-                            label="Email Address"
-                            type="email"
-                            value={founderData.email}
-                            onChange={handleInputChange('email')}
-                            required
-                            placeholder="Enter your email address"
-                        />
+                    <TextField
+                        fullWidth
+                        label="Address"
+                        multiline
+                        rows={3}
+                        value={founderData.address}
+                        onChange={handleInputChange('address')}
+                        placeholder="Enter your full address"
+                    />
+                </Box>
 
-                        <TextField
-                            fullWidth
-                            label="Phone Number"
-                            value={founderData.phone}
-                            onChange={handleInputChange('phone')}
-                            required
-                            placeholder="Enter your phone number"
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="Address"
-                            multiline
-                            rows={3}
-                            value={founderData.address}
-                            onChange={handleInputChange('address')}
-                            required
-                            placeholder="Enter your full address"
-                        />
-                    </Box>
-
-                    <Box sx={{mt: 4, textAlign: 'center'}}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            disabled={!isFormValid()}
-                            size="large"
-                        >
-                            Save Contact Information
-                        </Button>
-                    </Box>
-                </form>
-            </Paper>
+                <Box sx={{mt: 4, textAlign: 'center'}}>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={!isFormValid()}
+                        size="large"
+                    >
+                        Save Contact Information
+                    </Button>
+                </Box>
+            </form>
         </Box>
     );
 };
