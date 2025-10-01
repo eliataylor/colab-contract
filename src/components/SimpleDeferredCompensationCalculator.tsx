@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Box, Card, CardContent, Divider, Stack, Grid, TextField, Typography, useTheme} from '@mui/material';
+import {Alert, Box, Card, CardContent, Divider, Grid, Stack, TextField, Typography, useTheme} from '@mui/material';
 import {PieChart} from '@mui/x-charts/PieChart';
 import {useFormData} from '../contexts/FormDataContext';
 
@@ -15,30 +15,30 @@ interface CompensationData {
 const SimpleDeferredCompensationCalculator: React.FC = () => {
     const {contributorData, founderData, timesheetEntries, updateFounderData, updateContributorData} = useFormData();
     const theme = useTheme();
-    
+
     // Calculate hours and rates from timesheet data
     const contributorHoursFromTimesheet = timesheetEntries
         .filter(entry => entry.contributor === contributorData.name)
         .reduce((sum, entry) => sum + entry.hours, 0);
-    const contributorRate = contributorHoursFromTimesheet > 0 
+    const contributorRate = contributorHoursFromTimesheet > 0
         ? timesheetEntries
-            .filter(entry => entry.contributor === contributorData.name)
-            .reduce((sum, entry) => sum + entry.total, 0) / contributorHoursFromTimesheet
+        .filter(entry => entry.contributor === contributorData.name)
+        .reduce((sum, entry) => sum + entry.total, 0) / contributorHoursFromTimesheet
         : contributorData.deferredWageRate;
-    
+
     const founderHoursFromTimesheet = timesheetEntries
         .filter(entry => entry.contributor === founderData.name)
         .reduce((sum, entry) => sum + entry.hours, 0);
     const founderRate = founderHoursFromTimesheet > 0
         ? timesheetEntries
-            .filter(entry => entry.contributor === founderData.name)
-            .reduce((sum, entry) => sum + entry.total, 0) / founderHoursFromTimesheet
+        .filter(entry => entry.contributor === founderData.name)
+        .reduce((sum, entry) => sum + entry.total, 0) / founderHoursFromTimesheet
         : founderData.deferredWageRate;
-    
+
     // Use timesheet hours if available, otherwise use default example hours
     const contributorHours = contributorHoursFromTimesheet > 0 ? contributorHoursFromTimesheet : 60;
     const founderHours = founderHoursFromTimesheet > 0 ? founderHoursFromTimesheet : 40;
-    
+
     const [availableProfit, setAvailableProfit] = useState(1000);
     const [localContributorRate, setLocalContributorRate] = useState(contributorRate);
     const [localContributorHours, setLocalContributorHours] = useState(contributorHours);
@@ -52,7 +52,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
         contributorPayment: 0,
         founderPayment: 0
     });
-    
+
     // Sync local state with context data when it changes
     useEffect(() => {
         setLocalContributorRate(contributorRate);
@@ -82,20 +82,20 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
     const pieChartData = [
         {
-            id: 0, 
-            value: compensationData.contributorPayment, 
+            id: 0,
+            value: compensationData.contributorPayment,
             color: theme.palette.secondary.main
         },
         {
-            id: 1, 
-            value: compensationData.founderPayment, 
+            id: 1,
+            value: compensationData.founderPayment,
             color: theme.palette.primary.main
         }
     ].filter(item => item.value > 0);
 
     return (
         <Box>
-            <Box sx={{display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, gap:1}}>
+            <Box sx={{display: 'flex', flexDirection: {xs: 'column', lg: 'row'}, gap: 1}}>
                 {/* Input Controls */}
                 <Box sx={{flex: 1, minWidth: 300}}>
                     <Card elevation={2}>
@@ -103,11 +103,12 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                             <Typography variant="h6" gutterBottom>
                                 Test Profit Share Scenarios
                             </Typography>
-                            
+
                             <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {contributorData.name} - Total Owed: ${Intl.NumberFormat('en-US').format(contributorOwed)}
+                                        {contributorData.name} - Total Owed:
+                                        ${Intl.NumberFormat('en-US').format(contributorOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
                                         <TextField
@@ -138,7 +139,8 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {founderData.name} - Total Owed: ${Intl.NumberFormat('en-US').format(founderOwed)}
+                                        {founderData.name} - Total Owed:
+                                        ${Intl.NumberFormat('en-US').format(founderOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
                                         <TextField
@@ -188,7 +190,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                     <strong>"Profit" is after:</strong><br/>
                                     • All operating expenses paid<br/>
                                     • All employee wages paid<br/>
-                                    • 3 months of median operating expenses + employee wages on reserve 
+                                    • 3 months of median operating expenses + employee wages on reserve
                                 </Typography>
                             </Alert>
                         </CardContent>
@@ -197,83 +199,86 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                 {/* Results */}
                 <Box sx={{flex: 1, minWidth: 300}}>
-                    
+
                     <Card elevation={2}>
                         <CardContent>
-                        <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" gutterBottom>
                                 Scenario Results
                             </Typography>
 
                             <Grid container>
 
-            {/* Pie Chart */}
-            {pieChartData.length > 0 && (
-                            <Grid sx={{height: 300, display: 'flex', justifyContent: 'center'}}>
-                                <PieChart                                    
-                                    series={[
-                                        {
-                                            data: pieChartData,
-                                            highlightScope: {fade: 'global', highlight: 'item'},
-                                            innerRadius: 30,
-                                            outerRadius: 100,
-                                            paddingAngle: 2,
-                                            cornerRadius: 5,
-                                        }
-                                    ]}
-                                    height={300}
-                                    margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                                />
+                                {/* Pie Chart */}
+                                {pieChartData.length > 0 && (
+                                    <Grid sx={{height: 300, display: 'flex', justifyContent: 'center'}}>
+                                        <PieChart
+                                            series={[
+                                                {
+                                                    data: pieChartData,
+                                                    highlightScope: {fade: 'global', highlight: 'item'},
+                                                    innerRadius: 30,
+                                                    outerRadius: 100,
+                                                    paddingAngle: 2,
+                                                    cornerRadius: 5,
+                                                }
+                                            ]}
+                                            height={300}
+                                            margin={{top: 0, right: 0, bottom: 0, left: 0}}
+                                        />
+                                    </Grid>
+                                )}
+                                <Grid>
+
+                                    <Box sx={{mb: 1}}>
+                                        <Typography variant="body2">
+                                            Distributable Profit
+                                        </Typography>
+                                        <Typography variant="h6">
+                                            ${Intl.NumberFormat('en-US').format(availableProfit)}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{mb: 3}}>
+                                        <Typography variant="body2">
+                                            Pro-Rata Distribution
+                                        </Typography>
+                                        <Typography variant="h6">
+                                            {(compensationData.distributionPercentage * 100).toFixed(2)}%
+                                        </Typography>
+                                    </Box>
+
+
+                                    <Divider sx={{my: 2}}/>
+
+                                    <Stack spacing={2}>
+                                        <Box>
+                                            <Typography variant="body2" color="secondary.main">
+                                                {contributorData.name}'s Payment
+                                            </Typography>
+                                            <Typography variant="h5" color="secondary.main">
+                                                ${compensationData.contributorPayment.toFixed(2)}
+                                            </Typography>
+                                        </Box>
+
+                                        <Box>
+                                            <Typography variant="body2" color="primary.main">
+                                                {founderData.name}'s Payment
+                                            </Typography>
+                                            <Typography variant="h5" color="primary.main">
+                                                ${compensationData.founderPayment.toFixed(2)}
+                                            </Typography>
+                                        </Box>
+                                    </Stack>
+                                </Grid>
                             </Grid>
-            )}
-            <Grid>
 
-                            <Box sx={{mb: 1}}>
-                                <Typography variant="body2" >
-                                    Distributable Profit
-                                </Typography>
-                                <Typography variant="h6" >
-                                    ${Intl.NumberFormat('en-US').format(availableProfit)}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{mb: 3}}>
-                                <Typography variant="body2" >
-                                    Pro-Rata Distribution
-                                </Typography>
-                                <Typography variant="h6" >
-                                    {(compensationData.distributionPercentage * 100).toFixed(2)}%
-                                </Typography>
-                            </Box>
-
-                        
-                            <Divider sx={{my: 2}}/>
-
-                            <Stack spacing={2}>
-                                <Box>
-                                    <Typography variant="body2" color="secondary.main">
-                                        {contributorData.name}'s Payment
-                                    </Typography>
-                                    <Typography variant="h5" color="secondary.main">
-                                        ${compensationData.contributorPayment.toFixed(2)}
-                                    </Typography>
-                                </Box>
-
-                                <Box>
-                                    <Typography variant="body2" color="primary.main">
-                                        {founderData.name}'s Payment
-                                    </Typography>
-                                    <Typography variant="h5" color="primary.main">
-                                        ${compensationData.founderPayment.toFixed(2)}
-                                    </Typography>
-                                </Box>
-                            </Stack>
-            </Grid>
-                            </Grid>
-                            
                             <Alert severity="info" sx={{mt: 2}}>
-                            <Typography variant="body2">
-                                Pro-Rata Formula: Available Profit (${Intl.NumberFormat('en-US').format(availableProfit)}) / Total Debt (${Intl.NumberFormat('en-US').format(compensationData.totalOwed)}) = {(compensationData.distributionPercentage * 100).toFixed(2)}%
-                            </Typography>
+                                <Typography variant="body2">
+                                    Pro-Rata Formula: Available Profit
+                                    (${Intl.NumberFormat('en-US').format(availableProfit)}) / Total Debt
+                                    (${Intl.NumberFormat('en-US').format(compensationData.totalOwed)})
+                                    = {(compensationData.distributionPercentage * 100).toFixed(2)}%
+                                </Typography>
                             </Alert>
 
                         </CardContent>
@@ -281,7 +286,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                 </Box>
             </Box>
 
-            
+
         </Box>
     );
 };

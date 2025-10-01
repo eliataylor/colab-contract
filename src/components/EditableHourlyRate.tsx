@@ -16,19 +16,21 @@ const EditableHourlyRate: React.FC<EditableHourlyRateProps> = ({label, value, on
     };
 
     return (
-            <TextField
-                value={value}
-                label={label}
-                onChange={handleChange}
-                variant="standard"
-                size="small"
-                type="number"
-                inputProps={{min: 0, step: 1}}
-                InputProps={{
-                    startAdornment: <InputAdornment position="start"><Typography component="span">$</Typography></InputAdornment>,
-                    endAdornment: <InputAdornment position="end"><Typography component="span">/ hr</Typography></InputAdornment>
-                }}
-            />
+        <TextField
+            value={value}
+            label={label}
+            onChange={handleChange}
+            variant="standard"
+            size="small"
+            type="number"
+            inputProps={{min: 0, step: 1}}
+            InputProps={{
+                startAdornment: <InputAdornment position="start"><Typography
+                    component="span">$</Typography></InputAdornment>,
+                endAdornment: <InputAdornment position="end"><Typography component="span">/
+                    hr</Typography></InputAdornment>
+            }}
+        />
     );
 };
 

@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-    Alert,
     Box,
     Button,
     Chip,
@@ -22,15 +21,6 @@ import {
 import {Add, Delete, Download, Edit} from '@mui/icons-material';
 import {type TimesheetEntry} from '../contexts/FormDataContext';
 import {useFormData} from '../hooks/useFormDataHooks';
-import {
-    CardBody,
-    CardTitle,
-    Description,
-    FadeIn,
-    PageContainer,
-    PageTitle,
-    StyledCard
-} from './styled/StyledComponents';
 
 const DeferredWageTimesheet: React.FC = () => {
     const {
@@ -137,166 +127,166 @@ const DeferredWageTimesheet: React.FC = () => {
 
 
     return (
-                <>
-                    <>
+        <>
+            <>
 
-                        {/* Summary Cards */}
-                        <Box sx={{display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap'}}>
-                            <Chip
-                                label={`Total Hours: ${totalHoursWorked}`}
-                                color="primary"
-                                variant="outlined"
-                            />
-                            <Chip
-                                label={`Total Deferred: $${totalDeferredWages.toFixed(2)}`}
-                                color="secondary"
-                                variant="outlined"
-                            />
-                            <Chip
-                                label={`Avg Rate: $${averageHourlyRate.toFixed(2)}/hr`}
-                                color="default"
-                                variant="outlined"
-                            />
-                        </Box>
+                {/* Summary Cards */}
+                <Box sx={{display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap'}}>
+                    <Chip
+                        label={`Total Hours: ${totalHoursWorked}`}
+                        color="primary"
+                        variant="outlined"
+                    />
+                    <Chip
+                        label={`Total Deferred: $${totalDeferredWages.toFixed(2)}`}
+                        color="secondary"
+                        variant="outlined"
+                    />
+                    <Chip
+                        label={`Avg Rate: $${averageHourlyRate.toFixed(2)}/hr`}
+                        color="default"
+                        variant="outlined"
+                    />
+                </Box>
 
-                            <TableContainer component={Paper}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Contributor</TableCell>
-                                            <TableCell>Date</TableCell>
-                                            <TableCell>Work Done</TableCell>
-                                            <TableCell align="right">Hours</TableCell>
-                                            <TableCell align="right">Rate ($/hr)</TableCell>
-                                            <TableCell align="right">Total</TableCell>
-                                            <TableCell align="center">Actions</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {timesheetEntries.map((entry: TimesheetEntry, index: number) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{entry.contributor}</TableCell>
-                                                <TableCell>{entry.date}</TableCell>
-                                                <TableCell>{entry.workDone}</TableCell>
-                                                <TableCell align="right">{entry.hours}</TableCell>
-                                                <TableCell align="right">${entry.rate.toFixed(2)}</TableCell>
-                                                <TableCell align="right">${entry.total.toFixed(2)}</TableCell>
-                                                <TableCell align="center">
-                                                    <IconButton
-                                                        size="small"
-                                                        onClick={() => handleOpen(index)}
-                                                        color="primary"
-                                                    >
-                                                        <Edit/>
-                                                    </IconButton>
-                                                    <IconButton
-                                                        size="small"
-                                                        onClick={() => handleDelete(index)}
-                                                        color="error"
-                                                    >
-                                                        <Delete/>
-                                                    </IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                    <TableFooter  sx={{py:0}}>
-                                        <TableRow sx={{py:0}}>  
-                                            <TableCell colSpan={3} align="left" sx={{py:0, px:1}}>
-                                            <Button
-                                    variant="contained"
-                                    size="small"
-                                    sx={{py:.2}}
-                                    startIcon={<Add/>}
-                                    onClick={() => handleOpen()}
-                                >
-                                    Add Entry
-                                </Button>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Contributor</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Work Done</TableCell>
+                                <TableCell align="right">Hours</TableCell>
+                                <TableCell align="right">Rate ($/hr)</TableCell>
+                                <TableCell align="right">Total</TableCell>
+                                <TableCell align="center">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {timesheetEntries.map((entry: TimesheetEntry, index: number) => (
+                                <TableRow key={index}>
+                                    <TableCell>{entry.contributor}</TableCell>
+                                    <TableCell>{entry.date}</TableCell>
+                                    <TableCell>{entry.workDone}</TableCell>
+                                    <TableCell align="right">{entry.hours}</TableCell>
+                                    <TableCell align="right">${entry.rate.toFixed(2)}</TableCell>
+                                    <TableCell align="right">${entry.total.toFixed(2)}</TableCell>
+                                    <TableCell align="center">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleOpen(index)}
+                                            color="primary"
+                                        >
+                                            <Edit/>
+                                        </IconButton>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleDelete(index)}
+                                            color="error"
+                                        >
+                                            <Delete/>
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                        <TableFooter sx={{py: 0}}>
+                            <TableRow sx={{py: 0}}>
+                                <TableCell colSpan={3} align="left" sx={{py: 0, px: 1}}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        sx={{py: .2}}
+                                        startIcon={<Add/>}
+                                        onClick={() => handleOpen()}
+                                    >
+                                        Add Entry
+                                    </Button>
                                 </TableCell>
-                                <TableCell colSpan={4} align="right" sx={{p:1, gap: 1}}>
-                                <Button
-                                    size="small"
-                                    startIcon={<Download/>}
-                                    onClick={exportToCSV}
-                                    sx={{py:.2}}
-                                    variant="outlined"
-                                >
-                                    Export CSV
-                                </Button>
-                                            </TableCell>                                
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
-                            </TableContainer>
+                                <TableCell colSpan={4} align="right" sx={{p: 1, gap: 1}}>
+                                    <Button
+                                        size="small"
+                                        startIcon={<Download/>}
+                                        onClick={exportToCSV}
+                                        sx={{py: .2}}
+                                        variant="outlined"
+                                    >
+                                        Export CSV
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </TableContainer>
 
-                        {/* Add/Edit Dialog */}
-                        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                            <DialogTitle>
-                                {editingIndex !== null ? 'Edit Timesheet Entry' : 'Add Timesheet Entry'}
-                            </DialogTitle>
-                            <DialogContent>
-                                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, mt: 2}}>
-                                    <TextField
-                                        fullWidth
-                                        label="Contributor Name"
-                                        value={formData.contributor}
-                                        onChange={handleInputChange('contributor')}
-                                        required
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Date"
-                                        type="date"
-                                        value={formData.date}
-                                        onChange={handleInputChange('date')}
-                                        InputLabelProps={{shrink: true}}
-                                        required
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Work Done"
-                                        multiline
-                                        rows={3}
-                                        value={formData.workDone}
-                                        onChange={handleInputChange('workDone')}
-                                        required
-                                    />
-                                    <Box sx={{display: 'flex', gap: 2}}>
-                                        <TextField
-                                            label="Hours"
-                                            type="number"
-                                            value={formData.hours}
-                                            onChange={handleInputChange('hours')}
-                                            inputProps={{min: 0, step: 0.5}}
-                                            required
-                                        />
-                                        <TextField
-                                            label="Rate ($/hr)"
-                                            type="number"
-                                            value={formData.rate}
-                                            onChange={handleInputChange('rate')}
-                                            inputProps={{min: 0, step: 0.01}}
-                                            required
-                                        />
-                                        <TextField
-                                            label="Total"
-                                            type="number"
-                                            value={(formData.hours * formData.rate).toFixed(2)}
-                                            disabled
-                                            inputProps={{readOnly: true}}
-                                        />
-                                    </Box>
-                                </Box>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleClose}>Cancel</Button>
-                                <Button onClick={handleSave} variant="contained">
-                                    {editingIndex !== null ? 'Update' : 'Add'} Entry
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
-                    </>
-                </>
+                {/* Add/Edit Dialog */}
+                <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+                    <DialogTitle>
+                        {editingIndex !== null ? 'Edit Timesheet Entry' : 'Add Timesheet Entry'}
+                    </DialogTitle>
+                    <DialogContent>
+                        <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, mt: 2}}>
+                            <TextField
+                                fullWidth
+                                label="Contributor Name"
+                                value={formData.contributor}
+                                onChange={handleInputChange('contributor')}
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                label="Date"
+                                type="date"
+                                value={formData.date}
+                                onChange={handleInputChange('date')}
+                                InputLabelProps={{shrink: true}}
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                label="Work Done"
+                                multiline
+                                rows={3}
+                                value={formData.workDone}
+                                onChange={handleInputChange('workDone')}
+                                required
+                            />
+                            <Box sx={{display: 'flex', gap: 2}}>
+                                <TextField
+                                    label="Hours"
+                                    type="number"
+                                    value={formData.hours}
+                                    onChange={handleInputChange('hours')}
+                                    inputProps={{min: 0, step: 0.5}}
+                                    required
+                                />
+                                <TextField
+                                    label="Rate ($/hr)"
+                                    type="number"
+                                    value={formData.rate}
+                                    onChange={handleInputChange('rate')}
+                                    inputProps={{min: 0, step: 0.01}}
+                                    required
+                                />
+                                <TextField
+                                    label="Total"
+                                    type="number"
+                                    value={(formData.hours * formData.rate).toFixed(2)}
+                                    disabled
+                                    inputProps={{readOnly: true}}
+                                />
+                            </Box>
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleSave} variant="contained">
+                            {editingIndex !== null ? 'Update' : 'Add'} Entry
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+        </>
     );
 };
 

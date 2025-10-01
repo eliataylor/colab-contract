@@ -1,4 +1,4 @@
-import {useFormData as useFormDataInternal, type FounderData, type ContributorData} from '../contexts/FormDataContext';
+import {type ContributorData, type FounderData, useFormData as useFormDataInternal} from '../contexts/FormDataContext';
 
 // Re-export the main hook
 export const useFormData = useFormDataInternal;
@@ -151,7 +151,7 @@ export const useContractData = () => {
     // Set a single placeholder by key (updates the underlying form data)
     const setPlaceholder = (key: string, value: string | number) => {
         const {updateFounderData, updateContributorData} = useFormDataInternal();
-        
+
         // Map placeholder keys to their corresponding form data fields
         const founderFields: Record<string, keyof FounderData> = {
             'FOUNDER_NAMES': 'name',
@@ -178,11 +178,11 @@ export const useContractData = () => {
 
         // Update founder data if key matches
         if (founderFields[key]) {
-            updateFounderData({ [founderFields[key]]: value as any });
+            updateFounderData({[founderFields[key]]: value as any});
         }
         // Update contributor data if key matches
         else if (contributorFields[key]) {
-            updateContributorData({ [contributorFields[key]]: value as any });
+            updateContributorData({[contributorFields[key]]: value as any});
         }
         // For computed values, we can't directly set them as they're calculated
         else {

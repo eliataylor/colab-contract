@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, CardHeader, Collapse, Divider, IconButton, Typography} from '@mui/material';
-import {Business, Download, ExpandLess, ExpandMore, MonetizationOn, Security, Edit} from '@mui/icons-material';
+import {Business, Download, Edit, ExpandLess, ExpandMore, MonetizationOn, Security} from '@mui/icons-material';
 import {useContractData} from '../hooks/useFormDataHooks';
 import EditableIPDefinition from '../components/EditableIPDefinition.tsx';
 import EditableHourlyRate from '../components/EditableHourlyRate.tsx';
@@ -9,13 +9,12 @@ import SimpleVestingCalculator from '../components/SimpleVestingCalculator.tsx';
 import VestingFormula from '../components/VestingFormula.tsx';
 import FounderModal from '../components/FounderModal.tsx';
 import ContributorModal from '../components/ContributorModal.tsx';
-import {useLocation} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import ShareButton from '../components/ShareButton.tsx';
 import SimpleDeferredCompensationCalculator from '../components/SimpleDeferredCompensationCalculator.tsx';
-import { useTheme } from '../contexts/ThemeContext.tsx';
-import { Link } from 'react-router-dom';
+import {useTheme} from '../contexts/ThemeContext.tsx';
 import DeferredWageTimesheet from '../components/DeferredWageTimesheet.tsx';
 
 const ContractDocument: React.FC = () => {
@@ -57,7 +56,8 @@ const ContractDocument: React.FC = () => {
             // For contact sections, open the appropriate modal
             if (panelToExpand === 'founder-contact') {
                 setFounderModalOpen(true);
-            } if (panelToExpand === 'contributor-contact') {
+            }
+            if (panelToExpand === 'contributor-contact') {
                 setContributorModalOpen(true);
             } else {
                 if (panelToExpand === 'protections') {
@@ -155,7 +155,7 @@ const ContractDocument: React.FC = () => {
             </Box>
 
             <div id="contract-content">
-                <Typography variant="body1"  >
+                <Typography variant="body1">
                     This agreement is made between <strong>{placeholders.FOUNDER_NAMES}</strong> (collectively,
                     "Founders")
                     and <strong>{placeholders.CONTRIBUTOR_NAMES}</strong> (collectively, "Contributors") to define the
@@ -163,7 +163,7 @@ const ContractDocument: React.FC = () => {
                     for ownership, compensation, and shared commitment in building a product together.
                 </Typography>
 
-                <Typography variant="body1"  >
+                <Typography variant="body1">
                     All parties agree that the following terms shall apply to the entire scope of ownership,
                     compensation,
                     and protections within the IP Holding Company ("Company") and any subsidiary corporations or
@@ -185,19 +185,19 @@ const ContractDocument: React.FC = () => {
                     </Box>
                 </Typography>
 
-                <Typography variant="body1"  gutterBottom>
+                <Typography variant="body1" gutterBottom>
                     This agreement is built on two core principles:
                 </Typography>
 
-                <Typography variant="h6"  >
-                1. Protections:
+                <Typography variant="h6">
+                    1. Protections:
                 </Typography>
                 <Box component="ul" sx={{pl: 3}}>
-                        <Typography component="li" >
+                    <Typography component="li">
                         To protect each Founder's brand ownership, Company IP and
                         ensure they have final authority in the direction of the Company
-                        </Typography>
-                        <Typography component="li">
+                    </Typography>
+                    <Typography component="li">
                         To protect each Contributor's
                         freedom
                         to pursue other opportunities as a founder or contributor in other projects so long they
@@ -207,8 +207,8 @@ const ContractDocument: React.FC = () => {
                 </Box>
 
 
-                <Typography variant="h6"  >
-                2. Compensation:
+                <Typography variant="h6">
+                    2. Compensation:
                 </Typography>
                 <Box component="ul" sx={{pl: 3}}>
                     <Typography component="li">To grant each Contributor a transparent path to earning
@@ -223,55 +223,59 @@ const ContractDocument: React.FC = () => {
                 <CardHeader
                     onClick={() => setProtectionsOpen(!protectionsOpen)}
                     id="protections"
-                    sx={{pl:0, cursor: 'pointer'}}
+                    sx={{pl: 0, cursor: 'pointer'}}
                     avatar={<Security color="primary"/>}
                     title={<Typography variant="h4" component="h2" color="primary">
                         Protections
                     </Typography>}
-                    action={<IconButton size="large" color="primary" 
-                        onClick={() => setProtectionsOpen(!protectionsOpen)}>{protectionsOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
+                    action={<IconButton size="large" color="primary"
+                                        onClick={() => setProtectionsOpen(!protectionsOpen)}>{protectionsOpen ?
+                        <ExpandMore fontSize="large"/> : <ExpandLess fontSize="large"/>}</IconButton>}
 
                 />
 
                 <Collapse in={protectionsOpen} timeout="auto" unmountOnExit>
-                    <Typography variant="body1" >
-                        This section is meant to protect the Founder's Intellectual Property as well as the Founding Contributor's freedom to pursue other opportunities after the engagement ends.
+                    <Typography variant="body1">
+                        This section is meant to protect the Founder's Intellectual Property as well as the Founding
+                        Contributor's freedom to pursue other opportunities after the engagement ends.
                     </Typography>
 
                     <Typography variant="h5" component="h3" gutterBottom sx={{mt: 3, mb: 2}} color="primary">
                         <strong>Definitions</strong>
                     </Typography>
 
-                    <Typography variant="body1" >
+                    <Typography variant="body1">
                         For the purpose of this agreement, "IP" is defined as a specific set of proprietary assets
                         critical to
-                        the business: 
+                        the business:
                     </Typography>
 
                     <Box sx={{my: 2}}>
-                    <EditableIPDefinition value={placeholders.CUSTOM_IP_DEFINITION}/>
+                        <EditableIPDefinition value={placeholders.CUSTOM_IP_DEFINITION}/>
                     </Box>
-                    <Typography variant="body1" >   
-                        This definition expressly excludes the Contributors' general skills, experience, and knowledge, as well as general software code, algorithms, and development methodologies that are not proprietary to the Company's core IP.
+                    <Typography variant="body1">
+                        This definition expressly excludes the Contributors' general skills, experience, and knowledge,
+                        as well as general software code, algorithms, and development methodologies that are not
+                        proprietary to the Company's core IP.
                     </Typography>
 
                     <Typography variant="h5" component="h3" gutterBottom sx={{mt: 3, mb: 2}} color="primary">
                         <strong>Mutual Commitment and Impact</strong>
                     </Typography>
 
-                    <Typography variant="body1" >
+                    <Typography variant="body1">
                         Both Founders and Contributors agree to a mutual commitment to consistent, high-impact work.
                         This is the
                         foundation upon which this agreement is built.
                     </Typography>
 
                     <Box component="ul" sx={{pl: 3}}>
-                        <Typography component="li" >
+                        <Typography component="li">
                             <strong>Performance Review:</strong> Contributions will be evaluated quarterly based on
                             the
                             agreed-upon goals to ensure all parties are aligned and committed to the shared goal.
                         </Typography>
-                        <Typography component="li" >
+                        <Typography component="li">
                             <strong>At-Will Engagement:</strong> This engagement is at-will. Either party may
                             terminate
                             the
@@ -289,7 +293,7 @@ const ContractDocument: React.FC = () => {
                         <strong>Non-Solicitation</strong>
                     </Typography>
 
-                    <Typography variant="body1"  >
+                    <Typography variant="body1">
                         To protect the relationships we've built, the Contributor agrees that for a period
                         of <strong>twelve
                         (12) months</strong> following their departure from the Company, they will not, either
@@ -299,13 +303,13 @@ const ContractDocument: React.FC = () => {
                     </Typography>
 
                     <Box component="ul" sx={{pl: 3}}>
-                        <Typography component="li" >
+                        <Typography component="li">
                             Solicit, entice, or persuade any employee or independent contractor of the Company to
                             leave
                             their
                             employment or engagement.
                         </Typography>
-                        <Typography component="li" >
+                        <Typography component="li">
                             Solicit any customer of the Company with whom they had direct contact during their
                             engagement, for
                             the purpose of providing services or products that are competitive with the Company's
@@ -317,17 +321,18 @@ const ContractDocument: React.FC = () => {
                         <strong>Code Reuse & Competitive Projects</strong>
                     </Typography>
 
-                    <Typography variant="body1"  >
+                    <Typography variant="body1">
                         As defined above, the Company's IP does not include general software code or algorithms.
                         However, to
-                        protect the Founder's market positioning, the Contributor agrees to copy and rebrand the codebase 
+                        protect the Founder's market positioning, the Contributor agrees to copy and rebrand the
+                        codebase
                         to compete with Company directly or indirectly.
                     </Typography>
                 </Collapse>
 
                 <CardHeader
                     id="compensation"
-                    sx={{pl:0}}
+                    sx={{pl: 0}}
                     avatar={<MonetizationOn color="primary"/>}
                     title={<Typography variant="h4" component="h2" color="primary">
                         Compensation
@@ -352,13 +357,14 @@ const ContractDocument: React.FC = () => {
                             separate capital contribution.
                         </Typography>
                     }
-                    action={<IconButton size="large" color="primary" 
-                        onClick={() => setVestingOpen(!vestingOpen)}>{vestingOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
+                    action={<IconButton size="large" color="primary"
+                                        onClick={() => setVestingOpen(!vestingOpen)}>{vestingOpen ?
+                        <ExpandMore fontSize="large"/> : <ExpandLess fontSize="large"/>}</IconButton>}
                 />
 
                 <Collapse in={vestingOpen} timeout="auto" unmountOnExit>
                     <Box component="ul" sx={{pl: 3}}>
-                        <Typography component="li" >
+                        <Typography component="li">
                             <strong>Vesting
                                 Schedule:</strong> The <strong>{placeholders.CONTRIBUTOR_EQUITY_PERCENTAGE}%</strong> equity
                             allocation shall vest over a <strong>{placeholders.VESTING_PERIOD_YEARS}</strong>-year
@@ -367,7 +373,7 @@ const ContractDocument: React.FC = () => {
                             accelerate over
                             time, rewarding sustained commitment.
                         </Typography>
-                        <Typography component="li" >
+                        <Typography component="li">
                             <strong>Vesting Formula:</strong> The amount of vested equity will be calculated using
                             the
                             following
@@ -384,7 +390,7 @@ const ContractDocument: React.FC = () => {
                             variant="body1"
                             sx={{mt: 1, mb: 2, p: 2, borderRadius: 1}}
                         />
-                        <Typography component="li" >
+                        <Typography component="li">
                             <strong>Example Vesting Schedule:</strong> Below is an example of
                             a <strong>{placeholders.CONTRIBUTOR_EQUITY_PERCENTAGE}%</strong> equity grant vesting
                             over <strong>{placeholders.VESTING_PERIOD_YEARS}</strong> years
@@ -397,8 +403,8 @@ const ContractDocument: React.FC = () => {
 
                     <SimpleVestingCalculator/>
 
-                    <Box component="ul" sx={{pl: 3, }}>
-                        <Typography component="li" >
+                    <Box component="ul" sx={{pl: 3,}}>
+                        <Typography component="li">
                             <strong>Leaving the Company:</strong> If a Contributor's engagement ends before
                             the {Math.round(placeholders.CLIFF_DAYS / 30.44)}-month cliff,
                             no equity will have vested, and the entire equity grant will be returned to the Company.
@@ -427,8 +433,9 @@ const ContractDocument: React.FC = () => {
                             will be reimbursed for unpaid efforts invested in the Company.
                         </Typography>
                     }
-                    action={<IconButton size="large" color="primary" 
-                        onClick={() => setDeferredOpen(!deferredOpen)}>{deferredOpen ? <ExpandMore fontSize="large" /> : <ExpandLess fontSize="large" />}</IconButton>}   
+                    action={<IconButton size="large" color="primary"
+                                        onClick={() => setDeferredOpen(!deferredOpen)}>{deferredOpen ?
+                        <ExpandMore fontSize="large"/> : <ExpandLess fontSize="large"/>}</IconButton>}
                 />
 
 
@@ -436,28 +443,28 @@ const ContractDocument: React.FC = () => {
 
                     <Box component="ul" sx={{pl: 3}}>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Rates
                         </Typography>
                         <Typography variant='body1' gutterBottom>
                             The hourly rates for the Founders and Contributors are as follows:
                             <Box sx={{mt: 1}}>
-                                    <EditableHourlyRate
-                                        label={placeholders.FOUNDER_NAME as string}
-                                        value={placeholders.FOUNDER_HOURLY_RATE as number}
-                                        onSave={(newValue) => setPlaceholder('FOUNDER_HOURLY_RATE', newValue)}
-                                    />
+                                <EditableHourlyRate
+                                    label={placeholders.FOUNDER_NAME as string}
+                                    value={placeholders.FOUNDER_HOURLY_RATE as number}
+                                    onSave={(newValue) => setPlaceholder('FOUNDER_HOURLY_RATE', newValue)}
+                                />
                             </Box>
                             <Box sx={{mt: 1}}>
-                                    <EditableHourlyRate
-                                        label={placeholders.CONTRIBUTOR_NAME as string}
-                                        value={placeholders.CONTRIBUTOR_HOURLY_RATE as number}
-                                        onSave={(newValue) => setPlaceholder('CONTRIBUTOR_HOURLY_RATE', newValue)}
-                                    />
+                                <EditableHourlyRate
+                                    label={placeholders.CONTRIBUTOR_NAME as string}
+                                    value={placeholders.CONTRIBUTOR_HOURLY_RATE as number}
+                                    onSave={(newValue) => setPlaceholder('CONTRIBUTOR_HOURLY_RATE', newValue)}
+                                />
                             </Box>
                         </Typography>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Accrual
                         </Typography>
                         <Typography variant='body1' gutterBottom>
@@ -468,11 +475,11 @@ const ContractDocument: React.FC = () => {
                             on the balance sheet of the Company.
                         </Typography>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Conditions for Payment
                         </Typography>
 
-                        <Typography variant='body1' >
+                        <Typography variant='body1'>
                             Payment shall be made at the end of any month
                             in
                             which the
@@ -487,59 +494,62 @@ const ContractDocument: React.FC = () => {
                                 <Typography component="li">The company maintains a minimum cash reserve equal to
                                     three
                                     (3)
-                                    months of average monthly operating expenses. "Cash Reserve" shall be based on the median of monthly operating expenses and employee wages.</Typography>
+                                    months of average monthly operating expenses. "Cash Reserve" shall be based on the
+                                    median of monthly operating expenses and employee wages.</Typography>
                             </Box>
                         </Typography>
 
 
-
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Pro-Rata Payment
                         </Typography>
                         <Typography variant='body1' gutterBottom>
                             Accrued deferred wages shall be paid from net
                             income (as
-                            defined by GAAP accounting standards) on a monthly basis if payment conditions are met. Payments shall be made on a pro-rata basis, calculated as
-                            the available profit to distribute divided by the total accrued deferred wages, times each party's total deferred wages. See example below:
+                            defined by GAAP accounting standards) on a monthly basis if payment conditions are met.
+                            Payments shall be made on a pro-rata basis, calculated as
+                            the available profit to distribute divided by the total accrued deferred wages, times each
+                            party's total deferred wages. See example below:
                         </Typography>
 
 
                         <Box sx={{my: 3}}>
-                        <Button variant="text" 
-                        onClick={() => setExampleScenariosOpen(!exampleScenariosOpen)}>
+                            <Button variant="text"
+                                    onClick={() => setExampleScenariosOpen(!exampleScenariosOpen)}>
                                 {exampleScenariosOpen ? 'Hide Example Scenarios' : 'Show Example Scenarios'}
-                        </Button>
-                        <Collapse in={exampleScenariosOpen} timeout="auto" unmountOnExit>
-                            <SimpleDeferredCompensationCalculator />
-                        </Collapse>
+                            </Button>
+                            <Collapse in={exampleScenariosOpen} timeout="auto" unmountOnExit>
+                                <SimpleDeferredCompensationCalculator/>
+                            </Collapse>
                         </Box>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Time Tracking
                         </Typography>
 
-                        <Typography variant='body1' >
+                        <Typography variant='body1'>
                             Both parties agree to maintain accurate time records for deffered wages in
                             a
-                            shared <Link to="/timesheets">digital log</Link>.  as a spreadsheet with the following headings: Contributor Name, Date, Work
+                            shared <Link to="/timesheets">digital log</Link>. as a spreadsheet with the following
+                            headings: Contributor Name, Date, Work
                             Done, Hours,
                             Rate ($/hr), Total.
                         </Typography>
 
                         <Box sx={{my: 3}}>
-                        <Button variant="text" 
-                        onClick={() => setTimesheetsOpen(!timesheetsOpen)}>
+                            <Button variant="text"
+                                    onClick={() => setTimesheetsOpen(!timesheetsOpen)}>
                                 {timesheetsOpen ? 'Hide Timesheets' : 'Show Timesheets'}
-                        </Button>
-                        <Collapse in={timesheetsOpen} timeout="auto" unmountOnExit>
-                            <DeferredWageTimesheet />
-                        </Collapse>
-                        </Box>                        
+                            </Button>
+                            <Collapse in={timesheetsOpen} timeout="auto" unmountOnExit>
+                                <DeferredWageTimesheet/>
+                            </Collapse>
+                        </Box>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Disputes
                         </Typography>
-                        <Typography variant='body1' >
+                        <Typography variant='body1'>
                             Any Founder or Contributor may dispute any log entry for
                             another
                             within
@@ -549,10 +559,10 @@ const ContractDocument: React.FC = () => {
                             those hours permanently.
                         </Typography>
 
-                        <Typography variant='h6' sx={{mt:2}} >
+                        <Typography variant='h6' sx={{mt: 2}}>
                             Rate Changes
                         </Typography>
-                        <Typography variant='body1' >
+                        <Typography variant='body1'>
                             Once the Company has cleared all debts and can afford a
                             salary
                             guarantee, the Founders may propose a standard salary for the Contributors. The
@@ -570,10 +580,10 @@ const ContractDocument: React.FC = () => {
                 <Divider sx={{my: 4}}/>
 
                 {/* Signature Sections */}
-                <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
+                <Box sx={{display: 'flex', gap: 4, mb: 4}}>
                     {/* Founder Signature Section */}
-                    <Box sx={{ flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3}}>
+                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
                             <Typography variant="h6" component="h3" color="primary">
                                 <strong>Founder Signature</strong>
                             </Typography>
@@ -581,15 +591,15 @@ const ContractDocument: React.FC = () => {
                                 size="small"
                                 onClick={() => setFounderModalOpen(true)}
                             >
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Box>
-                        
-                        <Box sx={{ mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider' }}>
+
+                        <Box sx={{mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider'}}>
                             {/* Signature line placeholder */}
                         </Box>
-                        
-                        <Box sx={{ mb: 2 }}>
+
+                        <Box sx={{mb: 2}}>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
                                 <strong>Name:</strong> {placeholders.FOUNDER_NAME}
                             </Typography>
@@ -603,15 +613,15 @@ const ContractDocument: React.FC = () => {
                                 <strong>Address:</strong> {placeholders.FOUNDER_ADDRESS}
                             </Typography>
                         </Box>
-                        
-                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+
+                        <Typography variant="body2" color="text.secondary" sx={{fontStyle: 'italic'}}>
                             Date: _______________
                         </Typography>
                     </Box>
 
                     {/* Contributor Signature Section */}
-                    <Box sx={{ flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{flex: 1, border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 3}}>
+                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
                             <Typography variant="h6" component="h3" color="primary">
                                 <strong>Contributor Signature</strong>
                             </Typography>
@@ -619,15 +629,15 @@ const ContractDocument: React.FC = () => {
                                 size="small"
                                 onClick={() => setContributorModalOpen(true)}
                             >
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Box>
-                        
-                        <Box sx={{ mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider' }}>
+
+                        <Box sx={{mb: 3, minHeight: '80px', borderBottom: '1px solid', borderColor: 'divider'}}>
                             {/* Signature line placeholder */}
                         </Box>
-                        
-                        <Box sx={{ mb: 2 }}>
+
+                        <Box sx={{mb: 2}}>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
                                 <strong>Name:</strong> {placeholders.CONTRIBUTOR_NAME}
                             </Typography>
@@ -641,16 +651,16 @@ const ContractDocument: React.FC = () => {
                                 <strong>Address:</strong> {placeholders.CONTRIBUTOR_ADDRESS}
                             </Typography>
                         </Box>
-                        
-                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+
+                        <Typography variant="body2" color="text.secondary" sx={{fontStyle: 'italic'}}>
                             Date: _______________
                         </Typography>
                     </Box>
                 </Box>
 
 
-                <Typography variant="body1" 
-                            sx={{ mt: 3, fontStyle: 'italic'}}>
+                <Typography variant="body1"
+                            sx={{mt: 3, fontStyle: 'italic'}}>
                     This agreement serves as a living document of our shared commitment.
                 </Typography>
                 <Typography variant="h5" component="h3" gutterBottom color="primary">
