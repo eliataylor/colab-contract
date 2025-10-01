@@ -162,28 +162,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                     },
                 },
             },
-            MuiPaper: {
-                styleOverrides: {
-                    root: {
-                        borderRadius: 0,
-                    },
-                    elevation1: {
-                        boxShadow: mode === 'light'
-                            ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
-                            : '0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4)',
-                    },
-                    elevation2: {
-                        boxShadow: mode === 'light'
-                            ? '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
-                            : '0 3px 6px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5)',
-                    },
-                    elevation3: {
-                        boxShadow: mode === 'light'
-                            ? '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
-                            : '0 10px 20px rgba(0,0,0,0.5), 0 6px 6px rgba(0,0,0,0.6)',
-                    },
-                },
-            },
             MuiButton: {
                 styleOverrides: {
                     root: {

@@ -3,6 +3,7 @@ import {Box, Button, CardHeader, Collapse, Divider, IconButton, Typography} from
 import {Business, Download, ExpandLess, ExpandMore, MonetizationOn, Security, Edit} from '@mui/icons-material';
 import {useContractData} from '../hooks/useFormDataHooks';
 import EditableIPDefinition from '../components/EditableIPDefinition.tsx';
+import EditableHourlyRate from '../components/EditableHourlyRate.tsx';
 import {useScrollToHash} from '../hooks/useScrollToHash.ts';
 import SimpleVestingCalculator from '../components/SimpleVestingCalculator.tsx';
 import VestingFormula from '../components/VestingFormula.tsx';
@@ -14,10 +15,11 @@ import html2canvas from 'html2canvas';
 import ShareButton from '../components/ShareButton.tsx';
 import SimpleDeferredCompensationCalculator from '../components/SimpleDeferredCompensationCalculator.tsx';
 import { useTheme } from '../contexts/ThemeContext.tsx';
+import { Link } from 'react-router-dom';
 
 const ContractDocument: React.FC = () => {
     const {setMode} = useTheme();
-    const {getContractPlaceholders} = useContractData();
+    const {getContractPlaceholders, setPlaceholder} = useContractData();
     const placeholders = getContractPlaceholders();
     const [founderModalOpen, setFounderModalOpen] = useState(false);
     const [contributorModalOpen, setContributorModalOpen] = useState(false);
@@ -25,6 +27,7 @@ const ContractDocument: React.FC = () => {
     const [protectionsOpen, setProtectionsOpen] = useState(false);
     const [deferredOpen, setDeferredOpen] = useState(false);
     const [vestingOpen, setVestingOpen] = useState(false);
+    const [exampleScenariosOpen, setExampleScenariosOpen] = useState(true);
 
     const location = useLocation();
 
@@ -430,42 +433,45 @@ const ContractDocument: React.FC = () => {
                 <Collapse in={deferredOpen} timeout="auto" unmountOnExit>
 
                     <Box component="ul" sx={{pl: 3}}>
-                        <Typography component="li" >
-                            <strong>Accrual:</strong> This deferred hourly wage begins accumulating upon signing and
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Rates
+                        </Typography>
+                        <Typography variant='body1' gutterBottom>
+                            The hourly rates for the Founders and Contributors are as follows:
+                            <Box sx={{mt: 1}}>
+                                    <EditableHourlyRate
+                                        label={placeholders.FOUNDER_NAME as string}
+                                        value={placeholders.FOUNDER_HOURLY_RATE as number}
+                                        onSave={(newValue) => setPlaceholder('FOUNDER_HOURLY_RATE', newValue)}
+                                    />
+                            </Box>
+                            <Box sx={{mt: 1}}>
+                                    <EditableHourlyRate
+                                        label={placeholders.CONTRIBUTOR_NAME as string}
+                                        value={placeholders.CONTRIBUTOR_HOURLY_RATE as number}
+                                        onSave={(newValue) => setPlaceholder('CONTRIBUTOR_HOURLY_RATE', newValue)}
+                                    />
+                            </Box>
+                        </Typography>
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Accrual
+                        </Typography>
+                        <Typography variant='body1' gutterBottom>
+                            This deferred hourly wage begins accumulating upon signing and
                             continues
                             until the Company is able to negotiate a standard salary paid monthly. It shall be
                             considered a debt
                             on the balance sheet of the Company.
                         </Typography>
-                        <Typography component="li" >
-                            <Box component="ul" sx={{pl: 3, mt: 1}}>
-                                {placeholders.FOUNDER_HOURLY_RATE > 0 && 
-                                    <Typography component="li">
-                                        <strong>{placeholders.FOUNDER_NAME}:</strong> ${placeholders.FOUNDER_HOURLY_RATE} /
-                                        hour
-                                    </Typography>
-                                }
-                                {placeholders.CONTRIBUTOR_HOURLY_RATE > 0 && 
-                                <Typography component="li">
-                                    <strong>{placeholders.CONTRIBUTOR_NAME}:</strong> ${placeholders.CONTRIBUTOR_HOURLY_RATE} /
-                                    hour
-                                </Typography>
-                                }
-                            </Box>
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Conditions for Payment
                         </Typography>
-                        <Typography component="li" >
-                            <strong>Pro-Rata Payment:</strong> Accrued deferred wages shall be paid from monthly net
-                            income (as
-                            defined by GAAP accounting standards) on a pro-rata basis. The pro-rata share for each
-                            party
-                            shall
-                            be calculated as their total accrued deferred wages divided by the total accrued
-                            deferred
-                            wages of
-                            all parties.
-                        </Typography>
-                        <Typography component="li" >
-                            <strong>Conditions for Payment:</strong> Payment shall be made at the end of any month
+
+                        <Typography variant='body1' >
+                            Payment shall be made at the end of any month
                             in
                             which the
                             following conditions are met:
@@ -479,31 +485,63 @@ const ContractDocument: React.FC = () => {
                                 <Typography component="li">The company maintains a minimum cash reserve equal to
                                     three
                                     (3)
-                                    months of average monthly operating expenses.</Typography>
+                                    months of average monthly operating expenses. "Cash Reserve" shall be based on the median of monthly operating expenses and employee wages.</Typography>
                             </Box>
                         </Typography>
 
-                        <SimpleDeferredCompensationCalculator />
 
-                        <Typography component="li" >
-                            <strong>Time Tracking:</strong> Both parties agree to maintain accurate time records in
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Pro-Rata Payment
+                        </Typography>
+                        <Typography variant='body1' gutterBottom>
+                            Accrued deferred wages shall be paid from net
+                            income (as
+                            defined by GAAP accounting standards) on a monthly basis if payment conditions are met. Payments shall be made on a pro-rata basis, calculated as
+                            the available profit to distribute divided by the total accrued deferred wages, times each party's total deferred wages. See example below:
+                        </Typography>
+
+
+                        <Box sx={{my: 3}}>
+                        <Button variant="text" 
+                        onClick={() => setExampleScenariosOpen(!exampleScenariosOpen)}>
+                                {exampleScenariosOpen ? 'Hide Example Scenarios' : 'Show Example Scenarios'}
+                        </Button>
+                        <Collapse in={exampleScenariosOpen} timeout="auto" unmountOnExit>
+                            <SimpleDeferredCompensationCalculator />
+                        </Collapse>
+                        </Box>
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Time Tracking
+                        </Typography>
+
+                        <Typography variant='body1' >
+                            Both parties agree to maintain accurate time records for deffered wages in
                             a
-                            shared
-                            digital log, as a spreadsheet with the following headings: Contributor Name, Date, Work
+                            shared <Link to="/timesheets">digital log</Link>.  as a spreadsheet with the following headings: Contributor Name, Date, Work
                             Done, Hours,
                             Rate ($/hr), Total.
                         </Typography>
-                        <Typography component="li" >
-                            <strong>Disputes:</strong> Any Founder or Contributor may dispute any log entry for
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Disputes
+                        </Typography>
+                        <Typography variant='body1' >
+                            Any Founder or Contributor may dispute any log entry for
                             another
                             within
                             14 days. They must provide written reasoning and offer a way to remedy the dispute in
                             order
                             to earn
-                            those hours.
+                            those hours permanently.
                         </Typography>
-                        <Typography component="li" >
-                            <strong>Rate Changes:</strong> Once the Company has cleared all debts and can afford a
+
+                        <Typography variant='h6' sx={{mt:2}} >
+                            Rate Changes
+                        </Typography>
+                        <Typography variant='body1' >
+                            Once the Company has cleared all debts and can afford a
                             salary
                             guarantee, the Founders may propose a standard salary for the Contributors. The
                             Company's
@@ -512,7 +550,7 @@ const ContractDocument: React.FC = () => {
                             pay a
                             Parties' deferred rate. If the Founders or Contributors choose not to accept a standard
                             salary in
-                            lieu of deferred wages, their position may be re-evaluated by the Company.
+                            lieu of deferred wages, their paid position may be re-allocated by the Company.
                         </Typography>
                     </Box>
                 </Collapse>

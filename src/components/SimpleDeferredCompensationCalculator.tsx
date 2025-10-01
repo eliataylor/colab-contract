@@ -101,10 +101,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                     <Card elevation={2}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                1 Month Scenario Calculator
-                            </Typography>
-                            <Typography variant="body2" gutterBottom>
-                                Shows profit distribution for one month when profit might be less than total deferred wages.
+                                Test Profit Share Scenarios
                             </Typography>
                             
                             <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
@@ -204,7 +201,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                     <Card elevation={2}>
                         <CardContent>
                         <Typography variant="h6" gutterBottom>
-                                Calculation Results
+                                Scenario Results
                             </Typography>
 
                             <Grid container>
