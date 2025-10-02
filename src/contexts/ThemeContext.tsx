@@ -104,11 +104,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
                 contrastText: '#ffffff',
             },
             action: {
-                disabled: mode === 'light' ? 'rgba(0, 0, 0, 0.26)' : 'rgba(255, 255, 255, 0.26)',
-                disabledBackground: mode === 'light' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
                 hover: mode === 'light' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)',
                 selected: mode === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
-            },
+                disabled: mode === 'light' ? 'rgba(0, 0, 0, 0.26)' : 'rgba(255, 255, 255, 0.26)',
+                disabledBackground: mode === 'light' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+                focus: mode === 'light' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+                selectedOpacity: mode === 'light' ? 0.08 : 0.08,
+                hoverOpacity: mode === 'light' ? 0.04 : 0.04,
+                focusOpacity: mode === 'light' ? 0.12 : 0.12,
+                activatedOpacity: mode === 'light' ? 0.12 : 0.12,
+            }
         },
         shape: {
             borderRadius: 0, // Consistent border radius
@@ -302,6 +307,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
 
     // Inject CSS custom properties for font scaling
     useEffect(() => {
+        // Only run on client side
+        if (typeof window === 'undefined') return;
+        
         const root = document.documentElement;
         root.style.setProperty('--font-scale', fontScale.toString());
 
@@ -313,34 +321,39 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
             document.head.appendChild(styleElement);
         }
 
-        styleElement.textContent = `
-            .font-scalable {
-                --h1-size: ${baseFontSizes.h1}rem;
-                --h2-size: ${baseFontSizes.h2}rem;
-                --h3-size: ${baseFontSizes.h3}rem;
-                --h4-size: ${baseFontSizes.h4}rem;
-                --h5-size: ${baseFontSizes.h5}rem;
-                --h6-size: ${baseFontSizes.h6}rem;
-                --body1-size: ${baseFontSizes.body1}rem;
-                --body2-size: ${baseFontSizes.body2}rem;
-            }
-            
-            .font-scalable h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
-            .font-scalable h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
-            .font-scalable h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
-            .font-scalable h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
-            .font-scalable h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
-            .font-scalable h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
-            .font-scalable p { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-body1 { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-body2 { font-size: calc(var(--body2-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
-            .font-scalable .MuiTypography-h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
-        `;
+        // Use a more defensive approach for CSS injection
+        try {
+            styleElement.textContent = `
+                .font-scalable {
+                    --h1-size: ${baseFontSizes.h1}rem;
+                    --h2-size: ${baseFontSizes.h2}rem;
+                    --h3-size: ${baseFontSizes.h3}rem;
+                    --h4-size: ${baseFontSizes.h4}rem;
+                    --h5-size: ${baseFontSizes.h5}rem;
+                    --h6-size: ${baseFontSizes.h6}rem;
+                    --body1-size: ${baseFontSizes.body1}rem;
+                    --body2-size: ${baseFontSizes.body2}rem;
+                }
+                
+                .font-scalable h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
+                .font-scalable h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
+                .font-scalable h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
+                .font-scalable h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
+                .font-scalable h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
+                .font-scalable h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
+                .font-scalable p { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-body1 { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-body2 { font-size: calc(var(--body2-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
+                .font-scalable .MuiTypography-h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
+            `;
+        } catch (error) {
+            console.warn('Failed to inject font scaling CSS:', error);
+        }
     }, [fontScale, baseFontSizes]);
 
     const value: ThemeContextType = {

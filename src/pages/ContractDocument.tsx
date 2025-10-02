@@ -305,7 +305,7 @@ const ContractDocument: React.FC = () => {
                     subheader={
                         <Typography variant="body1">
                             This section sets the formula for each partner's equity earned over your target period, up
-                            to your target amount. {vestingOpen === false &&
+                            to your target amount. {!vestingOpen &&
                             <strong style={{fontSize: '80%', marginLeft: 4}}>Read More...</strong>}
                         </Typography>
                     }

@@ -1,21 +1,21 @@
 import React from 'react';
-import {Description, PageContainer, PageTitle,} from '../components/styled/StyledComponents';
+import {Box, Typography} from '@mui/material';
 import DeferredWageTimesheet from '../components/DeferredWageTimesheet';
 
 const Timesheets: React.FC = () => {
 
     return (
-        <PageContainer>
-            <PageTitle variant="h4" color="primary">
+        <Box sx={{padding: 3, maxWidth: '1200px', margin: '0 auto', width: '100%'}}>
+            <Typography variant="h4" color="primary" sx={{marginBottom: 2}}>
                 Deferred Wage Timesheet
-            </PageTitle>
+            </Typography>
 
-            <Description>
+            <Typography sx={{marginBottom: 3, color: 'text.secondary'}}>
                 Track hours worked and deferred compensation for all contributors
-            </Description>
+            </Typography>
 
             <DeferredWageTimesheet/>
-        </PageContainer>
+        </Box>
     );
 };
 

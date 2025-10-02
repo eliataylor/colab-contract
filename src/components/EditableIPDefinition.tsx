@@ -58,13 +58,13 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                                 fontFamily: 'monospace',
                                 fontSize: '0.95rem',
                                 lineHeight: 1.5,
-                                backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.50',
+                                backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
                                 color: theme.palette.text.primary,
                                 '& fieldset': {
-                                    borderColor: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.300',
+                                    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[600] : theme.palette.grey[300],
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: theme.palette.mode === 'dark' ? 'grey.500' : 'grey.400',
+                                    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[500] : theme.palette.grey[400],
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: theme.palette.primary.main,
@@ -106,12 +106,12 @@ const EditableIPDefinition: React.FC<EditableIPDefinitionProps> = ({value, onSav
                 </Box>
             ) : (
                 <Box sx={{
-                    backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.50',
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
                     color: theme.palette.text.primary,
                     px: 1,
                     position: 'relative',
                     border: '1px solid',
-                    borderColor: theme.palette.mode === 'dark' ? 'grey.800' : 'grey.200'
+                    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[200]
                 }}>
                     <Tooltip title="Edit IP Definition">
                         <IconButton

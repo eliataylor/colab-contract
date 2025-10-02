@@ -16,7 +16,6 @@ import {
     Switch,
     Typography
 } from '@mui/material';
-import {FadeIn} from '../components/styled/StyledComponents';
 import {
     Brightness4,
     Brightness7,
@@ -264,9 +263,21 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         flexDirection: 'column',
                     }}
                 >
-                    <FadeIn>
+                    <Box sx={{
+                        animation: 'fadeIn 0.3s ease-in-out',
+                        '@keyframes fadeIn': {
+                            from: {
+                                opacity: 0,
+                                transform: 'translateY(10px)',
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: 'translateY(0)',
+                            },
+                        },
+                    }}>
                         {children}
-                    </FadeIn>
+                    </Box>
                     <Footer/>
                 </Box>
             </Box>
