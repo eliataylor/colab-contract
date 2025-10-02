@@ -43,6 +43,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     const {mode, toggleTheme, fontScale, setFontScale} = useCustomTheme();
     const location = useLocation();
 
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -103,14 +104,12 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     const drawer = (
         <Box>
 
-            {/* Contract Preview */}
             {renderMenuItem(menuItems.contract)}
 
             <ContractProgressStepper/>
 
             <List>
 
-                {/* Calculators with nested items */}
                 <ListItem id="MenuCalculatorButtons" disablePadding>
                     <ListItemButton
                         onClick={() => {

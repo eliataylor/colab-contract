@@ -2,27 +2,30 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import {ThemeProvider} from './contexts/ThemeContext';
 import {FormDataProvider} from './contexts/FormDataContext';
 import Layout from './components/Layout';
-import Home from './pages/Home.tsx';
-import VestingPage from './pages/VestingPage.tsx';
-import DeferredWagePage from './pages/DeferredWagePage.tsx';
-import Timesheets from './pages/Timesheets.tsx';
+import ErrorBoundary from './components/ErrorBoundary';
+import Home from './pages/Home';
+import VestingPage from './pages/VestingPage';
+import DeferredWagePage from './pages/DeferredWagePage';
+import Timesheets from './pages/Timesheets';
 
 function App() {
     return (
-        <ThemeProvider>
-            <FormDataProvider>
-                <Router>
-                    <Layout>
-                        <Routes>
-                            <Route path="/" element={<Home/>}/>
-                            <Route path="/vesting" element={<VestingPage/>}/>
-                            <Route path="/deferred-wage" element={<DeferredWagePage/>}/>
-                            <Route path="/timesheets" element={<Timesheets/>}/>
-                        </Routes>
-                    </Layout>
-                </Router>
-            </FormDataProvider>
-        </ThemeProvider>
+        <ErrorBoundary>
+            <ThemeProvider>
+                <FormDataProvider>
+                    <Router>
+                        <Layout>
+                            <Routes>
+                                <Route path="/" element={<Home/>}/>
+                                <Route path="/vesting" element={<VestingPage/>}/>
+                                <Route path="/deferred-wage" element={<DeferredWagePage/>}/>
+                                <Route path="/timesheets" element={<Timesheets/>}/>                        
+                            </Routes>
+                        </Layout>
+                    </Router>
+                </FormDataProvider>
+            </ThemeProvider>
+        </ErrorBoundary>
     );
 }
 

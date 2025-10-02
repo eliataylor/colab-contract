@@ -68,7 +68,7 @@ const ShareButton: React.FC<ShareButtonProps> = () => {
     return (
         <>
             <Button
-                variant="outlined"
+                variant="contained"
                 color="secondary"
                 size="small"
                 onClick={handleShareClick}

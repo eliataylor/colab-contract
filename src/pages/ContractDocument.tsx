@@ -91,16 +91,7 @@ const ContractDocument: React.FC = () => {
                 <Typography variant="h3" component="h1" color="primary">
                     <strong>Founding Contributor Engagement Agreement</strong>
                 </Typography>
-                <Box className="no-print" sx={{display: 'flex', gap: 1}}>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<Download/>}
-                        onClick={handlePrint}
-                        color="secondary"
-                    >
-                        Print
-                    </Button>
+                <Box className="no-print" sx={{display: 'flex', gap: 1}}>                   
                     <ShareButton/>
                 </Box>
             </Box>
@@ -657,6 +648,18 @@ const ContractDocument: React.FC = () => {
                 <Typography variant="h5" component="h3" gutterBottom color="primary">
                     <strong>Agreement Date:</strong> {placeholders.AGREEMENT_DATE}
                 </Typography>
+
+                <Box className="no-print" sx={{display: 'flex', gap: 1, mt: 3}}>                   
+                    <Button                        
+                        variant="contained"
+                        size="small"
+                        startIcon={<Download/>}
+                        onClick={handlePrint}
+                        color="secondary"
+                    >
+                        Print
+                    </Button>
+                </Box>
             </div>
 
             <div id="founder-contact">

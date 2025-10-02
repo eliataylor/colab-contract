@@ -37,9 +37,9 @@ const buildInfo = {
 const buildInfoFile = path.join(__dirname, '..', 'src', 'build-info.json');
 fs.writeFileSync(buildInfoFile, JSON.stringify(buildInfo, null, 2));
 
-console.log(`Build number: ${buildNumber}`);
-console.log(`Build timestamp: ${timestamp}`);
-console.log(`Build info written to: ${buildInfoFile}`);
+console.log(`[${new Date().toISOString()}] Build number: ${buildNumber}`);
+console.log(`[${new Date().toISOString()}] Build timestamp: ${timestamp}`);
+console.log(`[${new Date().toISOString()}] Build info written to: ${buildInfoFile}`);
 
 // Export for use in other scripts
 export default buildInfo;
