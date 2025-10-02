@@ -16,5 +16,50 @@
 
 /* Ensure Typography elements have max-width of 900px */
 .MuiTypography-root {
-    max-width: 900px !important;
+    max-width: 100% !important;
+}
+
+/* Print styles */
+@media print {
+    /* Hide the drawer/sidebar */
+    .MuiDrawer-root,
+    .MuiDrawer-paper,
+    [role="presentation"] {
+        display: none !important;
+    }
+
+    /* Hide print button and other UI elements */
+    .no-print {
+        display: none !important;
+    }
+
+    /* Ensure main content takes full width */
+    .MuiBox-root {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Preserve font scaling from the component */
+    .font-scalable {
+        font-size: inherit !important;
+    }
+
+    /* Ensure accordions are expanded for print */
+    .MuiAccordionDetails-root {
+        display: block !important;
+        height: auto !important;
+    }
+
+    /* Remove shadows and borders for cleaner print */
+    .MuiPaper-root {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    /* Optimize text for print */
+    body {
+        color: black !important;
+        background: white !important;
+    }
 }

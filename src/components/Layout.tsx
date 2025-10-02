@@ -218,11 +218,13 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                     onClick={handleDrawerToggle}
                     style={{position: 'absolute', top: 8, right: 8}}
                     sx={{display: {md: 'none'}}}
+                    className="no-print"
                 >
                     <MenuIcon/>
                 </Fab>
 
                 <Box
+                    className="no-print"
                     component="nav"
                     sx={{width: {md: drawerWidth}, flexShrink: {md: 0}}}
                     aria-label="navigation"

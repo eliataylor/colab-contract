@@ -12,8 +12,6 @@ import VestingFormula from '../components/VestingFormula.tsx';
 import FounderModal from '../components/FounderModal.tsx';
 import ContributorModal from '../components/ContributorModal.tsx';
 import {Link, useLocation} from 'react-router-dom';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import ShareButton from '../components/ShareButton.tsx';
 import SimpleDeferredCompensationCalculator from '../components/SimpleDeferredCompensationCalculator.tsx';
 import {useTheme} from '../contexts/ThemeContext.tsx';
@@ -74,67 +72,17 @@ const ContractDocument: React.FC = () => {
         }
     }, [location.hash]);
 
-    const generatePDF = async () => {
-        try {
-            // Expand all accordions for PDF generation
-            setProtectionsOpen(true);
-            setVestingOpen(true);
-            setDeferredOpen(true);
-            setMode('light');
+    const handlePrint = () => {
+        // Expand all accordions for print
+        setProtectionsOpen(true);
+        setVestingOpen(true);
+        setDeferredOpen(true);
+        setMode('light');
 
-            // Wait a bit for accordions to expand
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Get the contract content element
-            const element = document.getElementById('contract-content');
-            if (!element) {
-                console.error('Contract content element not found');
-                return;
-            }
-
-            // Generate canvas from HTML
-            const canvas = await html2canvas(element, {
-                scale: 2, // Higher quality
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                scrollX: 0,
-                scrollY: 0,
-                width: element.scrollWidth,
-                height: element.scrollHeight
-            });
-
-            // Create PDF
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 295; // A4 height in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-
-            let position = 0;
-
-            // Add first page
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            // Add additional pages if needed
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            // Download the PDF
-            const fileName = `Founding-Contributor-Engagement-Agreement-${new Date().toISOString().split('T')[0]}.pdf`;
-            pdf.save(fileName);
-
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            alert('Error generating PDF. Please try again.');
-        }
+        // Small delay to ensure accordions expand, then print
+        setTimeout(() => {
+            window.print();
+        }, 100);
     };
 
     return (
@@ -143,15 +91,15 @@ const ContractDocument: React.FC = () => {
                 <Typography variant="h3" component="h1" color="primary">
                     <strong>Founding Contributor Engagement Agreement</strong>
                 </Typography>
-                <Box sx={{display: 'flex', gap: 1}}>
+                <Box className="no-print" sx={{display: 'flex', gap: 1}}>
                     <Button
                         variant="contained"
                         size="small"
                         startIcon={<Download/>}
-                        onClick={generatePDF}
+                        onClick={handlePrint}
                         color="secondary"
                     >
-                        Download PDF
+                        Print
                     </Button>
                     <ShareButton/>
                 </Box>
@@ -236,7 +184,8 @@ const ContractDocument: React.FC = () => {
                         <Typography variant="body1">
                             This section is meant to protect the Founder's Intellectual Property as well as the Founding
                             Contributor's freedom to pursue other opportunities after the engagement ends.
-                            {protectionsOpen === false && <strong style={{fontSize:'80%', marginLeft:4}}>Read More...</strong>}
+                            {protectionsOpen === false &&
+                                <strong style={{fontSize: '80%', marginLeft: 4}}>Read More...</strong>}
                         </Typography>
                     }
                     action={<IconButton size="large" color="primary"
@@ -356,7 +305,8 @@ const ContractDocument: React.FC = () => {
                     subheader={
                         <Typography variant="body1">
                             This section sets the formula for each partner's equity earned over your target period, up
-                            to your target amount. {vestingOpen === false && <strong style={{fontSize:'80%', marginLeft:4}}>Read More...</strong>}
+                            to your target amount. {vestingOpen === false &&
+                            <strong style={{fontSize: '80%', marginLeft: 4}}>Read More...</strong>}
                         </Typography>
                     }
                     action={<IconButton size="large" color="primary"
@@ -442,7 +392,7 @@ const ContractDocument: React.FC = () => {
                                     equity
                                     holders
                                     will be reimbursed for unpaid efforts invested in the Company. {!deferredOpen &&
-                                    <strong style={{fontSize:'80%', marginLeft:4}}>Read More...</strong>}
+                                    <strong style={{fontSize: '80%', marginLeft: 4}}>Read More...</strong>}
                                 </Typography>
                             }
                             action={<IconButton size="large" color="primary"

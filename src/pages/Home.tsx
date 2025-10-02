@@ -7,7 +7,7 @@ const Home: React.FC = () => {
     return (
         <Box>
             {/* Header Section */}
-            <Container maxWidth="lg" sx={{py: 4}}>
+            <Container maxWidth="lg" sx={{py: 4}} className="no-print">
                 <Box sx={{textAlign: 'center', mb: 4}}>
                     <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2}}>
                         <Gavel color="primary" sx={{fontSize: 48}}/>
