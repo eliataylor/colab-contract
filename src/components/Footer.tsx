@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
 
                     <Button
                         size="small"
-                        href='https://g.co/gemini/share/fc835c61e484'
+                        href='https://g.co/gemini/share/570d95eb603c'
                         target='_blank'
                         endIcon={<img src={'/assets/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
                         sx={{textTransform: 'none', mr: 2}}
