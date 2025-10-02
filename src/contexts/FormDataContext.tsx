@@ -32,6 +32,8 @@ export interface FounderData {
     companyName: string;
     customIPDefinition: string;
     deferredWageRate: number;
+    tasksAllowed: string;
+    tasksNotAllowed: string;
 }
 
 export interface ContributorData {
@@ -68,7 +70,9 @@ const getDefaultFounderData = (): FounderData => {
         customIPDefinition: getQueryParamValue(queryParams, 'customIPDefinition', `* Proprietary user data and customer lists.
 * Content, created or curated uniquely to the Company or it's users.
 * Trade secrets related to business strategies, financial information, and customer data.`),
-        deferredWageRate: getQueryParamNumber(queryParams, 'founderDeferredWageRate', 150)
+        deferredWageRate: getQueryParamNumber(queryParams, 'founderDeferredWageRate', 150),
+        tasksAllowed: getQueryParamValue(queryParams, 'tasksAllowed', 'Any physical or digital labor.'),
+        tasksNotAllowed: getQueryParamValue(queryParams, 'tasksNotAllowed', `Working by yourself, only in your head, without any immediate impact or documented output.`)
     };
 };
 

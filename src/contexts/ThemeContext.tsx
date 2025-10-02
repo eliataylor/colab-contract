@@ -10,6 +10,9 @@ interface ThemeContextType {
     setMode: (mode: ThemeMode) => void;
     toggleTheme: () => void;
     theme: Theme;
+    fontScale: number;
+    setFontScale: (scale: number) => void;
+    resetFontScale: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -34,6 +37,24 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
         const savedTheme = localStorage.getItem('themeMode') as ThemeMode | null;
         return savedTheme ? savedTheme : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     });
+
+    // Add font scale state
+    const [fontScale, setFontScale] = useState<number>(() => {
+        const savedScale = localStorage.getItem('fontScale');
+        return savedScale ? parseFloat(savedScale) : 1.2;
+    });
+
+    // Base font sizes (these will be scaled)
+    const baseFontSizes = {
+        h1: 2.5,
+        h2: 2.0,
+        h3: 1.75,
+        h4: 1.5,
+        h5: 1.25,
+        h6: 1.0,
+        body1: 1.0,
+        body2: 0.875,
+    };
 
     // Create MUI theme based on actual mode
     const theme = createTheme({
@@ -96,41 +117,41 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
         typography: {
             fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
             h1: {
-                fontSize: '2.5rem',
+                fontSize: `${baseFontSizes.h1}rem`,
                 fontWeight: 600,
                 lineHeight: 1.2,
             },
             h2: {
-                fontSize: '2rem',
+                fontSize: `${baseFontSizes.h2}rem`,
                 fontWeight: 600,
                 lineHeight: 1.3,
             },
             h3: {
-                fontSize: '1.75rem',
+                fontSize: `${baseFontSizes.h3}rem`,
                 fontWeight: 600,
                 lineHeight: 1.3,
             },
             h4: {
-                fontSize: '1.5rem',
+                fontSize: `${baseFontSizes.h4}rem`,
                 fontWeight: 600,
                 lineHeight: 1.4,
             },
             h5: {
-                fontSize: '1.25rem',
+                fontSize: `${baseFontSizes.h5}rem`,
                 fontWeight: 600,
                 lineHeight: 1.4,
             },
             h6: {
-                fontSize: '1rem',
+                fontSize: `${baseFontSizes.h6}rem`,
                 fontWeight: 600,
                 lineHeight: 1.4,
             },
             body1: {
-                fontSize: '1rem',
+                fontSize: `${baseFontSizes.body1}rem`,
                 lineHeight: 1.5,
             },
             body2: {
-                fontSize: '0.875rem',
+                fontSize: `${baseFontSizes.body2}rem`,
                 lineHeight: 1.43,
             },
         },
@@ -257,16 +278,79 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({children}) => {
         });
     };
 
+    // Add font scale control functions
+    const handleSetFontScale = (scale: number) => {
+        const clampedScale = Math.max(0.5, Math.min(2.0, scale)); // Clamp between 0.5x and 2.0x
+        setFontScale(clampedScale);
+        localStorage.setItem('fontScale', clampedScale.toString());
+    };
+
+    const resetFontScale = () => {
+        setFontScale(1.0);
+        localStorage.setItem('fontScale', '1.0');
+    };
+
     // Save theme preference to localStorage whenever mode changes
     useEffect(() => {
         localStorage.setItem('themeMode', mode);
     }, [mode]);
+
+    // Save font scale preference to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('fontScale', fontScale.toString());
+    }, [fontScale]);
+
+    // Inject CSS custom properties for font scaling
+    useEffect(() => {
+        const root = document.documentElement;
+        root.style.setProperty('--font-scale', fontScale.toString());
+
+        // Create or update the font scaling CSS
+        let styleElement = document.getElementById('font-scaling-styles');
+        if (!styleElement) {
+            styleElement = document.createElement('style');
+            styleElement.id = 'font-scaling-styles';
+            document.head.appendChild(styleElement);
+        }
+
+        styleElement.textContent = `
+            .font-scalable {
+                --h1-size: ${baseFontSizes.h1}rem;
+                --h2-size: ${baseFontSizes.h2}rem;
+                --h3-size: ${baseFontSizes.h3}rem;
+                --h4-size: ${baseFontSizes.h4}rem;
+                --h5-size: ${baseFontSizes.h5}rem;
+                --h6-size: ${baseFontSizes.h6}rem;
+                --body1-size: ${baseFontSizes.body1}rem;
+                --body2-size: ${baseFontSizes.body2}rem;
+            }
+            
+            .font-scalable h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
+            .font-scalable h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
+            .font-scalable h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
+            .font-scalable h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
+            .font-scalable h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
+            .font-scalable h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
+            .font-scalable p { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-body1 { font-size: calc(var(--body1-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-body2 { font-size: calc(var(--body2-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h1 { font-size: calc(var(--h1-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h2 { font-size: calc(var(--h2-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h3 { font-size: calc(var(--h3-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h4 { font-size: calc(var(--h4-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h5 { font-size: calc(var(--h5-size) * var(--font-scale, 1)) !important; }
+            .font-scalable .MuiTypography-h6 { font-size: calc(var(--h6-size) * var(--font-scale, 1)) !important; }
+        `;
+    }, [fontScale, baseFontSizes]);
 
     const value: ThemeContextType = {
         mode,
         setMode,
         toggleTheme,
         theme,
+        fontScale,
+        setFontScale: handleSetFontScale,
+        resetFontScale,
     };
 
     return (

@@ -1,9 +1,12 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {Box, Button, Chip, Paper, Step, StepContent, StepLabel, Stepper, Typography} from '@mui/material';
 import {AttachMoney, Business, CheckCircle, People, RadioButtonUnchecked, Security, Warning} from '@mui/icons-material';
 import {styled} from '@mui/material/styles';
 import {useFormData} from '../hooks/useFormDataHooks';
+
+interface ContractProgressStepperProps {
+}
 
 // Progress steps configuration
 const progressSteps = [
@@ -83,13 +86,10 @@ const ActionButton = styled(Button)(({theme}) => ({
     minHeight: 32,
 }));
 
-interface ContractProgressStepperProps {
-    onStepClick?: (stepId: string) => void;
-}
-
-const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStepClick}) => {
+const ContractProgressStepper: React.FC<ContractProgressStepperProps> = () => {
     const {founderData, contributorData} = useFormData();
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Progress calculation based on field values (including query parameter prepopulated data)
     const getStepStatus = (stepId: string) => {
@@ -149,10 +149,19 @@ const ContractProgressStepper: React.FC<ContractProgressStepperProps> = ({onStep
 
     const handleStepClick = (step: typeof progressSteps[0]) => {
         console.log('handleStepClick', step);
-        if (onStepClick) {
-            onStepClick(step.id);
+        if (location.pathname + location.hash === step.path + step.hash) {
+            // For contact steps, we need to trigger the modal to reopen
+            if (step.id === 'founder-contact' || step.id === 'contributor-contact') {
+                // Force a hash change to trigger the useEffect in ContractDocument
+                window.location.hash = '';
+                setTimeout(() => {
+                    window.location.hash = step.hash;
+                }, 10);
+            } else {
+                // For other steps, just update the hash
+                window.location.hash = step.hash;
+            }
         } else {
-            // Navigate to the page with hash for specific section
             navigate(`${step.path}${step.hash}`);
         }
     };

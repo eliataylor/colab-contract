@@ -34,6 +34,10 @@ const SimpleVestingCalculator: React.FC = () => {
     const cliffDays = contributorData.cliffDays;
     const vestingExponent = contributorData.vestingExponent;
 
+    // Convert days to months for slider display (using 30.44 days per month average)
+    const vestingMonths = Math.round(vestingDays / 30.44);
+    const cliffMonths = Math.round(cliffDays / 30.44);
+
     const calculateVesting = (totalEquity: number, totalVestingDays: number, daysWorked: number): number => {
         if (daysWorked <= cliffDays) return 0;
         const numerator = daysWorked - cliffDays;
@@ -106,25 +110,29 @@ const SimpleVestingCalculator: React.FC = () => {
                             <Box sx={{mb: 4}}>
                                 <Typography gutterBottom variant="body2">
                                     Vesting
-                                    Period: <strong>{vestingDays} days</strong> ({Math.round(vestingDays / 365 * 10) / 10} years)
+                                    Period: <strong>{vestingDays} days</strong> ({vestingMonths} months, {Math.round(vestingDays / 365 * 10) / 10} years)
                                 </Typography>
                                 <Slider
-                                    value={vestingDays}
-                                    onChange={(_, value) => updateContributorData({vestingPeriod: (value as number) / 365})}
-                                    min={365}
-                                    max={3650}
-                                    step={1}
+                                    value={vestingMonths}
+                                    onChange={(_, value) => {
+                                        const months = value as number;
+                                        const days = Math.round(months * 30.44);
+                                        updateContributorData({vestingPeriod: days / 365});
+                                    }}
+                                    min={12}
+                                    max={120}
+                                    step={6}
                                     marks={[
-                                        {value: 365, label: '1yr'},
-                                        {value: 730, label: '2yr'},
-                                        {value: 1095, label: '3yr'},
-                                        {value: 1460, label: '4yr'},
-                                        {value: 1825, label: '5yr'},
-                                        {value: 2190, label: '6yr'},
-                                        {value: 2555, label: '7yr'},
-                                        {value: 2920, label: '8yr'},
-                                        {value: 3285, label: '9yr'},
-                                        {value: 3650, label: '10yr'}
+                                        {value: 12, label: '12mo'},
+                                        {value: 24, label: '24mo'},
+                                        {value: 36, label: '36mo'},
+                                        {value: 48, label: '48mo'},
+                                        {value: 60, label: '60mo'},
+                                        {value: 72, label: '72mo'},
+                                        {value: 84, label: '84mo'},
+                                        {value: 96, label: '96mo'},
+                                        {value: 108, label: '108mo'},
+                                        {value: 120, label: '120mo'}
                                     ]}
                                     valueLabelDisplay="auto"
                                 />
@@ -133,20 +141,24 @@ const SimpleVestingCalculator: React.FC = () => {
                             <Box sx={{mb: 4}}>
                                 <Typography gutterBottom variant="body2">
                                     Waiting (cliff)
-                                    Period: <strong>{cliffDays} days</strong> ({Math.round(cliffDays / 30.44)} months)
+                                    Period: <strong>{cliffDays} days</strong> ({cliffMonths} months)
                                 </Typography>
                                 <Slider
-                                    value={cliffDays}
-                                    onChange={(_, value) => updateContributorData({cliffDays: value as number})}
+                                    value={cliffMonths}
+                                    onChange={(_, value) => {
+                                        const months = value as number;
+                                        const days = Math.round(months * 30.44);
+                                        updateContributorData({cliffDays: days});
+                                    }}
                                     min={0}
-                                    max={365}
+                                    max={12}
                                     step={1}
                                     marks={[
                                         {value: 0, label: '0mo'},
-                                        {value: 90, label: '3mo'},
-                                        {value: 180, label: '6mo'},
-                                        {value: 270, label: '9mo'},
-                                        {value: 365, label: '12mo'}
+                                        {value: 3, label: '3mo'},
+                                        {value: 6, label: '6mo'},
+                                        {value: 9, label: '9mo'},
+                                        {value: 12, label: '12mo'}
                                     ]}
                                     valueLabelDisplay="auto"
                                 />
@@ -176,7 +188,7 @@ const SimpleVestingCalculator: React.FC = () => {
 
                             <Alert severity="info" sx={{py: 0}}>
                                 <Typography variant="body2" sx={{py: 0}}>
-                                    <strong>{Math.round(cliffDays / 30.44)}-month cliff:</strong> No equity vests before
+                                    <strong>{cliffMonths}-month cliff:</strong> No equity vests before
                                     completing {cliffDays} days of work.
                                 </Typography>
                             </Alert>

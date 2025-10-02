@@ -7,6 +7,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Divider,
     IconButton,
     Snackbar,
     TextField,
@@ -39,7 +40,7 @@ interface ShareButtonProps {
 }
 
 const ShareButton: React.FC<ShareButtonProps> = () => {
-    const {founderData, contributorData, founderFieldsModified, contributorFieldsModified} = useFormData();
+    const {founderData, contributorData} = useFormData();
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -79,7 +80,7 @@ const ShareButton: React.FC<ShareButtonProps> = () => {
             <Dialog
                 open={open}
                 onClose={handleClose}
-                maxWidth="sm"
+                maxWidth="xl"
                 fullWidth
                 PaperProps={{
                     sx: {
@@ -129,10 +130,40 @@ const ShareButton: React.FC<ShareButtonProps> = () => {
                         </CopyButton>
                     </Box>
 
-                    <Typography variant="caption" color="text.secondary" sx={{mt: 2, display: 'block'}}>
-                        Progress tracked: {founderFieldsModified.size + contributorFieldsModified.size} field(s)
-                        modified
-                    </Typography>
+                    <Divider sx={{my: 3}}/>
+
+                    <Box>
+                        <Typography variant="subtitle2" gutterBottom>
+                            Variables:
+                        </Typography>
+                        <Box sx={{
+                            backgroundColor: 'grey.50',
+                            borderRadius: 1,
+                            fontFamily: 'monospace',
+                            fontSize: '0.875rem'
+                        }}>
+                            {(() => {
+                                const params = new URLSearchParams(shareableUrl.split('?')[1] || '');
+                                const paramEntries = Array.from(params.entries());
+
+                                if (paramEntries.length === 0) {
+                                    return <Typography variant="body2" color="text.secondary">No variables
+                                        set</Typography>;
+                                }
+
+                                return paramEntries.map(([key, value]) => (
+                                    <Box key={key} sx={{mb: 0.5}}>
+                                        <Typography component="span" sx={{fontWeight: 'bold'}}>
+                                            {key}:
+                                        </Typography>
+                                        <Typography component="span" sx={{ml: 1}}>
+                                            {value}
+                                        </Typography>
+                                    </Box>
+                                ));
+                            })()}
+                        </Box>
+                    </Box>
                 </DialogContentStyled>
 
                 <DialogActions>

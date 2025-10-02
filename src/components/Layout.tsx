@@ -12,7 +12,9 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Switch
+    Slider,
+    Switch,
+    Typography
 } from '@mui/material';
 import {FadeIn} from '../components/styled/StyledComponents';
 import {
@@ -39,7 +41,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({children}) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [calculatorsOpen, setCalculatorsOpen] = useState(false);
-    const {mode, toggleTheme} = useCustomTheme();
+    const {mode, toggleTheme, fontScale, setFontScale} = useCustomTheme();
     const location = useLocation();
 
     const handleDrawerToggle = () => {
@@ -178,6 +180,31 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 }
                 sx={{display: 'flex', justifyContent: 'center', mt: 2}}
             />
+
+            <Divider sx={{my: 2}}/>
+
+            {/* Font Size Controller */}
+            <Box sx={{px: 4, pb: 2}}>
+                <Typography variant="subtitle2" gutterBottom sx={{textAlign: 'center'}}>
+                    Font Size
+                </Typography>
+                <Slider
+                    value={fontScale}
+                    onChange={(_, value) => setFontScale(value as number)}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    marks={[
+                        {value: 0.5, label: '50%'},
+                        {value: 1.0, label: '100%'},
+                        {value: 1.5, label: '150%'},
+                        {value: 2.0, label: '200%'},
+                    ]}
+                    valueLabelDisplay="auto"
+                    valueLabelFormat={(value) => `${Math.round(value * 100)}%`}
+                    sx={{mb: 1}}
+                />
+            </Box>
         </Box>
     );
 

@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
                         size="small"
                         href='https://g.co/gemini/share/fc835c61e484'
                         target='_blank'
-                        endIcon={<img src={'/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
+                        endIcon={<img src={'/assets/gemini-color.png'} alt="Gemini" height="20" width="20"/>}
                         sx={{textTransform: 'none', mr: 2}}
                     >
                         Join Gemini Chat

@@ -21,8 +21,7 @@ import {
 } from '@mui/material';
 import {Add, Delete, Download, Edit} from '@mui/icons-material';
 import {type TimesheetEntry} from '../contexts/FormDataContext';
-import {useFormData} from '../hooks/useFormDataHooks';
-import {useContractData} from '../hooks/useFormDataHooks';
+import {useContractData, useFormData} from '../hooks/useFormDataHooks';
 
 const DeferredWageTimesheet: React.FC = () => {
     const {
@@ -114,7 +113,7 @@ const DeferredWageTimesheet: React.FC = () => {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = field === 'hours' || field === 'rate' ? parseFloat(event.target.value) || 0 : event.target.value;
- 
+
         setFormData(prev => ({
             ...prev,
             [field]: value
@@ -254,8 +253,10 @@ const DeferredWageTimesheet: React.FC = () => {
                                 onChange={handleInputChange('partner')}
                                 required
                             >
-                                <MenuItem value={getPlaceholder('FOUNDER_NAME')}>{getPlaceholder('FOUNDER_NAME')}</MenuItem>
-                                <MenuItem value={getPlaceholder('CONTRIBUTOR_NAME')}>{getPlaceholder('CONTRIBUTOR_NAME')}</MenuItem>
+                                <MenuItem
+                                    value={getPlaceholder('FOUNDER_NAME')}>{getPlaceholder('FOUNDER_NAME')}</MenuItem>
+                                <MenuItem
+                                    value={getPlaceholder('CONTRIBUTOR_NAME')}>{getPlaceholder('CONTRIBUTOR_NAME')}</MenuItem>
                             </TextField>
                             <TextField
                                 fullWidth

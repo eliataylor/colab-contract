@@ -108,8 +108,8 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                             <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
                                 <Box>
-                                    <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {getPlaceholder('CONTRIBUTOR_NAME')} - Total Owed:
+                                    <Typography variant="subtitle1" color="secondary" gutterBottom>
+                                        {getPlaceholder('CONTRIBUTOR_NAME')} - Total Earned:
                                         ${Intl.NumberFormat('en-US').format(contributorOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
@@ -117,6 +117,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Hourly Rate ($)"
                                             type="number"
+                                            color="secondary"
                                             value={localContributorRate}
                                             onChange={(e) => {
                                                 const value = parseFloat(e.target.value) || 0;
@@ -130,6 +131,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Accrued Hours"
                                             type="number"
+                                            color="secondary"
                                             value={localContributorHours}
                                             onChange={(e) => setLocalContributorHours(parseFloat(e.target.value) || 0)}
                                             variant="outlined"
@@ -141,7 +143,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
 
                                 <Box>
                                     <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        {getPlaceholder('FOUNDER_NAME')} - Total Owed:
+                                        {getPlaceholder('FOUNDER_NAME')} - Total Earned:
                                         ${Intl.NumberFormat('en-US').format(founderOwed)}
                                     </Typography>
                                     <Box sx={{display: 'flex', gap: 2}}>
@@ -149,6 +151,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Hourly Rate ($)"
                                             type="number"
+                                            color="primary"
                                             value={localFounderRate}
                                             onChange={(e) => {
                                                 const value = parseFloat(e.target.value) || 0;
@@ -162,6 +165,7 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                             fullWidth
                                             label="Accrued Hours"
                                             type="number"
+                                            color="primary"
                                             value={localFounderHours}
                                             onChange={(e) => setLocalFounderHours(parseFloat(e.target.value) || 0)}
                                             variant="outlined"
@@ -172,12 +176,12 @@ const SimpleDeferredCompensationCalculator: React.FC = () => {
                                 </Box>
 
                                 <Box>
-                                    <Typography variant="subtitle1" color="primary" gutterBottom>
-                                        1 Month Company Profit*
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        Profit to Distribute
                                     </Typography>
                                     <TextField
                                         fullWidth
-                                        label="Available Profit this Month ($)"
+                                        helperText="Revenue after expenses and 3-month reserve ($)"
                                         type="number"
                                         value={availableProfit}
                                         onChange={(e) => setAvailableProfit(parseFloat(e.target.value) || 0)}

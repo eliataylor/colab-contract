@@ -17,23 +17,27 @@ export const replaceContractPlaceholders = (template: string, placeholders: Reco
 export const generateShareableUrl = (founderData: FounderData, contributorData: ContributorData, baseUrl?: string): string => {
     const params = new URLSearchParams();
 
-    // Add founder data
-    if (founderData.name) params.set('founderName', founderData.name);
-    if (founderData.email) params.set('founderEmail', founderData.email);
-    if (founderData.phone) params.set('founderPhone', founderData.phone);
-    if (founderData.address) params.set('founderAddress', founderData.address);
-    if (founderData.deferredWageRate !== 150) params.set('founderDeferredWageRate', founderData.deferredWageRate.toString());
+    // Add all founder data (regardless of default values)
+    params.set('founderName', founderData.name);
+    params.set('founderEmail', founderData.email);
+    params.set('founderPhone', founderData.phone);
+    params.set('founderAddress', founderData.address);
+    params.set('companyName', founderData.companyName);
+    params.set('customIPDefinition', founderData.customIPDefinition);
+    params.set('founderDeferredWageRate', founderData.deferredWageRate.toString());
+    params.set('tasksAllowed', founderData.tasksAllowed);
+    params.set('tasksNotAllowed', founderData.tasksNotAllowed);
 
-    // Add contributor data
-    if (contributorData.name) params.set('contributorName', contributorData.name);
-    if (contributorData.email) params.set('contributorEmail', contributorData.email);
-    if (contributorData.phone) params.set('contributorPhone', contributorData.phone);
-    if (contributorData.address) params.set('contributorAddress', contributorData.address);
-    if (contributorData.totalEquityGranted !== 25) params.set('totalEquityGranted', contributorData.totalEquityGranted.toString());
-    if (contributorData.vestingPeriod !== 2) params.set('vestingPeriod', contributorData.vestingPeriod.toString());
-    if (contributorData.deferredWageRate !== 150) params.set('contributorDeferredWageRate', contributorData.deferredWageRate.toString());
-    if (contributorData.cliffDays !== 180) params.set('cliffDays', contributorData.cliffDays.toString());
-    if (contributorData.vestingExponent !== 2) params.set('vestingExponent', contributorData.vestingExponent.toString());
+    // Add all contributor data (regardless of default values)
+    params.set('contributorName', contributorData.name);
+    params.set('contributorEmail', contributorData.email);
+    params.set('contributorPhone', contributorData.phone);
+    params.set('contributorAddress', contributorData.address);
+    params.set('totalEquityGranted', contributorData.totalEquityGranted.toString());
+    params.set('vestingPeriod', contributorData.vestingPeriod.toString());
+    params.set('contributorDeferredWageRate', contributorData.deferredWageRate.toString());
+    params.set('cliffDays', contributorData.cliffDays.toString());
+    params.set('vestingExponent', contributorData.vestingExponent.toString());
 
     const queryString = params.toString();
     const url = baseUrl || (typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '');

@@ -99,7 +99,7 @@ export const useContractData = () => {
             CUSTOM_IP_DEFINITION: founderData.customIPDefinition,
             COMPANY_NAME: founderData.companyName,
             CONTRIBUTOR_EQUITY_PERCENTAGE: contributorData.totalEquityGranted,
-            VESTING_PERIOD_YEARS: contributorData.vestingPeriod,
+            VESTING_PERIOD_YEARS: Math.round(contributorData.vestingPeriod * 100) / 100,
             VESTING_PERIOD_DAYS: contributorData.vestingPeriod * 365,
             CLIFF_DAYS: contributorData.cliffDays,
             VESTING_EXPONENT: contributorData.vestingExponent,
@@ -113,6 +113,8 @@ export const useContractData = () => {
             CONTRIBUTOR_EMAIL: contributorData.email || '[Contributor Email]',
             CONTRIBUTOR_PHONE: contributorData.phone || '[Contributor Phone]',
             CONTRIBUTOR_ADDRESS: contributorData.address || '[Contributor Address]',
+            TASKS_ALLOWED: founderData.tasksAllowed,
+            TASKS_NOT_ALLOWED: founderData.tasksNotAllowed,
             AGREEMENT_DATE: new Date().toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -162,7 +164,9 @@ export const useContractData = () => {
             'FOUNDER_ADDRESS': 'address',
             'FOUNDER_HOURLY_RATE': 'deferredWageRate',
             'CUSTOM_IP_DEFINITION': 'customIPDefinition',
-            'COMPANY_NAME': 'companyName'
+            'COMPANY_NAME': 'companyName',
+            'TASKS_ALLOWED': 'tasksAllowed',
+            'TASKS_NOT_ALLOWED': 'tasksNotAllowed'
         };
 
         const contributorFields: Record<string, keyof ContributorData> = {
