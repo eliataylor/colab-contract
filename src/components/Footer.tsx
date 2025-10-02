@@ -6,6 +6,7 @@ const Footer: React.FC = () => {
     return (
         <Box
             component="footer"
+            className="no-print"
             sx={{
                 width: '100%',
                 mt: 'auto',
